@@ -4,6 +4,9 @@ const path = require('path');
 const cors = require('cors');
 const history = require('connect-history-api-fallback');
 const morgan = require('morgan');
+const ArtExchange = require("./modules/schema"); //this is the schema class. Use this class to make 
+//instances of the schema. Pay attention that the methods that are used to query and save instances
+//work asynchronously.
 
 // Variables
 const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/art-exchange';
