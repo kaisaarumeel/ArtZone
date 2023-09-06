@@ -4,7 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const history = require('connect-history-api-fallback');
 const morgan = require('morgan');
-const ArtExchange = require("./server/modules/schema"); //this is the schema class. Use this class to make 
+const ArtExchange = require("./server/models/schema"); //this is the schema class. Use this class to make 
 //instances of the schema. Pay attention that the methods that are used to query and save instances
 //work asynchronously.
 
