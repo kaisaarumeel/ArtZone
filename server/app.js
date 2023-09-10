@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 //instances of the schema. Pay attention that the methods that are used to query and save instances
 //work asynchronously.
 const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/art-exchange';
-const UserSchema =require("./models/schema")
+const UserModel =require("./models/user")
 // Connect to MongoDB
 mongoose.connect(mongoURI).catch(function(err) {
     if (err) {
@@ -81,11 +81,11 @@ app.listen(port, function(err) {
     console.log(`Express server listening on port ${port}, in ${env} mode`);
     console.log(`Backend: http://localhost:${port}/api/`);
     console.log(`Frontend (production): http://localhost:${port}/`);
-    const present=UserSchema.findOne({isAdmin:true})
+    const present=UserModel.findOne({isAdmin:true})
     .then((result)=>{
         if(result!=null) return;
         console.log("No admin account present... Generating new admin account.");
-        const admin=new UserSchema({
+        const admin=new UserModel({
             name: {
                 firstName:"Bob",
                 lastName:"Bobson"
@@ -105,7 +105,7 @@ app.listen(port, function(err) {
             orders: [] 
         });
         admin.validateSync()
-        UserSchema.collection.insertOne(admin);
+        UserModel.collection.insertOne(admin);
     })
     .catch((err)=>{
         console.log("Failed talking to database.")
