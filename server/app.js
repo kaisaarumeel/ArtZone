@@ -1,17 +1,14 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const path = require('path');
 const cors = require('cors');
 const history = require('connect-history-api-fallback');
 const morgan = require('morgan');
-const ArtExchange = require("./models/schema"); //this is the schema class. Use this class to make 
+const mongoose = require("mongoose");
+
 //instances of the schema. Pay attention that the methods that are used to query and save instances
 //work asynchronously.
-
-// Variables
 const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/art-exchange';
-const port = process.env.PORT || 3000;
-
+const UserModel =require("./models/user")
 // Connect to MongoDB
 mongoose.connect(mongoURI).catch(function(err) {
     if (err) {
@@ -21,6 +18,11 @@ mongoose.connect(mongoURI).catch(function(err) {
     }
     console.log(`Connected to MongoDB with URI: ${mongoURI}`);
 });
+
+const users=require("./controllers/users")
+const port = process.env.PORT || 3000;
+
+
 
 // Create Express app
 const app = express();
@@ -33,7 +35,13 @@ app.use(morgan('dev'));
 app.options('*', cors());
 app.use(cors());
 
+app.use("/api/v1/users",users);
 // Import routes
+/*app.get('/api', function(req, res) {
+    res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
+});*/
+
+
 app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });
@@ -73,6 +81,36 @@ app.listen(port, function(err) {
     console.log(`Express server listening on port ${port}, in ${env} mode`);
     console.log(`Backend: http://localhost:${port}/api/`);
     console.log(`Frontend (production): http://localhost:${port}/`);
+    const present=UserModel.findOne({isAdmin:true})
+    .then((result)=>{
+        if(result!=null) return;
+        console.log("No admin account present... Generating new admin account.");
+        const admin=new UserModel({
+            name: {
+                firstName:"Bob",
+                lastName:"Bobson"
+            },
+            address:{
+                country:"Sweden",
+                street:"Bob street 1",
+                zip:"12345",
+                city:"Bobtown"
+            },
+            dateOfBirth: "2002-03-24",
+            password: "81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9",
+            verificationStatus: true,
+            userEmail: "bob@gmail.com",
+            isAdmin: true,
+            listings: [],
+            orders: [] 
+        });
+        admin.validateSync()
+        UserModel.collection.insertOne(admin);
+    })
+    .catch((err)=>{
+        console.log("Failed talking to database.")
+        console.error(err);
+    })
 });
 
 module.exports = app;
