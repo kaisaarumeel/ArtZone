@@ -29,14 +29,20 @@ const register = function (req, res, next) {
             const result=query.then((result)=>{ 
                 console.log(result)        
                 if(result!=null){
-                    UserSchema.collection.insertOne(user).then(()=>{
-                        req.status=201;
-                        next()
-                    }).catch((err)=>{
-                        console.log(err)
-                        req.status=400;
+                    if(result.isAdmin){
+                        UserSchema.collection.insertOne(user).then(()=>{
+                            req.status=201;
+                            next()
+                        }).catch((err)=>{
+                            console.log(err)
+                            req.status=400;
+                            next() 
+                        });
+                    } else {
+                        req.status=403;
                         next() 
-                    });
+                    }
+                    
                 } else {
                     req.status=400;
                     next() 

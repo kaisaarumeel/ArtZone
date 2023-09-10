@@ -7,9 +7,10 @@ const login = function (req, res, next) {
     const password=req.body.password;
     const result=UserSchema.findOne({userEmail:email})
     result.then((result)=>{
-        console.log(result)
         if(result==null){
-            req.status=200;
+            req.status=404;
+            next()
+
         } else {
             if(password==result.password){
                 req.success=true;
