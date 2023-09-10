@@ -35,15 +35,16 @@ app.use(morgan('dev'));
 app.options('*', cors());
 app.use(cors());
 
-app.use("/v1/api/users",users);
+app.use("/api/v1/users",users);
 // Import routes
 /*app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });*/
 
 
-
-
+app.get('/api', function(req, res) {
+    res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
+});
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {
