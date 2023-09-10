@@ -3,10 +3,6 @@ const mongoose = require("mongoose");
 const { randomUUID } = require("crypto");
 // Variables
 
-const order_schema=new mongoose.Schema({
-    
-})
-
 const user_schema = new mongoose.Schema({
     name: { firstName: { type: String, required: true }, lastName: { type: String, required: true }},
     address:{
