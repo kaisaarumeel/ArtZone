@@ -80,7 +80,7 @@ Our system allows users, investors and art enthusiasts to buy and sell artwork o
 
 ### Entity-Relationship (ER) Diagram
 
-![ER Diagram](./images/EER.drawio.png)
+![ER Diagram](./images/ERdiagram.png)
 
 ## Teaser (MS3)
 
