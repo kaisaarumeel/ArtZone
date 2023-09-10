@@ -1,4 +1,4 @@
-const UserSchema = require("../models/schema"); //this is the schema class. Use this class to make 
+const UserSchema = require("../models/user"); //this is the schema class. Use this class to make 
 
 const register = function (req, res, next) {
     const user=new UserSchema({
