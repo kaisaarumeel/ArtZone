@@ -46,7 +46,7 @@ router.post("/users/:email/listings", async function(req, res){
         
 //GET /users/:id/listings - Get my listings
 
-router.get("/users:email/listings", async function(req, res){
+router.get("/users/:email/listings", async function(req, res){
     
     try{
 
@@ -66,18 +66,79 @@ router.get("/users:email/listings", async function(req, res){
         return res.status(500).json("Internal server error");
     }
 })
-        
-//GET /listings/page/:page  - Gets all listing in the system paginated.
+      
+//GET /users/:id/listings/:id - Get single listing
 
-        
+router.get("/users/:email/listings/:name", async function(req, res){
+    
+    try{
+
+    const userEmail = req.params.email;
+    const user = await UserSchema.findOne({userEmail:userEmail});
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const listingName = req.params.name;
+
+    // Get the listing with the given name
+    const foundListing = user.listings.find(listing => listing.name === listingName);
+
+    if (!foundListing) {
+        return res.status(404).json({ message: 'Listing not found' });
+    }
+
+    return res.status(200).json(foundListing);
+
+    }catch(error){
+        console.log("Errors were found");
+        return res.status(500).json("Internal server error");
+    }
+})
+
+
 //DELETE /users/:id/listings/:id - Removes a listing in the system
 
+router.delete("/users/:email/listings/:name", async function(req, res){
+    
+    try{
+
+    const userEmail = req.params.email;
+    const user = await UserSchema.findOne({userEmail:userEmail});
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const listingName = req.params.name;
+
+    // Get the listing with the given name
+    const foundListing = user.listings.find(listing => listing.name === listingName);
+
+    if (!foundListing) {
+        return res.status(404).json({ message: 'Listing not found' });
+    }
+
+     // Use Array.prototype.filter() to remove the listing with the given name
+     user.listings = user.listings.filter(listing => listing.name !== listingName);
+
+     if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+     // Save the updated user object
+     await user.save();
+    
+    }catch(error){
+        console.log("Errors were found");
+        return res.status(500).json("Internal server error");
+    }
+})
         
 //PUT /users/:id/listings/:id - Full update on a listing in the system at the specified resource.
 
         
 //PATCH /users/:id/listings/:id - Partial update a listing in the system at the specified resource.
 
-        
-//GET /users/:id/listings/:id - Get single listing
 
+//GET /listings/page/:page  - Gets all listing in the system paginated.
