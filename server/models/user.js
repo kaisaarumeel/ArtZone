@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     isAdmin: { type: Boolean, default: false,required: true },
     listings: [ { type: mongoose.Schema.Types.ObjectId, ref: "Listing" } ],
     orders: [ { type: mongoose.Schema.Types.ObjectId, ref: "Order" } ],
-    card: { type: mongoose.Schema.Types.ObjectId, ref: "Card" }
+    card: [ { type: mongoose.Schema.Types.ObjectId, ref: "Card" } ]
 });
 
 const UserModel = mongoose.model("User", userSchema);
