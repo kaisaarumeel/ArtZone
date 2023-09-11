@@ -35,7 +35,7 @@ router.post("/login", async function (req, res) {
 });
 
 
-router.post("/register", session, async function (req, res) {
+router.post("/register", async function (req, res) {
     const user=new UserSchema({
         name: req.body.name,
         dateOfBirth: req.body.dateOfBirth,
