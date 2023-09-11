@@ -137,8 +137,81 @@ router.delete("/users/:email/listings/:name", async function(req, res){
         
 //PUT /users/:id/listings/:id - Full update on a listing in the system at the specified resource.
 
+    router.put("/users/:email/listings/:name", async function(req, res){
+        try{
+            const userEmail = req.params.email;
+            const user = await UserSchema.findOne({userEmail:userEmail});
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            const listingName = req.params.name;
+
+            const foundListing = user.listings.find(listing => listing.name === listingName);
         
+            if (!foundListing) {
+                return res.status(404).json({ message: 'Listing not found' });
+            }
+
+            foundListing.name = req.body.name;
+            foundListing.author = req.body.author;
+            foundListing.price = req.body.price;
+            foundListing.picture = req.body.picture;
+            
+            await user.save();
+
+            return res.status(200).json(foundListing);
+        
+        }catch(error){
+            console.log("Errors were found");
+            return res.status(500).json("Internal server error");
+        }
+    })    
+
 //PATCH /users/:id/listings/:id - Partial update a listing in the system at the specified resource.
 
+router.patch("/users/:email/listings/:name", async function(req, res){
+    try{
+        const userEmail = req.params.email;
+        const user = await UserSchema.findOne({userEmail:userEmail});
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const listingName = req.params.name;
+
+        const foundListing = user.listings.find(listing => listing.name === listingName);
+    
+        if (!foundListing) {
+            return res.status(404).json({ message: 'Listing not found' });
+        }
+
+        if (req.body.name) {
+            foundListing.name = req.body.name;
+        }
+
+        if (req.body.author) {
+            foundListing.author = req.body.author;
+        }
+
+        if (req.body.price) {
+            foundListing.price = req.body.price;
+        }
+
+        if (req.body.picture) {
+            foundListing.picture = req.body.picture;
+        }
+        
+        await user.save();
+
+        return res.status(200).json(foundListing);
+    
+    }catch(error){
+        console.log("Errors were found");
+        return res.status(500).json("Internal server error");
+    }
+})    
 
 //GET /listings/page/:page  - Gets all listing in the system paginated.
