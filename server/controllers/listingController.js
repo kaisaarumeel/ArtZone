@@ -122,10 +122,7 @@ router.delete("/users/:email/listings/:name", async function(req, res){
 
      // Use Array.prototype.filter() to remove the listing with the given name
      user.listings = user.listings.filter(listing => listing.name !== listingName);
-
-     if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
+     
      // Save the updated user object
      await user.save();
     
@@ -188,20 +185,8 @@ router.patch("/users/:email/listings/:name", async function(req, res){
             return res.status(404).json({ message: 'Listing not found' });
         }
 
-        if (req.body.name) {
-            foundListing.name = req.body.name;
-        }
-
-        if (req.body.author) {
-            foundListing.author = req.body.author;
-        }
-
-        if (req.body.price) {
-            foundListing.price = req.body.price;
-        }
-
-        if (req.body.picture) {
-            foundListing.picture = req.body.picture;
+        for (key in req.body){
+            foundListing[key]=req.body[key]
         }
         
         await user.save();
