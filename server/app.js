@@ -20,6 +20,8 @@ mongoose.connect(mongoURI).catch(function(err) {
 });
 
 const users=require("./controllers/users")
+const listings = require("./controllers/listingsController.js")
+const listingsPage = require("./controllers/listingsPageController.js")
 const port = process.env.PORT || 3000;
 
 
@@ -36,10 +38,15 @@ app.options('*', cors());
 app.use(cors());
 
 app.use("/api/v1/users",users);
+app.use("/api/v1//users/:email/listings", listings);
+app.use("/api/v1//users/:email/listings/:name", listings);
+app.use("/api/v1//listings/page/:page", listingsPage);
+
 // Import routes
 /*app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });*/
+
 
 
 app.get('/api', function(req, res) {
