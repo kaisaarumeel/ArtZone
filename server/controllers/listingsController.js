@@ -18,6 +18,10 @@ router.post("/", async function(req, res){
         const listingPrice = req.body.price;
         const listingPicture = req.body.picture;
 
+        // Check if any of the required attributes are missing
+    if (!listingName || !listingAuthor || !listingPrice || !listingPicture) {
+        return res.status(400).json({ message: 'Missing required attributes' });
+      }
 
         const newListing = new Listings.model({
             name: listingName,
@@ -141,6 +145,16 @@ router.delete("/:name", async function(req, res){
             const userEmail = req.params.email;
             const listingName = req.params.name;
             try{
+                // Check if any of the required attributes are missing
+            if (
+                !req.body.name ||
+                !req.body.author ||
+                !req.body.price ||
+                !req.body.picture
+            ) {
+                return res.status(400).json({ message: 'Missing required attributes' });
+            }
+            
                 const newListing = new Listings.model({
                     name: req.body.name,
                     author: req.body.author,
