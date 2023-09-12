@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const Listings=require("./listings");
 const userSchema = new mongoose.Schema({
     name: { 
         firstName: { type: String, required: true }, 
@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     verificationStatus: { type: Boolean, default: false },
     userEmail: { type: String, required: true, unique: true },
     isAdmin: { type: Boolean, default: false,required: true },
-    listings: [ { type: String} ],
+    listings: [ { type:Listings.schema} ],
     orders: [ { type: mongoose.Schema.Types.ObjectId, ref: "Order" } ],
     card: [ { type: mongoose.Schema.Types.ObjectId, ref: "Card" } ]
 });

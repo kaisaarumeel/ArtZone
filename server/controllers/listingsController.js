@@ -3,7 +3,7 @@ let express = require("express");
 const router = express.Router({mergeParams:true});
 const { Mongoose, default: mongoose } = require("mongoose");
 
-const ListingSchema = require("../models/listings.js");
+const Listings = require("../models/listings.js");
 const UserSchema = require("../models/user.js");
 
 
@@ -19,32 +19,24 @@ router.post("/", async function(req, res){
         const listingPrice = req.body.price;
         const listingPicture = req.body.picture;
 
-        let user;
-        try{
-        user = await UserSchema.findOne({userEmail:userEmail});
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
 
-        }catch(error){
-            return res.status(500).send(err);;
-        } 
-
-        const newListing = new ListingSchema({
+        const newListing = new Listings.model({
             name: listingName,
             author: listingAuthor,
             price: listingPrice,
             picture: listingPicture
         })
-
-        await ListingSchema.insertMany(newListing);
-        user.listings.push(newListing);
-
-        await user.save();
-
+        try{
+            const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{$push:{listings:newListing}});
+            if (!result) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+        }catch(err){
+            console.log(err);
+            return res.sendStatus(500);
+        } 
         return res.sendStatus(201);
-
-    }catch(error) {
+    } catch(error) {
         console.log(error);
         return res.sendStatus(500);
     }
@@ -108,7 +100,9 @@ router.get("/:name", async function(req, res){
     const listingName = req.params.name;
 
     // Get the listing with the given name
-    const foundListing = user.listings.find(listing => listing.name === listingName);
+    const foundListingId = user.listings.find(listing => listing.name === listingName);
+    const listing=ListingSchema.findOne({_id:foundListingId});
+
 
     if (!foundListing) {
         return res.status(404).json({ message: 'Listing not found' });
