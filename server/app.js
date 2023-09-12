@@ -20,8 +20,8 @@ mongoose.connect(mongoURI).catch(function(err) {
 });
 
 const users=require("./controllers/users")
-const listings = require("./controllers/listingsController.js")
-const listingsPage = require("./controllers/listingsPageController.js")
+const listings = require("./controllers/listings.controller.js")
+const listingsPage = require("./controllers/listings.page.controller.js")
 const port = process.env.PORT || 3000;
 
 
