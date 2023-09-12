@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Listings=require("./listings");
+const Reviews = require("./reviews")
 const userSchema = new mongoose.Schema({
     name: { 
         firstName: { type: String, required: true }, 
@@ -22,7 +23,7 @@ const userSchema = new mongoose.Schema({
     isAdmin: { type: Boolean, default: false,required: true },
     listings: [ { type:Listings.schema} ],
     orders: [ { type: mongoose.Schema.Types.ObjectId, ref: "Order" } ],
-    card: [ { type: mongoose.Schema.Types.ObjectId, ref: "Card" } ]
+    reviews: [ { type: Reviews.schema } ]
 });
 
 const UserModel = mongoose.model("User", userSchema);
