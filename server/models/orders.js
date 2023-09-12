@@ -8,7 +8,7 @@ const orderSchema = new mongoose.Schema({
         immutable: true, default: () => randomUUID() }, 
     listing: { type: String, required: true, immutable: true},
     isReceived: { type: Boolean, default: false },
-});
+}, { _id: false });
 
 const OrderModel = mongoose.model("Order", orderSchema);
 module.exports = {

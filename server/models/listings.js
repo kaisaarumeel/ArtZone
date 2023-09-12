@@ -8,7 +8,7 @@ const listingSchema = new mongoose.Schema({
      price: { type: Number, required: true, min: 0 },
      picture: { type: String, required: true, unique: true, sparse:true},
      description: { type: String, required: true} 
-}, {_id:fasle});
+}, {_id: false});
 
 const ListingModel = mongoose.model("Listing", listingSchema);
 module.exports ={
