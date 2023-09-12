@@ -18,17 +18,17 @@ router.post("/", async function(req, res){
         const listingPrice = req.body.price;
         const listingPicture = req.body.picture;
 
-        // Check if any of the required attributes are missing
-    if (!listingName || !listingAuthor || !listingPrice || !listingPicture) {
-        return res.status(400).json({ message: 'Missing required attributes' });
-      }
-
         const newListing = new Listings.model({
             name: listingName,
             author: listingAuthor,
             price: listingPrice,
             picture: listingPicture
         })
+        try{
+            const error =  await newListing.validate();
+        }catch(error){
+            return res.sendStatus(400);
+        }
         try{
             const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{$push:{listings:newListing}});
             if (!result) {
@@ -145,22 +145,20 @@ router.delete("/:name", async function(req, res){
             const userEmail = req.params.email;
             const listingName = req.params.name;
             try{
-                // Check if any of the required attributes are missing
-            if (
-                !req.body.name ||
-                !req.body.author ||
-                !req.body.price ||
-                !req.body.picture
-            ) {
-                return res.status(400).json({ message: 'Missing required attributes' });
-            }
+                
             
                 const newListing = new Listings.model({
                     name: req.body.name,
                     author: req.body.author,
                     price: req.body.price,
                     picture: req.body.picture
+
                 })
+                try{
+                    const error =  await newListing.validate();
+                }catch(error){
+                    return res.sendStatus(400);
+                }
                 let result=await UserSchema.findOneAndUpdate(
                     {
                         userEmail:userEmail,
