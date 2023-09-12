@@ -23,6 +23,7 @@ const listings = require("./controllers/listings.controller.js")
 const listingsPage = require("./controllers/listings.page.controller.js")
 const users=require("./controllers/users");
 const session = require('./middleware/session');
+const orders = require("./controllers/orders");
 const port = process.env.PORT || 3000;
 
 
@@ -41,7 +42,7 @@ app.use(session);
 app.use("/api/v1/users",users);
 app.use("/api/v1/users/:email/listings", listings);
 app.use("/api/v1/listings/page/:page", listingsPage);
-
+app.use("/api/v1/users/:email/orders", orders);
 
 // Import routes
 /*app.get('/api', function(req, res) {

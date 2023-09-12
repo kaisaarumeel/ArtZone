@@ -3,12 +3,15 @@ const mongoose = require("mongoose");
 const { randomUUID } = require("crypto");
 
 const orderSchema = new mongoose.Schema({ 
-    seller: { type: String, required: true }, 
+    seller: { type: String, required: true, immutable: true }, 
     orderId: { type: String, required: true, unique: true, sparse: true, 
         immutable: true, default: () => randomUUID() }, 
-        listing: { type: String, required: true},
-    isReceived: { type: Boolean, default: false } 
-});
+    listing: { type: String, required: true, immutable: true},
+    isReceived: { type: Boolean, default: false },
+}, { _id: false });
 
-const OrderModel = new mongoose.model("Order", orderSchema);
-module.exports = OrderModel;
+const OrderModel = mongoose.model("Order", orderSchema);
+module.exports = {
+    "schema": orderSchema,
+    "model": OrderModel
+};
