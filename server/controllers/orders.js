@@ -9,28 +9,35 @@ router.post("/", async (req, res) => {
 
     try {
 
+        const user = await UserModel.findOne({ userEmail: req.params.email });
+        if (!user) {
+           res.status(404).json({"message": "User was not found."});
+           return;
+        }
+
         const sellerEmail = String(req.body.seller);
         if (!sellerEmail.match(/.*@.*/)){
-            res.status(400).json({ "message": "the provided seller information is not an email. you need to provide the seller's email"});
+            res.status(400).json({ "message": "The provided seller information is not an email. you need to provide the seller's email"});
             return;
         }
 
         const seller = UserModel.findOne({ userEmail: sellerEmail });
         if (!seller) {
-            res.status(404).json({"message": "the given seller does not exist."});
+            res.status(404).json({"message": "The given seller does not exist."});
             return;
+        }
+
+        if (seller.userEmail == user.userEmail) {
+            res.status(403).json({"message": "You cannot buy your own art."})
         }
 
         const newOrder = new OrderModel.model({
             seller: req.body.seller,
         });
 
-        const user = await UserModel.findOneAndUpdate({ userEmail: req.params.email },
-             { $push: { orders: newOrder } })
-        if (!user) {
-            res.status(404).json({"message": "User was not found."});
-            return;
-        }
+        user.orders.push(newOrder);
+        user.save();
+
         res.sendStatus(201);
 
     } catch(err) {
@@ -162,16 +169,13 @@ router.get("/:id/seller", async (req, res) => {
 
 });
 
-function validateOrder(req) {
-    for (key in req) {
-        if (key == "isReceived") {
-            const schema = Joi.object({
-                isReceived: Joi.boolean().required()
-            });
-            return schema.validate(req);
-        }
-    }
+function validateOrder(body) {
     
+    const schema = Joi.object({
+        isReceived: Joi.boolean().required()
+    });
+    return schema.validate(body);
+     
 }
 
 module.exports = router;
