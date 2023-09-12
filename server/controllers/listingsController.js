@@ -1,5 +1,6 @@
 let express = require("express");
-const router = express.Router();
+//We use merge params to preserve req.params from the parent router.
+const router = express.Router({mergeParams:true});
 const { Mongoose } = require("mongoose");
 
 const ListingSchema = require("../models/listings.js");
@@ -8,7 +9,7 @@ const UserSchema = require("../models/user.js");
 
 //POST /users/:id/listings - Adds a listing to the system
 router.post("/", async function(req, res){
-    
+
     try {
         const userEmail = req.params.email;
         
