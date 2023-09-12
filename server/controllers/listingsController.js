@@ -1,10 +1,11 @@
 let express = require("express");
 //We use merge params to preserve req.params from the parent router.
 const router = express.Router({mergeParams:true});
-const { Mongoose } = require("mongoose");
+const { Mongoose, default: mongoose } = require("mongoose");
 
 const ListingSchema = require("../models/listings.js");
 const UserSchema = require("../models/user.js");
+
 
 
 //POST /users/:id/listings - Adds a listing to the system
@@ -18,8 +19,9 @@ router.post("/", async function(req, res){
         const listingPrice = req.body.price;
         const listingPicture = req.body.picture;
 
+        let user;
         try{
-        const user = await UserSchema.findOne({userEmail:userEmail});
+        user = await UserSchema.findOne({userEmail:userEmail});
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -35,15 +37,16 @@ router.post("/", async function(req, res){
             picture: listingPicture
         })
 
+        await ListingSchema.insertMany(newListing);
         user.listings.push(newListing);
 
         await user.save();
 
-        return res.status(201).json("Listing added successfully!");
+        return res.sendStatus(201);
 
     }catch(error) {
-        console.log("Errors were found");
-        return res.status(500).json("Internal server error");
+        console.log(error);
+        return res.sendStatus(500);
     }
 });
         
@@ -54,8 +57,9 @@ router.get("/", async function(req, res){
     try{
 
     const userEmail = req.params.email;
+    let user;
     try{
-        const user = await UserSchema.findOne({userEmail:userEmail});
+        user = await UserSchema.findOne({userEmail:userEmail});
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -65,13 +69,20 @@ router.get("/", async function(req, res){
             return res.status(500).send(err);;
         } 
 
-    const listings = user.listings;
 
+    const listings = user.listings;
+        console.log(listings);
+        for(listing in listings){
+
+            const result = await ListingSchema.findOne({_id:listings[listing].toString()});
+            console.log(result);
+        }
     return res.status(200).json(listings);
 
+
     }catch(error){
-        console.log("Errors were found");
-        return res.status(500).json("Internal server error");
+        console.log(error);
+        return res.sendStatus(500);
     }
 })
       
@@ -82,8 +93,9 @@ router.get("/:name", async function(req, res){
     try{
 
     const userEmail = req.params.email;
+    let user;
     try{
-        const user = await UserSchema.findOne({userEmail:userEmail});
+        user = await UserSchema.findOne({userEmail:userEmail});
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -102,11 +114,11 @@ router.get("/:name", async function(req, res){
         return res.status(404).json({ message: 'Listing not found' });
     }
 
-    return res.status(200).json(foundListing);
+    return res.sendStatus(200).json(foundListing);
 
     }catch(error){
-        console.log("Errors were found");
-        return res.status(500).json("Internal server error");
+        console.log(error);
+        return res.sendStatus(500);
     }
 })
 
@@ -118,8 +130,9 @@ router.delete("/:name", async function(req, res){
     try{
 
     const userEmail = req.params.email;
+    let user;
     try{
-        const user = await UserSchema.findOne({userEmail:userEmail});
+        user = await UserSchema.findOne({userEmail:userEmail});
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -145,8 +158,8 @@ router.delete("/:name", async function(req, res){
      await user.save();
     
     }catch(error){
-        console.log("Errors were found");
-        return res.status(500).json("Internal server error");
+        console.log(error);
+        return res.sendStatus(500);
     }
 })
         
@@ -155,8 +168,9 @@ router.delete("/:name", async function(req, res){
     router.put("/:name", async function(req, res){
         try{
             const userEmail = req.params.email;
+            let user;
             try{
-                const user = await UserSchema.findOne({userEmail:userEmail});
+                user = await UserSchema.findOne({userEmail:userEmail});
         
                 if (!user) {
                     return res.status(404).json({ message: 'User not found' });
@@ -184,8 +198,8 @@ router.delete("/:name", async function(req, res){
             return res.status(200).json(foundListing);
         
         }catch(error){
-            console.log("Errors were found");
-            return res.status(500).json("Internal server error");
+            console.log(error);
+            return res.sendStatus(500);
         }
     })    
 
@@ -194,8 +208,9 @@ router.delete("/:name", async function(req, res){
 router.patch("/:name", async function(req, res){
     try{
         const userEmail = req.params.email;
+        let user;
         try{
-            const user = await UserSchema.findOne({userEmail:userEmail});
+            user = await UserSchema.findOne({userEmail:userEmail});
     
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
@@ -222,8 +237,8 @@ router.patch("/:name", async function(req, res){
         return res.status(200).json(foundListing);
     
     }catch(error){
-        console.log("Errors were found");
-        return res.status(500).json("Internal server error");
+        console.log(error);
+        return res.sendStatus(500);
     }
 })    
 

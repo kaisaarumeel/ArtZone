@@ -7,5 +7,5 @@ const listingSchema = new mongoose.Schema({
      picture: { type: String, required: true, unique: true, sparse:true} 
 });
 
-const ListingModel = new mongoose.model("Listing", listingSchema);
+const ListingModel = mongoose.model("Listing", listingSchema);
 module.exports = ListingModel;

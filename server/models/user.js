@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     verificationStatus: { type: Boolean, default: false },
     userEmail: { type: String, required: true, unique: true },
     isAdmin: { type: Boolean, default: false,required: true },
-    listings: [ { type: mongoose.Schema.Types.ObjectId, ref: "Listing" } ],
+    listings: [ { type: String} ],
     orders: [ { type: mongoose.Schema.Types.ObjectId, ref: "Order" } ],
     card: [ { type: mongoose.Schema.Types.ObjectId, ref: "Card" } ]
 });
