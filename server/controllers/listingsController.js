@@ -13,7 +13,6 @@ router.post("/", async function(req, res){
 
     try {
         const userEmail = req.params.email;
-        
         const listingName = req.body.name;
         const listingAuthor = req.body.author;
         const listingPrice = req.body.price;

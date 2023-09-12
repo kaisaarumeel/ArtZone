@@ -1,39 +1,32 @@
-let express = require("express");
+const express = require('express');
 const router = express.Router({mergeParams:true});
-const { Mongoose } = require("mongoose");
+const User = require('../models/user.js'); 
 
-const ListingSchema = require("../models/listings.js");
-
-
-// GET /listings/page/:page - Gets all listings in the system paginated
+// GET /listings/page/:page - Gets all listings from all users paginated
 router.get('/', async (req, res) => {
-    try {
-        const page = parseInt(req.params.page);
-        const perPage = 50; 
+  try {
+    const page = parseInt(req.params.page); // Requested page number
+    const perPage = 2; // Number of listings per page 
+    const skip = (page - 1) * perPage;
 
-        // Calculate the skip value to skip listings on previous pages
-        const skip = (page - 1) * perPage;
+    // Find all users
+    const users = await User.find();
+    const allListings = users.flatMap((user) => user.listings);
+    const listings = allListings.slice(skip, skip + perPage);
+    const totalListings = allListings.length;
+    const totalPages = Math.ceil(totalListings / perPage);
+    const hasNextPage = page < totalPages;
 
-        // Query the database to retrieve listings for the specified page
-        const listings = await ListingSchema.find()
-            .skip(skip)
-            .limit(perPage);
-
-        // Determine the total number of listings in the system
-        const totalListings = await ListingSchema.countDocuments();
-
-        // Calculate the total number of pages based on the number of listings per page
-        const totalPages = Math.ceil(totalListings / perPage);
-
-        return res.status(200).json({
-            listings,
-            page,
-            totalPages,
-        });
-    } catch (error) {
-        console.error("Errors were found");
-        return res.status(500).json({ message: "Internal server error" });
-    }
+    res.status(200).json({
+      listings,
+      page,
+      totalPages,
+      hasNextPage,
+    });
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 });
 
 module.exports = router;

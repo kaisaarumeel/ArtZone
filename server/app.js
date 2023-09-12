@@ -39,7 +39,7 @@ app.use(cors());
 
 app.use("/api/v1/users",users);
 app.use("/api/v1/users/:email/listings", listings);
-app.use("/api/v1//listings/page/:page", listingsPage);
+app.use("/api/v1/listings/page/:page", listingsPage);
 
 
 // Import routes
