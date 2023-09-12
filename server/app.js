@@ -111,7 +111,8 @@ app.listen(port, function(err) {
             userEmail: "bob@gmail.com",
             isAdmin: true,
             listings: [],
-            orders: [] 
+            orders: [],
+            reviews: [] 
         });
         admin.validateSync()
         UserModel.collection.insertOne(admin);
