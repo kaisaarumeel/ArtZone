@@ -8,7 +8,10 @@ const listingSchema = new mongoose.Schema({
      price: { type: Number, required: true, min: 0 },
      picture: { type: String, required: true, unique: true, sparse:true},
      description: { type: String, required: true} 
-});
+}, {_id:fasle});
 
-const ListingModel = new mongoose.model("Listing", listingSchema);
-module.exports = ListingModel;
+const ListingModel = mongoose.model("Listing", listingSchema);
+module.exports ={
+     "model":ListingModel,
+     "schema":listingSchema
+}

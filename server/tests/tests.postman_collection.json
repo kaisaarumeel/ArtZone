@@ -1,0 +1,416 @@
+{
+	"info": {
+		"_postman_id": "01dc0833-1f40-4086-96d5-090fc8711a50",
+		"name": "Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28264405",
+		"_collection_link": "https://dark-flare-212796.postman.co/workspace/New-Team-Workspace~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-01dc0833-1f40-4086-96d5-090fc8711a50?action=share&source=collection_link&creator=28264405"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Login admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"   pm.response.to.have.status(200);",
+									"   var jsonData = JSON.parse(responseBody);",
+									"    pm.collectionVariables.set(\"xauthtoken\",jsonData.key);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userEmail\":\"bob@gmail.com\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register new user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"   pm.response.to.have.status(201);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{xauthtoken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":true,\n    \"address\":{\n        \"country\":\"Sweden\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"{{$randomEmail}}\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register new admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"   pm.response.to.have.status(201);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{xauthtoken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":{\n        \"firstName\":\"Admin\",\n        \"lastName\":\"Admin\"\n    },\n    \"isAdmin\":true,\n    \"address\":{\n        \"country\":\"Sweden\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"{{$randomEmail}}\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch admin name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"   pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{xauthtoken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":{\n        \"firstName\":\"modified\",\n        \"lastName\":\"modified\"\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/bob@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"bob@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get admin and verify patch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Modified first name and last name\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData.name.firstName).to.eql(\"modified\");",
+									"        pm.expect(jsonData.name.lastName).to.eql(\"modified\");",
+									"",
+									"    });",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{xauthtoken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/bob@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"bob@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Replace user data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"   pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{xauthtoken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":{\n        \"firstName\":\"replaced\",\n        \"lastName\":\"replaced\"\n    },\n    \"isAdmin\":true,\n    \"address\":{\n        \"country\":\"replaced\",\n        \"street\":\"replaced\",\n        \"zip\":\"replaced\",\n        \"city\":\"replaced\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bob@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/bob@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"bob@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get admin and verify put",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Replaced data\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData.name.firstName).to.eql(\"replaced\");",
+									"        pm.expect(jsonData.name.lastName).to.eql(\"replaced\");",
+									"        pm.expect(jsonData.address.country).to.eql(\"replaced\");",
+									"        pm.expect(jsonData.address.street).to.eql(\"replaced\");",
+									"        pm.expect(jsonData.address.zip).to.eql(\"replaced\");",
+									"        pm.expect(jsonData.address.city).to.eql(\"replaced\");",
+									"",
+									"    });",
+									" "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{xauthtoken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/bob@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"bob@gmail.com"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": []
+		}
+	],
+	"variable": [
+		{
+			"key": "xauthtoken",
+			"value": " "
+		},
+		{
+			"key": "xauthtoken",
+			"value": ""
+		}
+	]
+}

@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const orders = require("./orders");
-const listings = require("./listings");
-
+const Orders = require("./orders");
+const Listings = require("./listings");
 const userSchema = new mongoose.Schema({
     name: { 
         firstName: { type: String, required: true }, 
@@ -22,8 +21,8 @@ const userSchema = new mongoose.Schema({
     verificationStatus: { type: Boolean, default: false },
     userEmail: { type: String, required: true, unique: true, sparse: true },
     isAdmin: { type: Boolean, default: false, required: true },
-    listings: [ { type: listings.schema } ],
-    orders: [ { type: orders.schema } ],
+    listings: [ { type: Listings.schema } ],
+    orders: [ { type: Orders.schema } ],
 });
 
 const UserModel = mongoose.model("User", userSchema);

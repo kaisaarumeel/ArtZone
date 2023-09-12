@@ -19,7 +19,10 @@ mongoose.connect(mongoURI).catch(function(err) {
     console.log(`Connected to MongoDB with URI: ${mongoURI}`);
 });
 
-const users = require("./controllers/users");
+const listings = require("./controllers/listings.controller.js")
+const listingsPage = require("./controllers/listings.page.controller.js")
+const users=require("./controllers/users");
+const session = require('./middleware/session');
 const orders = require("./controllers/orders");
 const port = process.env.PORT || 3000;
 
@@ -35,13 +38,17 @@ app.use(morgan('dev'));
 // Enable cross-origin resource sharing for frontend must be registered before api
 app.options('*', cors());
 app.use(cors());
-
+app.use(session);
 app.use("/api/v1/users",users);
+app.use("/api/v1/users/:email/listings", listings);
+app.use("/api/v1/listings/page/:page", listingsPage);
 app.use("/api/v1/users/:email/orders", orders);
+
 // Import routes
 /*app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });*/
+
 
 
 app.get('/api', function(req, res) {
