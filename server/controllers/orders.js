@@ -11,8 +11,7 @@ router.post("/", async (req, res) => {
 
         const sellerEmail = String(req.body.seller);
         if (!sellerEmail.match(/.*@.*/)){
-            res.status(400).json
-            ({ "message": "the provided seller information is not an email. you need to provide the seller's email"});
+            res.status(400).json({ "message": "the provided seller information is not an email. you need to provide the seller's email"});
             return;
         }
 
@@ -29,10 +28,10 @@ router.post("/", async (req, res) => {
         const user = await UserModel.findOneAndUpdate({ userEmail: req.params.email },
              { $push: { orders: newOrder } })
         if (!user) {
-        res.status(404).json({"message": "User was not found."});
-        return;
+            res.status(404).json({"message": "User was not found."});
+            return;
         }
-        res.status(201);
+        res.sendStatus(201);
 
     } catch(err) {
         res.sendStatus(500);
