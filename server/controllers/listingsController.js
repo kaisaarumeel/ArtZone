@@ -64,11 +64,6 @@ router.get("/", async function(req, res){
 
     const listings = user.listings;
         console.log(listings);
-        for(listing in listings){
-
-            const result = await ListingSchema.findOne({_id:listings[listing].toString()});
-            console.log(result);
-        }
     return res.status(200).json(listings);
 
 
@@ -100,15 +95,13 @@ router.get("/:name", async function(req, res){
     const listingName = req.params.name;
 
     // Get the listing with the given name
-    const foundListingId = user.listings.find(listing => listing.name === listingName);
-    const listing=ListingSchema.findOne({_id:foundListingId});
-
+    const foundListing = user.listings.find(listing => listing.name === listingName);
 
     if (!foundListing) {
         return res.status(404).json({ message: 'Listing not found' });
     }
 
-    return res.sendStatus(200).json(foundListing);
+    return res.status(200).json(foundListing);
 
     }catch(error){
         console.log(error);
@@ -117,43 +110,29 @@ router.get("/:name", async function(req, res){
 })
 
 
+
 //DELETE /users/:id/listings/:id - Removes a listing in the system
 
 router.delete("/:name", async function(req, res){
     
     try{
-
-    const userEmail = req.params.email;
-    let user;
-    try{
-        user = await UserSchema.findOne({userEmail:userEmail});
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        }catch(error){
-            return res.status(500).send(err);;
-        } 
-
     const listingName = req.params.name;
-
-    // Get the listing with the given name
-    const foundListing = user.listings.find(listing => listing.name === listingName);
-
-    if (!foundListing) {
-        return res.status(404).json({ message: 'Listing not found' });
-    }
-
-     // Use Array.prototype.filter() to remove the listing with the given name
-     user.listings = user.listings.filter(listing => listing.name !== listingName);
-     
-     // Save the updated user object
-     await user.save();
+    const userEmail = req.params.email;
     
-    }catch(error){
-        console.log(error);
-        return res.sendStatus(500);
+        try{
+            const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{$pull:{listings:{name:listingName}}});
+            if (!result) {
+                return res.status(404).json({ message: 'Listing not found' });
+            }
+
+        return res.sendStatus(200);
+        }catch(err){
+            console.log(err);
+            return res.sendStatus(500);
+        } 
+    } catch(error) {
+    console.log(error);
+    return res.sendStatus(500);
     }
 })
         
@@ -162,38 +141,31 @@ router.delete("/:name", async function(req, res){
     router.put("/:name", async function(req, res){
         try{
             const userEmail = req.params.email;
-            let user;
-            try{
-                user = await UserSchema.findOne({userEmail:userEmail});
-        
-                if (!user) {
-                    return res.status(404).json({ message: 'User not found' });
-                }
-        
-                }catch(error){
-                    return res.status(500).send(err);;
-                } 
-
             const listingName = req.params.name;
 
-            const foundListing = user.listings.find(listing => listing.name === listingName);
-        
-            if (!foundListing) {
-                return res.status(404).json({ message: 'Listing not found' });
-            }
+            try{
+                const result=await UserSchema.findOneAndUpdate(
+                    {userEmail:userEmail,listings:{name:listingName}},
+                    {$set: { 
+                        "listings.$.name": listingName,
+                        "listings.$.author": req.params.author,
+                        "listings.$.price": req.params.price,
+                        "listings.$.picture": req.params.picture
+                    } }
+                    );
 
-            foundListing.name = req.body.name;
-            foundListing.author = req.body.author;
-            foundListing.price = req.body.price;
-            foundListing.picture = req.body.picture;
-            
-            await user.save();
-
-            return res.status(200).json(foundListing);
-        
-        }catch(error){
-            console.log(error);
-            return res.sendStatus(500);
+                if (!result) {
+                    return res.status(404).json({ message: 'Listing not found' });
+                }
+    
+            return res.sendStatus(200);
+            }catch(err){
+                console.log(err);
+                return res.sendStatus(500);
+            } 
+        } catch(error) {
+        console.log(error);
+        return res.sendStatus(500);
         }
     })    
 
