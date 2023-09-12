@@ -19,7 +19,8 @@ mongoose.connect(mongoURI).catch(function(err) {
     console.log(`Connected to MongoDB with URI: ${mongoURI}`);
 });
 
-const users=require("./controllers/users")
+const users = require("./controllers/users");
+const orders = require("./controllers/orders");
 const port = process.env.PORT || 3000;
 
 
@@ -36,6 +37,7 @@ app.options('*', cors());
 app.use(cors());
 
 app.use("/api/v1/users",users);
+app.use("/api/v1/users/:email/orders", orders);
 // Import routes
 /*app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
