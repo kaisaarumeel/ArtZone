@@ -7,7 +7,7 @@ const UserSchema = require("../models/user.js");
 
 
 //POST /users/:id/listings - Adds a listing to the system
-router.post("/users/:email/listings", async function(req, res){
+router.post("/", async function(req, res){
     
     try {
         const userEmail = req.params.email;
@@ -17,11 +17,15 @@ router.post("/users/:email/listings", async function(req, res){
         const listingPrice = req.body.price;
         const listingPicture = req.body.picture;
 
+        try{
         const user = await UserSchema.findOne({userEmail:userEmail});
-
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+
+        }catch(error){
+            return res.status(500).send(err);;
+        } 
 
         const newListing = new ListingSchema({
             name: listingName,
@@ -29,8 +33,6 @@ router.post("/users/:email/listings", async function(req, res){
             price: listingPrice,
             picture: listingPicture
         })
-
-        //await newListing.save();
 
         user.listings.push(newListing);
 
@@ -46,16 +48,21 @@ router.post("/users/:email/listings", async function(req, res){
         
 //GET /users/:id/listings - Get my listings
 
-router.get("/users/:email/listings", async function(req, res){
+router.get("/", async function(req, res){
     
     try{
 
     const userEmail = req.params.email;
-    const user = await UserSchema.findOne({userEmail:userEmail});
+    try{
+        const user = await UserSchema.findOne({userEmail:userEmail});
 
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        }catch(error){
+            return res.status(500).send(err);;
+        } 
 
     const listings = user.listings;
 
@@ -69,16 +76,21 @@ router.get("/users/:email/listings", async function(req, res){
       
 //GET /users/:id/listings/:id - Get single listing
 
-router.get("/users/:email/listings/:name", async function(req, res){
+router.get("/:name", async function(req, res){
     
     try{
 
     const userEmail = req.params.email;
-    const user = await UserSchema.findOne({userEmail:userEmail});
+    try{
+        const user = await UserSchema.findOne({userEmail:userEmail});
 
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        }catch(error){
+            return res.status(500).send(err);;
+        } 
 
     const listingName = req.params.name;
 
@@ -100,16 +112,21 @@ router.get("/users/:email/listings/:name", async function(req, res){
 
 //DELETE /users/:id/listings/:id - Removes a listing in the system
 
-router.delete("/users/:email/listings/:name", async function(req, res){
+router.delete("/:name", async function(req, res){
     
     try{
 
     const userEmail = req.params.email;
-    const user = await UserSchema.findOne({userEmail:userEmail});
+    try{
+        const user = await UserSchema.findOne({userEmail:userEmail});
 
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        }catch(error){
+            return res.status(500).send(err);;
+        } 
 
     const listingName = req.params.name;
 
@@ -134,14 +151,19 @@ router.delete("/users/:email/listings/:name", async function(req, res){
         
 //PUT /users/:id/listings/:id - Full update on a listing in the system at the specified resource.
 
-    router.put("/users/:email/listings/:name", async function(req, res){
+    router.put("/:name", async function(req, res){
         try{
             const userEmail = req.params.email;
-            const user = await UserSchema.findOne({userEmail:userEmail});
-
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
-            }
+            try{
+                const user = await UserSchema.findOne({userEmail:userEmail});
+        
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found' });
+                }
+        
+                }catch(error){
+                    return res.status(500).send(err);;
+                } 
 
             const listingName = req.params.name;
 
@@ -168,14 +190,19 @@ router.delete("/users/:email/listings/:name", async function(req, res){
 
 //PATCH /users/:id/listings/:id - Partial update a listing in the system at the specified resource.
 
-router.patch("/users/:email/listings/:name", async function(req, res){
+router.patch("/:name", async function(req, res){
     try{
         const userEmail = req.params.email;
-        const user = await UserSchema.findOne({userEmail:userEmail});
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+        try{
+            const user = await UserSchema.findOne({userEmail:userEmail});
+    
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+    
+            }catch(error){
+                return res.status(500).send(err);;
+            } 
 
         const listingName = req.params.name;
 

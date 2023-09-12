@@ -6,7 +6,7 @@ const ListingSchema = require("../models/listings.js");
 
 
 // GET /listings/page/:page - Gets all listings in the system paginated
-router.get('/listings/page/:page', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const page = parseInt(req.params.page);
         const perPage = 50; 

@@ -38,9 +38,8 @@ app.options('*', cors());
 app.use(cors());
 
 app.use("/api/v1/users",users);
-app.use("/api/v1//users/:email/listings", listings);
-app.use("/api/v1//users/:email/listings/:name", listings);
-app.use("/api/v1//listings/page/:page", listingsPage);
+app.use("/api/v1/users/:email/listings", listings);
+app.use("/api/v1/listings/page/:page", listingsPage);
 
 // Import routes
 /*app.get('/api', function(req, res) {
