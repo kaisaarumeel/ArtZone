@@ -137,21 +137,24 @@ router.delete("/:name", async function(req, res){
 })
         
 //PUT /users/:id/listings/:id - Full update on a listing in the system at the specified resource.
-
     router.put("/:name", async function(req, res){
         try{
             const userEmail = req.params.email;
             const listingName = req.params.name;
-
             try{
                 const result=await UserSchema.findOneAndUpdate(
-                    {userEmail:userEmail,listings:{name:listingName}},
-                    {$set: { 
-                        "listings.$.name": listingName,
-                        "listings.$.author": req.params.author,
-                        "listings.$.price": req.params.price,
-                        "listings.$.picture": req.params.picture
-                    } }
+                    {
+                        userEmail:userEmail,
+                        "listings.name":listingName
+                    },
+                    {
+                        $set: { 
+                        "listings.$.name": req.body.name,
+                        "listings.$.author": req.body.author,
+                        "listings.$.price": req.body.price,
+                        "listings.$.picture": req.body.picture
+                        } 
+                    }
                     );
 
                 if (!result) {
