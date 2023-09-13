@@ -21,6 +21,7 @@ mongoose.connect(mongoURI).catch(function(err) {
 
 const listings = require("./controllers/listings.controller.js")
 const listingsPage = require("./controllers/listings.page.controller.js")
+const reviews = require("./controllers/reviews.controller.js")
 const users=require("./controllers/users");
 const session = require('./middleware/session');
 const orders = require("./controllers/orders");
@@ -43,6 +44,7 @@ app.use("/api/v1/users",users);
 app.use("/api/v1/users/:email/listings", listings);
 app.use("/api/v1/listings/page/:page", listingsPage);
 app.use("/api/v1/users/:email/orders", orders);
+app.use("/api/v1/users/:email/reviews", reviews);
 
 // Import routes
 /*app.get('/api', function(req, res) {
