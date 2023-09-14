@@ -206,25 +206,36 @@ router.delete("/", async function(req, res){
 //PATCH /users/:email/listings/:name - Partial update a listing in the system at the specified resource.
 
 router.patch("/:id", async function(req, res){
-    try{
+    try {
         const userEmail = req.params.email;
         const listingID = req.params.id;
         const data = req.body;
-  
-    try{
+        let update_obj={}
+
+        for (key in req.body){
+            update_obj[key]=req.body[key]
+        }
+    try {
+        console.log(data) 
+
         let result=await UserSchema.findOneAndUpdate(
             {
                 userEmail:userEmail,
-                "listings.id":listingID
+                "listings._id":listingID
+            },
+            { 
+                
+                $set: { 
+             data,
+            },
+ 
             },
             {
-                $set: { 
-                "listings.$": data,
-                
-            } 
+                runValidators:true,
             }
-            );
 
+            );
+            console.log(result)
         if (!result) {
             return res.status(404).json({ message: 'Listing not found' });
         }
