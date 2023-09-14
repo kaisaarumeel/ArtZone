@@ -36,6 +36,7 @@ async function restricted_resource_email(req, res, next){
     }
     const expiry=parseInt(Date.now()/1000)+3600; //1h expiry
     const result=await UserSchema.findOneAndUpdate({"session.key":req.headers["x-auth-token"]},{expires:expiry});
+    
     if(result!=null){
         if(result.session.key==req.headers["x-auth-token"]){
             if(req.params.email==result.userEmail){
@@ -55,7 +56,8 @@ async function restricted_resource_email(req, res, next){
             return res.sendStatus(403);
         }
     } else {
-        req.auth=auth_obj;    
+        req.auth=auth_obj; 
+        console.log("No such session")   
         return res.sendStatus(403);
     }
 }
