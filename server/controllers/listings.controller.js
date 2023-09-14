@@ -8,7 +8,7 @@ const UserSchema = require("../models/user.js");
 
 
 
-//POST /users/:id/listings - Adds a listing to the system
+//POST /users/:email/listings - Adds a listing to the system
 router.post("/", async function(req, res){
 
     try {
@@ -45,7 +45,7 @@ router.post("/", async function(req, res){
     }
 });
         
-//GET /users/:id/listings - Get my listings
+//GET /users/:email/listings - Get my listings
 
 router.get("/", async function(req, res){
     
@@ -76,7 +76,7 @@ router.get("/", async function(req, res){
     }
 })
       
-//GET /users/:id/listings/:id - Get single listing
+//GET /users/:email/listings/:name - Get single listing
 
 router.get("/:name", async function(req, res){
     
@@ -114,7 +114,7 @@ router.get("/:name", async function(req, res){
 
 
 
-//DELETE /users/:id/listings/:id - Removes a listing in the system
+//DELETE /users/:email/listings/:name - Removes a listing in the system
 
 router.delete("/:name", async function(req, res){
     
@@ -138,8 +138,26 @@ router.delete("/:name", async function(req, res){
     return res.sendStatus(500);
     }
 })
+
+//DELETE /users/:email/listings/ - Removes all listings from a user
+
+router.delete("/", async function(req, res){
+    
+    try{
+    const userEmail = req.params.email;
+        const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{$pull:listings});
+        if (!result) {
+            return res.sendStatus(404);
+        }
+        return res.sendStatus(200);
+
+    } catch(error) {
+    console.log(error);
+    return res.sendStatus(500);
+    }
+})
         
-//PUT /users/:id/listings/:id - Full update on a listing in the system at the specified resource.
+//PUT /users/:email/listings/:name - Full update on a listing in the system at the specified resource.
     router.put("/:name", async function(req, res){
         try{
             const userEmail = req.params.email;
@@ -185,7 +203,7 @@ router.delete("/:name", async function(req, res){
         }
     })    
 
-//PATCH /users/:id/listings/:id - Partial update a listing in the system at the specified resource.
+//PATCH /users/:email/listings/:name - Partial update a listing in the system at the specified resource.
 
 router.patch("/:name", async function(req, res){
     try{

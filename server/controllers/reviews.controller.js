@@ -5,6 +5,7 @@ const { Mongoose, default: mongoose } = require("mongoose");
 
 const Reviews = require("../models/reviews.js");
 const UserSchema = require("../models/user.js");
+const reviews = require("../models/reviews.js");
 
 
 //POST /users/:email/reviews/ - Adds review to user profile
@@ -125,6 +126,22 @@ router.delete("/:id", async function(req, res){
             console.log(err);
             return res.sendStatus(500);
         } 
+    } catch(error) {
+    console.log(error);
+    return res.sendStatus(500);
+    }
+})
+//DELETE /users/:email/reviews/ - Removes all reviews from a user
+router.delete("/", async function(req, res){
+    
+    try{
+    const userEmail = req.params.email;
+        const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{$pull:reviews});
+        if (!result) {
+            return res.sendStatus(404);
+        }
+        return res.sendStatus(200);
+        
     } catch(error) {
     console.log(error);
     return res.sendStatus(500);
