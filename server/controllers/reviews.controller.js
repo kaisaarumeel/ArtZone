@@ -136,7 +136,7 @@ router.delete("/", async function(req, res){
     
     try{
     const userEmail = req.params.email;
-        const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{$pull:reviews});
+        const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{ $set: { reviews: [] } });
         if (!result) {
             return res.sendStatus(404);
         }
