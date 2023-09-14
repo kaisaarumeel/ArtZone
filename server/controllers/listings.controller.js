@@ -38,7 +38,7 @@ router.post("/", async function(req, res){
             console.log(err);
             return res.sendStatus(500);
         } 
-        return res.status(201).json({id: newListing.id});
+        return res.status(201).json({id: newListing._id});
     } catch(error) {
         console.log(error);
         return res.sendStatus(500);
@@ -163,7 +163,6 @@ router.delete("/", async function(req, res){
             const userEmail = req.params.email;
             const listingID = req.params.id;
             try{
-                
             
                 const newListing = new Listings.model({
                     name: req.body.name,
@@ -180,12 +179,13 @@ router.delete("/", async function(req, res){
                 let result=await UserSchema.findOneAndUpdate(
                     {
                         userEmail:userEmail,
-                        "listings.id":listingID
+                        "listings._id":listingID
                     },
                     {
                         $set: { 
-                        "listings.$": newListing  } 
-                    }
+                        newListing  } 
+                    },
+                    { runValidators:true, }
                     );
 
                 if (!result) {
@@ -210,11 +210,6 @@ router.patch("/:id", async function(req, res){
         const userEmail = req.params.email;
         const listingID = req.params.id;
         const data = req.body;
-        let update_obj={}
-
-        for (key in req.body){
-            update_obj[key]=req.body[key]
-        }
     try {
         console.log(data) 
 
@@ -225,8 +220,8 @@ router.patch("/:id", async function(req, res){
             },
             { 
                 
-                $set: { 
-             data,
+            $set: { 
+             data
             },
  
             },
@@ -240,7 +235,7 @@ router.patch("/:id", async function(req, res){
             return res.status(404).json({ message: 'Listing not found' });
         }
 
-        return res.status(201).json({id: listingID});
+        return res.sendStatus(201);
     }catch(err){
         console.log(err);
         return res.sendStatus(500);

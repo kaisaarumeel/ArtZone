@@ -34,7 +34,9 @@ router.post("/", async function(req, res){
             console.log(err);
             return res.sendStatus(500);
         } 
-        return res.sendStatus(201);
+        console.log(newReview._id)
+        return res.status(201).json({id: newReview._id});
+
     } catch(error) {
         console.log(error);
         return res.sendStatus(500);
