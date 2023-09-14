@@ -123,7 +123,7 @@ router.delete("/:id", async function(req, res){
                 return res.status(404).json({ message: 'Review not found' });
             }
 
-        return res.sendStatus(200);
+        return res.sendStatus(204);
         }catch(err){
             console.log(err);
             return res.sendStatus(500);
@@ -142,7 +142,7 @@ router.delete("/", async function(req, res){
         if (!result) {
             return res.sendStatus(404);
         }
-        return res.sendStatus(200);
+        return res.sendStatus(204);
         
     } catch(error) {
     console.log(error);
