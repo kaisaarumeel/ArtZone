@@ -24,9 +24,9 @@ mongoose.connect(mongoURI).catch(function(err) {
 const listings = require("./controllers/listings.controller.js")
 const listingsPage = require("./controllers/listings.page.controller.js")
 const reviews = require("./controllers/reviews.controller.js")
-const users=require("./controllers/users");
+const users=require("./controllers/users.controller");
 const { restricted_resource_email,restricted_resource_general } = require('./middleware/session');
-const orders = require("./controllers/orders");
+const orders = require("./controllers/orders.controller");
 const port = process.env.PORT || 3000;
 const checkout = require("./controllers/checkout.controller")
 const registration=require("./controllers/registration.controller")

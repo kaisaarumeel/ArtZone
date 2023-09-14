@@ -2,7 +2,7 @@
 const UserSchema = require("../models/user"); //this is the schema class. Use this class to make 
 const { randomUUID } = require("crypto");
 const express = require("express");
-const router = express.Router();
+const router = express.Router({mergeParams:true});
 const session = require("../middleware/session")
 
 
@@ -14,8 +14,7 @@ router.patch("/",async (req,res)=>{
             if(req.auth.auth && req.auth.authEmail!=email && !req.auth.isAdmin) res.sendStatus(403);            
             delete req.body["session"];
             const data=req.body;
-            console.log(data)
-            let user=await UserSchema.collection.findOneAndUpdate({userEmail:email},{ $set:data });
+            let user=await UserSchema.collection.findOneAndUpdate({userEmail:email},{ $set:data },{new:true});
             res.sendStatus(200);
             if(!user) res.sendStatus(404);
         } catch(err){
