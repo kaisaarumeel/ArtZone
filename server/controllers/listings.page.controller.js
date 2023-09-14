@@ -11,7 +11,33 @@ router.get('/', async (req, res) => {
 
     // Find all users
     const users = await User.find();
-    const allListings = users.flatMap((user) => user.listings);
+    if (!users) return res.status(200).json({"message": "no users are in the system."});
+
+    const allListings = users.flatMap((user) =>  {return user.listings});
+    console.log(allListings[0].price);
+    if (!allListings || allListings.length === 0) return res.status(200).json({"message": "no listings are saved in the system."});
+
+    const sortQueryParam = String(req.query.sortBy);
+
+    if (sortQueryParam === "ascending") {
+      allListings.sort((a, b) => {
+        if (a.price > b.price) return 1;
+        if (a.price === b.price) return 0;
+        if (a.price < b.price) return -1;
+      });
+    }
+
+    if (sortQueryParam === "descending"){
+      allListings.sort((a, b) => {
+        if (a.price < b.price) return 1;
+        if (a.price === b.price) return 0;
+        if (a.price > b.price) return -1;
+      });
+
+    }
+    
+    
+
     const listings = allListings.slice(skip, skip + perPage);
     const totalListings = allListings.length;
     const totalPages = Math.ceil(totalListings / perPage);
