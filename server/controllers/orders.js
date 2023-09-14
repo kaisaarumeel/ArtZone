@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
             seller: req.body.seller,
             listing: req.body.listing
         });
-
+        
         user.orders.push(newOrder);
         user.save();
 

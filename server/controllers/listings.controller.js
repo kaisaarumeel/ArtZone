@@ -38,7 +38,7 @@ router.post("/", async function(req, res){
             console.log(err);
             return res.sendStatus(500);
         } 
-        return res.sendStatus(201);
+        return res.status(201).json({id: newListing.id});
     } catch(error) {
         console.log(error);
         return res.sendStatus(500);
@@ -98,7 +98,7 @@ router.get("/:id", async function(req, res){
     const listingID = req.params.id;
 
     // Get the listing with the given name
-    const foundListing = user.listings.find(listing => listing._id === listingID);
+    const foundListing = user.listings.find(listing => listing.id === listingID);
 
     if (!foundListing) {
         return res.status(404).json({ message: 'Listing not found' });
@@ -180,7 +180,7 @@ router.delete("/", async function(req, res){
                 let result=await UserSchema.findOneAndUpdate(
                     {
                         userEmail:userEmail,
-                        "listings._id":listingID
+                        "listings.id":listingID
                     },
                     {
                         $set: { 
@@ -210,17 +210,18 @@ router.patch("/:id", async function(req, res){
         const userEmail = req.params.email;
         const listingID = req.params.id;
         const data = req.body;
-        console.log(data);
   
     try{
         let result=await UserSchema.findOneAndUpdate(
             {
                 userEmail:userEmail,
-                "listings._id":listingID
+                "listings.id":listingID
             },
             {
                 $set: { 
-                "listings.$": data } 
+                "listings.$": data,
+                
+            } 
             }
             );
 
@@ -228,7 +229,7 @@ router.patch("/:id", async function(req, res){
             return res.status(404).json({ message: 'Listing not found' });
         }
 
-        return res.sendStatus(200);
+        return res.status(201).json({id: listingID});
     }catch(err){
         console.log(err);
         return res.sendStatus(500);
@@ -239,6 +240,8 @@ router.patch("/:id", async function(req, res){
         }
     
 })    
+
+
 
 
 module.exports = router;
