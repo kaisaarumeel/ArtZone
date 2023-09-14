@@ -1,11 +1,13 @@
-// wiki.js - Wiki route module.
 const UserSchema = require("../models/user"); //this is the schema class. Use this class to make 
 const { randomUUID } = require("crypto");
 const express = require("express");
 const router = express.Router();
 const session = require("../middleware/session")
+
+
+
 // Home page route.
-router.post("/login", async (req, res) => {
+router.post("/users/login", async (req, res) => {
     //Login endpoint validates user password and generates session key.
     const email=req.body.userEmail;
     const password=req.body.password;
@@ -35,7 +37,7 @@ router.post("/login", async (req, res) => {
 });
 
 
-router.post("/register", async (req, res) => {
+router.post("/users/register", async (req, res) => {
     const user=new UserSchema({
         name: req.body.name,
         dateOfBirth: req.body.dateOfBirth,
@@ -54,7 +56,7 @@ router.post("/register", async (req, res) => {
         return;
     }
     if(req.body.isAdmin){
-        if(req.authorization.isAdmin){
+        if(req.auth.isAdmin){
             try{
                 await UserSchema.collection.insertOne(user);
                 res.sendStatus(201);
@@ -85,14 +87,14 @@ router.post("/register", async (req, res) => {
 
 });
 
-router.get("/:id",async (req,res)=>{
+router.get("/users/:id",async (req,res)=>{
     try{
         const id=req.params.id;
         try {
             const user=await UserSchema.collection.findOne({userEmail:id});
             if(!user) res.sendStatus(404);
-            if(!req.authorization.auth) res.sendStatus(403);
-            if(req.authorization.auth && req.authorization.authEmail!=id && !req.authorization.isAdmin) res.sendStatus(403);
+            if(!req.auth.auth) res.sendStatus(403);
+            if(req.auth.auth && req.auth.authEmail!=id && !req.auth.isAdmin) res.sendStatus(403);
             let sanitized_user=user;
             delete sanitized_user["session"];
             delete sanitized_user["password"];
@@ -107,63 +109,4 @@ router.get("/:id",async (req,res)=>{
     }
 })
 
-router.patch("/:id",async (req,res)=>{
-    try{
-        const id=req.params.id;
-        try {
-            if(!req.authorization.auth) res.sendStatus(403);
-            if(req.authorization.auth && req.authorization.authEmail!=id && !req.authorization.isAdmin) res.sendStatus(403);            
-            delete req.body["session"];
-            const data=req.body;
-            console.log(data)
-            let user=await UserSchema.collection.findOneAndUpdate({userEmail:id},{ $set:data });
-            res.sendStatus(200);
-            if(!user) res.sendStatus(404);
-        } catch(err){
-            console.log(err)
-            res.sendStatus(400);
-        }
-    } catch(err){
-        console.log(err)
-        res.sendStatus(500);
-    }
-})
-
-router.put("/:id",async (req,res)=>{
-    try{
-        const id=req.params.id;
-        try {
-            if(!req.authorization.auth) res.sendStatus(403);
-            if(req.authorization.auth && req.authorization.authEmail!=id && !req.authorization.isAdmin) res.sendStatus(403);
-                const new_user=new UserSchema({
-                name: req.body.name,
-                dateOfBirth: req.body.dateOfBirth,
-                password: req.body.password,
-                address:req.body.address,
-                verificationStatus: false,
-                userEmail: req.body.userEmail,
-                isAdmin: req.body.isAdmin,
-                listings: [],
-                orders: [] 
-            },{_id:false});
-            const error=await new_user.validate()
-            if(error){
-                console.log(error)
-                res.sendStatus(400);
-                return;
-            }
-            let user=await UserSchema.collection.findOneAndUpdate({userEmail:id},{ $set:new_user });
-            res.sendStatus(200);
-            if(!user) res.sendStatus(404);
-        } catch(err){
-            console.log(err)
-            res.sendStatus(400);
-        }
-    } catch(err){
-        console.log(err)
-        res.sendStatus(500);
-    }
-})
-
-
-module.exports = router;
+module.exports=router;

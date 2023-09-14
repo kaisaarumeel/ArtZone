@@ -17,16 +17,18 @@ router.post("/", async function(req, res){
         const listingAuthor = req.body.author;
         const listingPrice = req.body.price;
         const listingPicture = req.body.picture;
-
+        const listingDescription=req.body.description;
         const newListing = new Listings.model({
             name: listingName,
             author: listingAuthor,
             price: listingPrice,
-            picture: listingPicture
+            picture: listingPicture,
+            description:listingDescription
         })
         try{
             const error =  await newListing.validate();
         }catch(error){
+            console.log(error)
             return res.sendStatus(400);
         }
         try{
@@ -66,7 +68,7 @@ router.get("/", async function(req, res){
 
 
     const listings = user.listings;
-    console.log(listings);
+    
     return res.status(200).json(listings);
 
 
@@ -163,27 +165,20 @@ router.delete("/", async function(req, res){
             const userEmail = req.params.email;
             const listingID = req.params.id;
             try{
-            
-                const newListing = new Listings.model({
-                    name: req.body.name,
-                    author: req.body.author,
-                    price: req.body.price,
-                    picture: req.body.picture
-
-                })
-                try{
-                    const error =  await newListing.validate();
-                }catch(error){
-                    return res.sendStatus(400);
+                let put_data={}
+                for (let key in req.body){
+                    put_data["listings.$."+key]=req.body[key];
                 }
+ 
                 let result=await UserSchema.findOneAndUpdate(
                     {
                         userEmail:userEmail,
                         "listings._id":listingID
                     },
                     {
-                        $set: { 
-                        newListing  } 
+                    $set: { 
+                        ...put_data
+                    } 
                     },
                     { runValidators:true, }
                     );
@@ -209,10 +204,11 @@ router.patch("/:id", async function(req, res){
     try {
         const userEmail = req.params.email;
         const listingID = req.params.id;
-        const data = req.body;
     try {
-        console.log(data) 
-
+        let patch_data={}
+        for (let key in req.body){
+            patch_data["listings.$."+key]=req.body[key];
+        }
         let result=await UserSchema.findOneAndUpdate(
             {
                 userEmail:userEmail,
@@ -221,12 +217,12 @@ router.patch("/:id", async function(req, res){
             { 
                 
             $set: { 
-             data
+                ...patch_data
             },
  
             },
             {
-                runValidators:true,
+                runValidators:false,
             }
 
             );

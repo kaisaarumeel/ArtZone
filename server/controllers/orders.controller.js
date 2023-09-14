@@ -3,9 +3,8 @@ const express = require("express");
 const router = express.Router({"mergeParams": true});
 const OrderModel = require("../models/orders.js");
 const UserModel = require("../models/user.js");
-const Joi = require("joi");
-
-//posting an order on the database
+const { createHash, randomUUID } = require('crypto');
+//posting an order on the database the email in the url is the buyer
 router.post("/", async (req, res) => {
 
     try {
@@ -31,31 +30,41 @@ router.post("/", async (req, res) => {
 
         const sellerListing = seller.listings.find(listing => listing.name = req.body.listing);
         if (!sellerListing) {
-            res.status(403).json({"message": "The seller does not posses the listing you want to order"});
+            res.status(400).json({"message": "The seller does not posses the listing you want to order"});
             return;
         }
 
         if (seller.userEmail === user.userEmail) {
-            res.status(403).json({"message": "You cannot buy your own art."})
+            res.status(400).json({"message": "You cannot buy your own art."})
             return;
         }
 
         const userOrders = user.orders;
         if (userOrders) {
-            console.log("hey");
             //user cannot the same listing from the seller.
             const sameOrder = userOrders.find(order =>  order.listing === req.body.listing && order.seller === req.body.seller);
             if (sameOrder) {
-                res.status(400).json({"message": "You have already ordered the following listing."});
+                res.status(403).json({"message": "You have already ordered the following listing."});
                 return;
             }
-        }
-        const newOrder = new OrderModel.model({
+        }        
+
+
+        let msg=Date.now().toString()+req.body.seller+req.params.email+req.body.listing+randomUUID();
+        let hash=createHash('sha256').update(msg).digest('hex'); 
+        seller.orders.push(new OrderModel.model({
             seller: req.body.seller,
-            listing: req.body.listing
-        });
-        
-        user.orders.push(newOrder);
+            buyer:req.params.email,
+            listing: req.body.listing,
+            hash:hash
+        }));
+        user.orders.push(new OrderModel.model({
+            seller: req.body.seller,
+            buyer:req.params.email,
+            listing: req.body.listing,
+            hash:hash
+        }));
+        seller.save();
         user.save();
 
         res.sendStatus(201);
@@ -81,7 +90,7 @@ router.get("/", async (req, res) => {
             res.status(200).json({ "message": "You have no orders on your orders list" });
             return;
         }
-        res.status(200).json({ "orders": user.orders});
+        res.status(200).json(user.orders);
 
     } catch(err) {
         res.sendStatus(500)
@@ -100,22 +109,23 @@ router.patch("/:id", async (req, res) => {
             return;
         }  
 
-        console.log(req.params.id);
-        console.log(user.orders[0].orderId);
 
-        const order = user.orders.find(order => order.orderId == req.params.id);
+
+        let order = user.orders.find(order => order._id == req.params.id);
         if (!order) {
             res.status(404).json({"message": "Order was not found."});
             return;
         }
 
-        const { error } = validateOrder(req.body);
-        if (error) {
-            res.status(400).json({"message": error.details[0].message})
-            return;
+        for(key in req.body){
+            order[key]=req.body[key]
         }
-
-        order.isReceived = req.body.isReceived;
+        try{
+            const error = await order.validate()
+        } catch(err){
+            return res.status(400).json({"message": "Order validation failed"})
+        }
+        
         user.save();
         res.sendStatus(200);
 
@@ -141,13 +151,13 @@ router.get("/:id", async (req, res) => {
             return;
         }
 
-        const order = user.orders.find(order => order.orderId == req.params.id);
+        const order = user.orders.find(order => order._id == req.params.id);
         if (!order) {
             res.status(404).json({"message": "Order was not found."});
             return;
         }
         
-        res.status(200).json({ "order": order });
+        res.status(200).json(order);
 
     } catch(err) {
         res.sendStatus(404);
@@ -171,7 +181,7 @@ router.get("/:id/seller", async (req, res) => {
             return;
         }
 
-        const order = user.orders.find(order => order.orderId == req.params.id);
+        const order = user.orders.find(order => order._id == req.params.id);
         if (!order) {
             res.status(404).json({"message": "Order was not found."});
             return;
@@ -184,7 +194,7 @@ router.get("/:id/seller", async (req, res) => {
             return;
         }
 
-        res.status(200).json({ "seller": seller});
+        res.status(200).json(seller);
 
     } catch(err) {
         res.sendStatus(500);
@@ -193,17 +203,7 @@ router.get("/:id/seller", async (req, res) => {
 
 });
 
-// Joi is used for validation
-function validateOrder(body) {
-    
-    const schema = Joi.object({
-        isReceived: Joi.boolean().required(),
-        seller: Joi.string(),
-        orderId: Joi.string(),
-        listing: Joi.string()
-    });
-    return schema.validate(body);
-     
-}
+
+
 
 module.exports = router;

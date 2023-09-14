@@ -4,11 +4,12 @@ const { randomUUID } = require("crypto");
 
 const orderSchema = new mongoose.Schema({ 
     seller: { type: String, required: true, immutable: true }, 
-    orderId: { type: String, required: true, unique: true, sparse: true, 
-        immutable: true, default: () => randomUUID() }, 
+    buyer: { type: String, required: true, immutable: true }, 
+    hash: { type: String, required: true, immutable:true }, 
     listing: { type: String, required: true, immutable: true},
     isReceived: { type: Boolean, default: false },
-}, { _id: false });
+
+});
 
 const OrderModel = mongoose.model("Order", orderSchema);
 module.exports = {

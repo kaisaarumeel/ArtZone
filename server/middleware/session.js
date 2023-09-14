@@ -2,32 +2,67 @@ const UserSchema = require("../models/user"); //this is the schema class. Use th
 const { randomUUID } = require("crypto");
 
 
-const session = async function (req, res, next) {
-    //Login endpoint validates user password and generates session key.
-    try{
-        let authorization={
-            "auth":false, // is user authorized
-            "authEmail":"", // the user that is authorized
-            "isAdmin":false // if the user is authed as admin
-        }
-        const expiry=parseInt(Date.now()/1000)+3600; //1h expiry
-        const result=await UserSchema.findOneAndUpdate({"session.key":req.headers["x-auth-token"]},{expires:expiry});
-        if(result!=null){
-            if(parseInt(Date.now()/1000)<parseInt(result.session.expires)){
-                authorization.auth=true;
-                authorization.authEmail=result.userEmail;
+async function restricted_resource_general(req, res, next){
+    console.log("restricted")
+
+    let auth_obj={
+        "auth":false, // is user authorized
+        "authEmail":"", // the user that is authorized
+        "isAdmin":false // if the user is authed as admin
+    }
+    const expiry=parseInt(Date.now()/1000)+3600; //1h expiry
+    const result=await UserSchema.findOneAndUpdate({"session.key":req.headers["x-auth-token"]},{expires:expiry});
+    if(result!=null){
+        if(parseInt(Date.now()/1000)<parseInt(result.session.expires)){
+            auth_obj.auth=true;
+            auth_obj.authEmail=result.userEmail;
+            if(result.isAdmin){
+                auth_obj.isAdmin=true;
+            }
+        } else {
+            auth_obj.auth=false;
+        }            
+    }
+    req.auth=auth_obj;    
+    next()
+}
+
+async function restricted_resource_email(req, res, next){
+    if(req.headers["x-auth-token"]==undefined) return res.sendStatus(403);
+    let auth_obj={
+        "auth":false, // is user authorized
+        "authEmail":"", // the user that is authorized
+        "isAdmin":false // if the user is authed as admin
+    }
+    const expiry=parseInt(Date.now()/1000)+3600; //1h expiry
+    const result=await UserSchema.findOneAndUpdate({"session.key":req.headers["x-auth-token"]},{expires:expiry});
+    
+    if(result!=null){
+        if(result.session.key==req.headers["x-auth-token"]){
+            if(req.params.email==result.userEmail){
+                auth_obj.auth=true;
+                auth_obj.authEmail=result.userEmail;
                 if(result.isAdmin){
-                    authorization.isAdmin=true;
+                    auth_obj.isAdmin=true;
                 }
+                req.auth=auth_obj;    
+                return next();
             } else {
-                authorization.auth=false;
-            }            
+                req.auth=auth_obj;    
+                return res.sendStatus(403);
+            }
+        } else {
+            req.auth=auth_obj;    
+            return res.sendStatus(403);
         }
-        req.authorization=authorization;    
-        next()
-    } catch(err){
-        res.sendStatus(500);
+    } else {
+        req.auth=auth_obj; 
+        console.log("No such session")   
+        return res.sendStatus(403);
     }
 }
 
-module.exports=session
+
+module.exports={
+    restricted_resource_email,restricted_resource_general
+}
