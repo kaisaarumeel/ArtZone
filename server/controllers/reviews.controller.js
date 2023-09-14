@@ -5,6 +5,7 @@ const { Mongoose, default: mongoose } = require("mongoose");
 
 const Reviews = require("../models/reviews.js");
 const UserSchema = require("../models/user.js");
+const reviews = require("../models/reviews.js");
 
 
 //POST /users/:email/reviews/ - Adds review to user profile
@@ -33,7 +34,9 @@ router.post("/", async function(req, res){
             console.log(err);
             return res.sendStatus(500);
         } 
-        return res.sendStatus(201);
+        console.log(newReview._id)
+        return res.status(201).json({id: newReview._id});
+
     } catch(error) {
         console.log(error);
         return res.sendStatus(500);
@@ -120,11 +123,27 @@ router.delete("/:id", async function(req, res){
                 return res.status(404).json({ message: 'Review not found' });
             }
 
-        return res.sendStatus(200);
+        return res.sendStatus(204);
         }catch(err){
             console.log(err);
             return res.sendStatus(500);
         } 
+    } catch(error) {
+    console.log(error);
+    return res.sendStatus(500);
+    }
+})
+//DELETE /users/:email/reviews/ - Removes all reviews from a user
+router.delete("/", async function(req, res){
+    
+    try{
+    const userEmail = req.params.email;
+        const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{ $set: { reviews: [] } });
+        if (!result) {
+            return res.sendStatus(404);
+        }
+        return res.sendStatus(204);
+        
     } catch(error) {
     console.log(error);
     return res.sendStatus(500);
