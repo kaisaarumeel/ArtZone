@@ -28,7 +28,6 @@ async function restricted_resource_general(req, res, next){
 }
 
 async function restricted_resource_email(req, res, next){
-    console.log("restricted")
     if(req.headers["x-auth-token"]==undefined) return res.sendStatus(403);
     let auth_obj={
         "auth":false, // is user authorized
