@@ -17,16 +17,18 @@ router.post("/", async function(req, res){
         const listingAuthor = req.body.author;
         const listingPrice = req.body.price;
         const listingPicture = req.body.picture;
-
+        const listingDescription=req.body.description;
         const newListing = new Listings.model({
             name: listingName,
             author: listingAuthor,
             price: listingPrice,
-            picture: listingPicture
+            picture: listingPicture,
+            description:listingDescription
         })
         try{
             const error =  await newListing.validate();
         }catch(error){
+            console.log(error)
             return res.sendStatus(400);
         }
         try{

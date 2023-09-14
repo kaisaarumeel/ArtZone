@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router({"mergeParams": true});
 const OrderModel = require("../models/orders.js");
 const UserModel = require("../models/user.js");
-const Joi = require("joi");
 
 //posting an order on the database
 router.post("/", async (req, res) => {
@@ -55,7 +54,9 @@ router.post("/", async (req, res) => {
             listing: req.body.listing
         });
         
+        seller.orders.push(newOrder);
         user.orders.push(newOrder);
+        seller.save();
         user.save();
 
         res.sendStatus(201);
@@ -103,19 +104,21 @@ router.patch("/:id", async (req, res) => {
         console.log(req.params.id);
         console.log(user.orders[0].orderId);
 
-        const order = user.orders.find(order => order.orderId == req.params.id);
+        let order = new OrderModel.model(user.orders.find(order => order.orderId == req.params.id));
         if (!order) {
             res.status(404).json({"message": "Order was not found."});
             return;
         }
 
-        const { error } = validateOrder(req.body);
+        for(key in req.body){
+            order[key]=req.body[key]
+        }
+        const error = order.validate()
+
         if (error) {
             res.status(400).json({"message": error.details[0].message})
             return;
         }
-
-        order.isReceived = req.body.isReceived;
         user.save();
         res.sendStatus(200);
 
@@ -193,17 +196,7 @@ router.get("/:id/seller", async (req, res) => {
 
 });
 
-// Joi is used for validation
-function validateOrder(body) {
-    
-    const schema = Joi.object({
-        isReceived: Joi.boolean().required(),
-        seller: Joi.string(),
-        orderId: Joi.string(),
-        listing: Joi.string()
-    });
-    return schema.validate(body);
-     
-}
+
+
 
 module.exports = router;
