@@ -85,8 +85,7 @@ export default {
     padding-left: 1rem;
 }
 .menu-line {
-  border-top: 1px solid #606C5D; /* Set the color and style of the line */
-  width: 80%
+  display: none;
 }
 .nav-bar {
     display: flex;
@@ -149,6 +148,12 @@ background: none;
     transform: translateY(-100%);
     justify-content: center;
     position: fixed;
+  }
+
+  .menu-line {
+    display: block;
+    border-top: 1px solid #606C5D; /* Set the color and style of the line */
+    width: 80%
   }
 
   .nav-bar.responsive  {
