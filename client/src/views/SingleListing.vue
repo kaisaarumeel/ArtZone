@@ -1,0 +1,145 @@
+<script>
+
+async function beautifyLongNumber(num) {
+  let result = ''
+  const array = num.toString().split('')
+  let counter = 0
+  for (let i = 0; i < array.length; i++) {
+    result += array[i]
+    if (counter === 2 && i + 1 < array.length) {
+      result += ','
+      counter = 0
+    } else {
+      counter++
+    }
+  }
+  return result
+}
+
+export default {
+  mounted() {
+    this.getData()
+  },
+  props: {
+    id: String
+  },
+  data() {
+    return {
+      picture: null,
+      name: null,
+      author: null,
+      seller: null,
+      sellerRating: null,
+      description: null,
+      size: null,
+      type: null,
+      material: null,
+      condition: null,
+      price: null
+    }
+  },
+  methods: {
+    async getData() {
+      this.picture = 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg'
+      this.name = 'The Last Supper'
+      this.author = 'Leonardo Da Vinci'
+      this.seller = 'bobman123'
+      this.sellerRating = 23
+      this.description = `The Last Supper,” a masterpiece by Leonardo da Vinci, is a large
+        mural painting that covers the back wall of the dining hall at the Convent of Santa Maria delle
+        Grazie in Milan, Italy.
+        The painting depicts the dramatic scene from the final days of Jesus Christ,
+        as described in the Gospel of John, 13:21, where Jesus announces that on
+        e of his twelve apostles would betray him. The moment captured by da Vin
+        ci is filled with astonishment, disbelief, and shock, as each apostle re
+        acts differently to the news, questioning who the traitor amongst them is.`
+      this.size = '123x30 cm'
+      this.type = 'Oil'
+      this.material = 'Canvas'
+      this.condition = 'Mint'
+      this.price = await beautifyLongNumber(129000000)
+    }
+  }
+}
+
+</script>
+<template>
+<div class="single-listing">
+  <b-row cols="2">
+    <b-col sm="12" md="12" lg="8" cols="12" >
+      <div class="text-center">
+      <img class="border artwork" :src="picture">
+      </div>
+    </b-col>
+    <b-col sm="12" md="12" lg="4" cols="12">
+      <div class="border">
+      <h1>{{name}}</h1>
+      <p>{{author}} sold by <span class="seller">{{seller }} ⭐{{sellerRating}}</span></p>
+      <p>{{ description }}</p>
+        <b-row cols="2">
+          <b-col><span>Size: {{ size }}</span></b-col>
+          <b-col><span>Type: {{ type }}</span></b-col>
+        </b-row>
+        <b-row cols="2">
+          <b-col>Material: {{ material }}</b-col>
+          <b-col>Condition: {{ condition}}</b-col>
+        </b-row>
+        <b-row cols="1">
+          <b-col class="listing-price"><span><span class="price">SEK: {{ price }}</span> <sup>+ free shipping</sup></span></b-col>
+        </b-row>
+      </div>
+      <div class="text-center">
+        <b-button variant="primary">Buy now</b-button>
+      </div>
+    </b-col>
+  </b-row>
+</div>
+</template>
+<style scoped>
+  .border{
+    border:1px solid #606C5D !important;
+    padding:1rem;
+  }
+  .seller{
+    text-decoration: underline;
+    font-weight: 600;
+  }
+  h1{
+    font-size: 21px;
+    font-weight: 600;
+    text-align: left;
+  }
+  p{
+    font-size: 15px;
+    text-align: left;
+  }
+  .price{
+    font-weight: 600;
+    font-size: 21px;
+  }
+  .listing-price{
+    text-align: center;
+    margin:1rem;
+
+  }
+  .artwork{
+    width:100%;
+    max-width: fit-content;
+    max-height: 80vh;
+  }
+  .single-listing{
+    padding:5rem;
+  }
+
+  .btn-primary{
+    width:80%;
+    margin-top:1rem;
+
+  }
+
+  @media screen and (max-width:576px){
+    .single-listing{
+      padding:2rem;
+    }
+  }
+</style>
