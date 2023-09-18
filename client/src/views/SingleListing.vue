@@ -1,5 +1,5 @@
 <script>
-
+import Reviews from '../components/Reviews.vue'
 async function beautifyLongNumber(num) {
   let result = ''
   const array = num.toString().split('')
@@ -20,6 +20,9 @@ export default {
   mounted() {
     this.getData()
   },
+  components: {
+    Reviews
+  },
   props: {
     id: String
   },
@@ -35,7 +38,8 @@ export default {
       type: null,
       material: null,
       condition: null,
-      price: null
+      price: null,
+      sellerReviewsName: null
     }
   },
   methods: {
@@ -43,7 +47,7 @@ export default {
       this.picture = 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg'
       this.name = 'The Last Supper'
       this.author = 'Leonardo Da Vinci'
-      this.seller = 'bobman123'
+      this.seller = 'bobman123@gmail.com'
       this.sellerRating = 23
       this.description = `The Last Supper,” a masterpiece by Leonardo da Vinci, is a large
         mural painting that covers the back wall of the dining hall at the Convent of Santa Maria delle
@@ -58,6 +62,7 @@ export default {
       this.material = 'Canvas'
       this.condition = 'Mint'
       this.price = await beautifyLongNumber(129000000)
+      this.sellerReviewsName = this.seller + '  ⭐' + this.sellerRating
     }
   }
 }
@@ -65,6 +70,10 @@ export default {
 </script>
 <template>
 <div class="single-listing">
+
+  <b-modal id="modal-1" modal-class="reviews" hide-backdrop>
+    <Reviews :email='seller' :seller='sellerReviewsName'></Reviews>
+  </b-modal>
   <b-row cols="2">
     <b-col sm="12" md="12" lg="8" cols="12" >
       <div class="text-center">
@@ -74,7 +83,7 @@ export default {
     <b-col sm="12" md="12" lg="4" cols="12">
       <div class="border">
       <h1>{{name}}</h1>
-      <p>{{author}} sold by <span class="seller">{{seller }} ⭐{{sellerRating}}</span></p>
+      <p>{{author}} <br> by <span class="seller" v-b-modal.modal-1>{{seller }} ⭐{{sellerRating}}</span></p>
       <p>{{ description }}</p>
         <b-row cols="2">
           <b-col><span>Size: {{ size }}</span></b-col>
@@ -136,6 +145,23 @@ export default {
     margin-top:1rem;
 
   }
+  .modal-header,.modal-content,.modal-footer,#modal-1 {
+    background-color: #606C5D;
+
+  }
+
+  .modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #606C5D !important;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    outline: 0;
+}
 
   @media screen and (max-width:576px){
     .single-listing{

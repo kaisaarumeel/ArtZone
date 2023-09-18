@@ -7,6 +7,34 @@ html,body{
     background-size: contain;
     background-blend-mode: multiply;
 }
+.reviews .modal-footer { display: none; }
+.reviews .modal-content {
+    background-color: #606C5D;
+    border-radius: 0px;
+    border-width: 0px;
+    color:#F7E6C4;
+}
+.reviews .modal-header{
+    background-color: transparent;
+    border-radius: 0px;
+    border-width: 0px;
+    color:#F7E6C4;
+    position:absolute;
+    width:100%;
+    z-index: 1;
+}
+
+
+.reviews .modal-header .close {
+    color:#F7E6C4;
+    margin-left: 90%;
+    font-size: 1.5rem;
+    font-weight: 100;
+    line-height: 1;
+    text-shadow: unset;
+    opacity: 1; 
+}
+
 .btn-primary{
     background-color: #606C5D;
     border-radius: 0px;
