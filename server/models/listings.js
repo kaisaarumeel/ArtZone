@@ -6,7 +6,9 @@ const listingSchema = new mongoose.Schema({
           maxlength: 50 },
      author: { type: String, required: true }, 
      price: { type: Number, required: true, min: 0 },
-     picture: { type: String, required: true}
+     picture: { type: String, required: true},
+     description: {type: String, minlength: 0,
+          maxlength: 1000}
 });
 
 const ListingModel = mongoose.model("Listing", listingSchema);
