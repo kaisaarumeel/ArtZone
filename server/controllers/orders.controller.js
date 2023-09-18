@@ -90,7 +90,26 @@ router.get("/", async (req, res) => {
             res.status(200).json({ "message": "You have no orders on your orders list" });
             return;
         }
-        res.status(200).json(user.orders);
+
+        const links = new Array();
+        for (let key of user.orders) {
+            links.push({
+               rel: "modify",
+               method: "PATCH",
+               title: "Modify order",
+               href: `/api/v1/users/${user.userEmail}/${key._id}`
+            });
+        }
+
+        for (let key of user.orders) {
+            links.push({
+               rel: "get specific order",
+               method: "GET",
+               href: `/api/v1/users/${user.userEmail}/${key._id}`
+            });
+        }
+
+        res.status(200).json({orders: user.orders, links: links});
 
     } catch(err) {
         res.sendStatus(500)
