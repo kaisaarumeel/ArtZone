@@ -34,7 +34,7 @@ export default {
 }
 </script>
 <template>
-    <div>
+    <div class="reviews">
         <div class="profile-wrapper">
             <h2>Seller profile</h2>
             <p class="underline">{{ seller }}</p>
