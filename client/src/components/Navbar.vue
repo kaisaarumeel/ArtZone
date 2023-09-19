@@ -29,7 +29,7 @@
 // @ is an alias to /src
 
 export default {
-  name: 'home',
+  name: 'navbar',
   data() {
     return {
       isResponsive: false
@@ -96,7 +96,7 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     padding: 1rem;
-    padding-bottom: 3rem;
+    padding-bottom: 1rem;
     align-items: center;
 }
 
@@ -143,7 +143,6 @@ background: none;
  .cross {
     display: block;
     font-size: 30px;
-    color: #606C5D;
     font-weight: normal;
     display: flex;
     justify-content: flex-end;
@@ -159,7 +158,8 @@ background: none;
     left: 0;
     width: 200px;
     height: 100%;
-    background-color: #F7E6C4;
+    background-color: #606C5D;
+    background-image: url(/public/bg.png);
     z-index: 1;
     text-align: center;
     transform: translateY(-100%);
@@ -169,7 +169,7 @@ background: none;
 
   .menu-line {
     display: block;
-    border-top: 1px solid #606C5D; /* Set the color and style of the line */
+    border-top: 1px solid #F7E6C4;; /* Set the color and style of the line */
     width: 80%
   }
 
@@ -196,7 +196,7 @@ background: none;
 
 .nav-bar.responsive button{
     background: none;
-    color: #606C5D;
+    color: #F7E6C4;
   }
 
   .nav-bar.responsive .profile-pic{
@@ -212,6 +212,7 @@ background: none;
     position: absolute;
     top: 0.5rem;
     left: 1rem;
+    color: #606C5D;
   }
 }
 </style>
