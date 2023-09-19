@@ -2,7 +2,9 @@
   <div class="nav-bar responsive">
     <button class="hamburger" @click="toggleResponsiveMenu">&#9776;</button>
     <div class="pages" :class="{ 'show': isResponsive }">
-      <button v-if="isResponsive" class="cross"  @click="toggleResponsiveMenu">&#10005;</button>
+      <div class="cross-btn-container">
+         <button v-if="isResponsive" class="cross"  @click="toggleResponsiveMenu">&#10005;</button>
+      </div>
       <div class="logo"><h3>Artzone</h3></div>
       <div class="middle">
         <button class="discover-btn">Discover</button>
@@ -133,6 +135,11 @@ background: none;
   color: #606C5D;
 }
 
+.cross-btn-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
  .cross {
     display: block;
     font-size: 30px;
@@ -140,7 +147,7 @@ background: none;
     font-weight: normal;
     display: flex;
     justify-content: flex-end;
-    padding-bottom: 3rem;
+    margin-bottom: 3rem;
   }
 /* Menu styles for screens less than 768px */
 @media screen and (max-width: 1050px) {
