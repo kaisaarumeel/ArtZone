@@ -38,7 +38,6 @@ border: none;
 
 p {
   font-size: 15;
-
   text-align: justify;
   text-justify: inter-word;
 }

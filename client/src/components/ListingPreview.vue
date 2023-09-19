@@ -1,7 +1,7 @@
 <template>
 <div class="single-listing">
       <div class="text-center">
-      <img class="border artwork" :src="picture">
+      <img class="artwork" :src="picture">
       </div>
       <div class="bottom">
         <div class="author-name">

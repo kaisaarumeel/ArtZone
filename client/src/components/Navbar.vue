@@ -1,27 +1,33 @@
 <template>
-  <div class="nav-bar responsive">
-    <button class="hamburger" @click="toggleResponsiveMenu">&#9776;</button>
-    <div class="pages" :class="{ 'show': isResponsive }">
-      <div class="cross-btn-container">
-         <button v-if="isResponsive" class="cross"  @click="toggleResponsiveMenu">&#10005;</button>
-      </div>
-      <div class="logo"><h3>Artzone</h3></div>
-      <div class="middle">
-        <button class="discover-btn">Discover</button>
-        <button class="about-us-btn" @click="navigateToAboutUs">About us</button>
-        <button class="sell-btn">Sell your artwork</button>
-      </div>
-      <hr class="menu-line" v-if="isResponsive">
-      <div class="login">
-      <div>
-          <img class="profile-pic" src="images/profile.png" alt="Profile">
-          <button class="sign-in-btn">Sign in</button>
-      </div>
-      <button>Sign up for free</button>
+<div class="nav-bar">
+  <b-navbar toggleable="lg">
+    <b-navbar-nav class="logo">
+      Artzone
+      </b-navbar-nav>
+    <b-navbar-toggle target="nav-collapse" class="pages"></b-navbar-toggle>
 
-      </div>
+    <b-collapse class="pages" id="nav-collapse" is-nav>
+
+<div class="middle">
+            <button size="sm" class="discover-btn" href="#">Discover</button>
+            <button size="sm" class="about-us-btn" @click="navigateToAboutUs">About us</button>
+            <button size="sm" class="sell-btn" href="#">Sell your artwork</button>
     </div>
-  </div>
+  <b-navbar-nav class="ml-auto">
+
+        <b-nav-nav>
+          <!-- Using 'button-content' slot -->
+          <div class="login">
+            <button class="sign-in-btn" href="#">Sign in</button>
+            <div class="text-center">
+              <b-button variant="primary" size="sm" class="sign-up-btn" href="#">Sign up for free</b-button>
+            </div>
+          </div>
+        </b-nav-nav>
+      </b-navbar-nav>
+    </b-collapse>
+  </b-navbar>
+</div>
 </template>
 
 <script>
@@ -43,24 +49,6 @@ export default {
         aboutUsSection.scrollIntoView({ behavior: 'smooth' })
       }
       this.toggleResponsiveMenu()
-    },
-    toggleResponsiveMenu() {
-      this.isResponsive = !this.isResponsive
-
-      if (this.isResponsive) {
-        document.body.addEventListener('click', this.closeMenuOnClickOutside)
-      } else {
-        document.body.removeEventListener('click', this.closeMenuOnClickOutside)
-      }
-    },
-    closeMenuOnClickOutside(event) {
-      if (
-        this.isResponsive &&
-        event.target.closest('.nav-bar') === null
-      ) {
-        this.isResponsive = false
-        document.body.removeEventListener('click', this.closeMenuOnClickOutside)
-      }
     }
   }
 }
@@ -69,150 +57,73 @@ export default {
 
 <style>
 
+.nav-bar {
+  padding: 2rem;
+}
 .logo {
     text-decoration: underline;
     text-decoration-color: #606C5D;
     font-size: 24;
     color: #606C5D;
+    padding-left: 1rem;
+    font-weight: bold;
 }
-.profile-pic {
-    width: 20px;
-    height: 20px;
-    opacity: 60%;
-}
+
 .sign-in-btn {
     background: none;
     border: none;
     color: #606C5D;
     font-weight: bold;
-    padding-left: 1rem;
-}
-.menu-line {
-  display: none;
-}
-.nav-bar {
-    display: flex;
-    width: 100vw;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 1rem;
-    padding-bottom: 1rem;
-    align-items: center;
+    min-width: 100px;
 }
 
+.navbar-toggler {
+  border: none !important;
+}
+
+.sign-up-btn {
+    margin-top:0.2rem;
+}
 .login {
     display: flex;
     flex-direction: row;
-
-}
-
-.pages {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: space-between;
+    min-width: 250px;
 }
 
 .middle {
-  margin-right: 10rem;
-  margin-left: auto;
+  padding-left: 10rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
 }
-@media screen and (max-width: 1250px) {
-  .middle {
-    margin-right: 5rem;
-    margin-left: auto;
-  }
-}
+
 .discover-btn, .about-us-btn, .sell-btn {
 color: #606C5D;
 background: none;
 }
 
-.hamburger {
-  display: none;
-  font-size: 36px;
-  cursor: pointer;
-  color: #606C5D;
+@media screen and (max-width:992px) {
+  .middle {
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 1rem;
+  }
+
+  .login {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .sign-up-btn {
+    background: none !important;
+    border: none !important;
+    color: #606C5D !important;
+    font-weight: bold !important;
+    font-size: 16px !important;
+    margin-right: 1.5rem!important;
+  }
+
 }
 
-.cross-btn-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}
- .cross {
-    display: block;
-    font-size: 30px;
-    font-weight: normal;
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 3rem;
-  }
-/* Menu styles for screens less than 768px */
-@media screen and (max-width: 1050px) {
-  .nav-bar.responsive .pages {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 200px;
-    height: 100%;
-    background-color: #606C5D;
-    background-image: url(/public/bg.png);
-    z-index: 1;
-    text-align: center;
-    transform: translateY(-100%);
-    position: fixed;
-    justify-content: flex-start;
-  }
-
-  .menu-line {
-    display: block;
-    border-top: 1px solid #F7E6C4;; /* Set the color and style of the line */
-    width: 80%
-  }
-
-  .nav-bar.responsive  {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .nav-bar.responsive .logo {
-    display: none;
-  }
-
-  .nav-bar.responsive .login, .middle{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
-
-   .nav-bar.responsive .sign-in-btn{
-    font-weight: normal;
-  }
-
-.nav-bar.responsive button{
-    background: none;
-    color: #F7E6C4;
-  }
-
-  .nav-bar.responsive .profile-pic{
-    display: none;
-  }
-  .nav-bar.responsive .pages.show {
-    transform: translateY(0);
-  }
-
-  .nav-bar.responsive .hamburger {
-    display: block;
-    background: none;
-    position: absolute;
-    top: 0.5rem;
-    left: 1rem;
-    color: #606C5D;
-  }
-}
 </style>
