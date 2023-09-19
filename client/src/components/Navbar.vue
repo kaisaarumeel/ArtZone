@@ -2,6 +2,7 @@
   <div class="nav-bar responsive">
     <button class="hamburger" @click="toggleResponsiveMenu">&#9776;</button>
     <div class="pages" :class="{ 'show': isResponsive }">
+      <button v-if="isResponsive" class="cross"  @click="toggleResponsiveMenu">&#10005;</button>
       <div class="logo"><h3>Artzone</h3></div>
       <div class="middle">
         <button class="discover-btn">Discover</button>
@@ -11,7 +12,7 @@
       <hr class="menu-line" v-if="isResponsive">
       <div class="login">
       <div>
-          <img class="profile-pic" src="profile.png" alt="Profile">
+          <img class="profile-pic" src="images/profile.png" alt="Profile">
           <button class="sign-in-btn">Sign in</button>
       </div>
       <button>Sign up for free</button>
@@ -132,6 +133,15 @@ background: none;
   color: #606C5D;
 }
 
+ .cross {
+    display: block;
+    font-size: 30px;
+    color: #606C5D;
+    font-weight: normal;
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 3rem;
+  }
 /* Menu styles for screens less than 768px */
 @media screen and (max-width: 1050px) {
   .nav-bar.responsive .pages {
@@ -146,8 +156,8 @@ background: none;
     z-index: 1;
     text-align: center;
     transform: translateY(-100%);
-    justify-content: center;
     position: fixed;
+    justify-content: flex-start;
   }
 
   .menu-line {

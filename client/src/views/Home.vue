@@ -13,7 +13,7 @@ Phasellus egestas tellus rutrum tellus pellentesque eu. Et malesuada fames ac tu
 
 Eu non diam phasellus vestibulum lorem. Vestibulum lectus mauris ultrices eros in cursus turpis massa tincidunt. Pellentesque id nibh tortor id aliquet. Curabitur gravida arcu ac tortor dignissim convallis aenean et. Posuere lorem ipsum dolor sit amet. Id venenatis a condimentum vitae sapien. At elementum eu facilisis sed odio morbi quis commodo. Imperdiet nulla malesuada pellentesque elit eget gravida. Metus dictum at tempor commodo ullamcorper. Ultrices in iaculis nunc sed augue lacus viverra. Ultricies tristique nulla aliquet enim tortor at auctor urna. Odio ut sem nulla pharetra diam sit amet.</p>
     <div class="about-us" id="aboutUsSection">
-      <div><img src="wave.jpeg" alt="Painting" class="painting"></div>
+      <div><img src="images/wave.jpeg" alt="Painting" class="painting"></div>
       <div><h2>About us</h2><p>At Artzone, we believe that art is more than just paint on canvas or sculptures in a gallery; it's a powerful form of expression that connects individuals and cultures worldwide. Our mission is to create a vibrant and inclusive online community where artists of all backgrounds can showcase their creativity, share their stories, and find new audiences for their work. Whether you're a seasoned artist or a passionate art enthusiast, ArtZone provides a platform for you to explore, appreciate, and acquire unique pieces of art.
         <br>
         <br>
@@ -55,6 +55,8 @@ h1 {
   width: 400px;
   height: auto;
   padding: 1rem;
+  padding-bottom: 0;
+
 }
 .about-us {
   display: flex;
@@ -83,11 +85,16 @@ h2 {
   }
 
 .painting {
-    width: 500px;
+    width: 100%;
   }
 
   p {
     padding-top: 1rem;
   }
+
+  .header {
+    padding-top: 3rem;
+  }
 }
+
 </style>
