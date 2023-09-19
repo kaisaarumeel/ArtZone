@@ -18,7 +18,7 @@ export default {
       for (let i = 0; i < 10; i++) {
         const entry = {
           description: 'Their art curation is fantastic, and the buying experience was a breeze',
-          rating: Math.random() * 5
+          rating: parseInt(Math.random() * 5)
         }
         this.reviews.push(entry)
       }
