@@ -42,7 +42,7 @@ export default {
         <div>
             <b-row cols="2">
                 <b-col class="text-center">
-                    <p>Average rating: </p>
+                    <span>Average rating: </span>
 
                     <span class="starRatingGrey">⭐⭐⭐⭐⭐</span><span :style="'width:'+this.starWidth+'px'" class="starRating">⭐⭐⭐⭐⭐</span>
                 </b-col>
@@ -63,8 +63,6 @@ export default {
     </div>
 </template>
 <style scoped>
-<<<<<<< Updated upstream
-=======
 .starRatingGrey{
   filter: grayscale(1);
 
@@ -80,7 +78,6 @@ export default {
     background-size: contain;
     background-blend-mode: multiply;
 }
->>>>>>> Stashed changes
 .profile-wrapper {
     margin-bottom:0.5rem;
 }
