@@ -10,7 +10,8 @@ export default {
   data() {
     return {
       reviews: [],
-      avg: 0
+      avg: 0,
+      starWidth: 0
     }
   },
   methods: {
@@ -26,7 +27,8 @@ export default {
       for (let i = 0; i < this.reviews.length; i++) {
         avg += this.reviews[i].rating
       }
-      this.avg = parseInt(avg / this.reviews.length)
+      this.avg = (avg / this.reviews.length)
+      this.starWidth = ((this.avg / 5) * 80)
     }
   }
 }
@@ -40,7 +42,9 @@ export default {
         <div>
             <b-row cols="2">
                 <b-col class="text-center">
-                    <p>Average rating: <span v-for="index in avg" :key="index" >⭐</span></p>
+                    <p>Average rating: </p>
+
+                    <span class="starRatingGrey">⭐⭐⭐⭐⭐</span><span :style="'width:'+this.starWidth+'px'" class="starRating">⭐⭐⭐⭐⭐</span>
                 </b-col>
                 <b-col class="text-center">
                     <p>Member since: <span class="bold">2022-08-01</span></p>
@@ -59,6 +63,24 @@ export default {
     </div>
 </template>
 <style scoped>
+<<<<<<< Updated upstream
+=======
+.starRatingGrey{
+  filter: grayscale(1);
+
+}
+.starRating{
+  position: absolute;
+  margin-left: -80px;
+  overflow:hidden;
+}
+.reviews{
+  background-image: url(../../public/bg.png);
+    background-repeat: repeat;
+    background-size: contain;
+    background-blend-mode: multiply;
+}
+>>>>>>> Stashed changes
 .profile-wrapper {
     margin-bottom:0.5rem;
 }
