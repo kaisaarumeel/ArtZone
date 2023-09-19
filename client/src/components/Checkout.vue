@@ -1,20 +1,14 @@
 <script>
 import { StripeElementPayment } from '@vue-stripe/vue-stripe'
+import axios from 'axios'
 
 async function getPaymentIntent(id) {
   // Default options are marked with *
   const data = { id }
-  const response = await fetch('http://localhost:3000/api/v1/checkout/', {
-    method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
-    credentials: 'same-origin',
+  const response = await axios.post('http://localhost:3000/api/v1/checkout/', data, {
     headers: {
       'Content-Type': 'application/json'
-    },
-    redirect: 'follow',
-    referrerPolicy: 'no-referrer',
-    body: JSON.stringify(data)
+    }
   })
   return await response.json()
 }
