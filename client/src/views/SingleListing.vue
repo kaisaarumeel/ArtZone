@@ -1,5 +1,6 @@
 <script>
 import Reviews from '../components/Reviews.vue'
+import Checkout from '../components/Checkout.vue'
 async function beautifyLongNumber(num) {
   let result = ''
   const array = num.toString().split('')
@@ -18,10 +19,12 @@ async function beautifyLongNumber(num) {
 
 export default {
   mounted() {
+    this.checkParams()
     this.getData()
   },
   components: {
-    Reviews
+    Reviews,
+    Checkout
   },
   props: {
     id: String
@@ -39,10 +42,39 @@ export default {
       material: null,
       condition: null,
       price: null,
-      sellerReviewsName: null
+      sellerReviewsName: null,
+      success: false
     }
   },
   methods: {
+    async checkParams() {
+      const urlParams = new URLSearchParams(document.location.search)
+      const paymentIntent = urlParams.get('payment_intent')
+      if (paymentIntent == null) return
+      this.success = true
+      document.getElementById('payment-button').click()
+      // User has completed order
+
+      /*
+      const payload = {
+        seller: 'bobylon@gmail.com',
+        listing: '65099d75307bfd3b8c80920b',
+        payment_intent: paymentIntent
+      }
+      const response = await fetch('http://localhost:3000/api/v1/checkout/', {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(payload)
+      })
+      return await response.json() */
+    },
     async getData() {
       this.picture = 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg'
       this.name = 'The Last Supper'
@@ -70,7 +102,9 @@ export default {
 </script>
 <template>
 <div class="single-listing">
-
+  <b-modal id="modal-2" modal-class="reviews" hide-backdrop>
+    <Checkout :id="this.id" :success="this.success"></Checkout>
+  </b-modal>
   <b-modal id="modal-1" modal-class="reviews" hide-backdrop>
     <Reviews :email='seller' :seller='sellerReviewsName'></Reviews>
   </b-modal>
@@ -98,7 +132,7 @@ export default {
         </b-row>
       </div>
       <div class="text-center">
-        <b-button variant="primary">Buy now</b-button>
+        <b-button id="payment-button" v-b-modal.modal-2 variant="primary">Buy now</b-button>
       </div>
     </b-col>
   </b-row>

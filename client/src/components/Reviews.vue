@@ -32,7 +32,7 @@ export default {
 }
 </script>
 <template>
-    <div>
+    <div class="reviews">
         <div class="profile-wrapper">
             <h2>Seller profile</h2>
             <p class="underline">{{ seller }}</p>
@@ -59,6 +59,12 @@ export default {
     </div>
 </template>
 <style scoped>
+.reviews{
+  background-image: url(../../public/bg.png);
+    background-repeat: repeat;
+    background-size: contain;
+    background-blend-mode: multiply;
+}
 .profile-wrapper {
     margin-bottom:0.5rem;
 }
