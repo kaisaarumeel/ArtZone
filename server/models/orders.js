@@ -8,6 +8,7 @@ const orderSchema = new mongoose.Schema({
     hash: { type: String, required: true, immutable:true }, 
     listing: { type: String, required: true, immutable: true},
     isReceived: { type: Boolean, default: false },
+    isShipped: {type: Boolean, default:false}
 
 });
 

@@ -10,7 +10,8 @@ export default {
   data() {
     return {
       reviews: [],
-      avg: 0
+      avg: 0,
+      starWidth: 0
     }
   },
   methods: {
@@ -18,7 +19,7 @@ export default {
       for (let i = 0; i < 10; i++) {
         const entry = {
           description: 'Their art curation is fantastic, and the buying experience was a breeze',
-          rating: Math.random() * 5
+          rating: parseInt(Math.random() * 5)
         }
         this.reviews.push(entry)
       }
@@ -26,7 +27,8 @@ export default {
       for (let i = 0; i < this.reviews.length; i++) {
         avg += this.reviews[i].rating
       }
-      this.avg = parseInt(avg / this.reviews.length)
+      this.avg = (avg / this.reviews.length)
+      this.starWidth = ((this.avg / 5) * 80)
     }
   }
 }
@@ -40,7 +42,9 @@ export default {
         <div>
             <b-row cols="2">
                 <b-col class="text-center">
-                    <p>Average rating: <span v-for="index in avg" :key="index" >⭐</span></p>
+                    <span>Average rating: </span>
+
+                    <span class="starRatingGrey">⭐⭐⭐⭐⭐</span><span :style="'width:'+this.starWidth+'px'" class="starRating">⭐⭐⭐⭐⭐</span>
                 </b-col>
                 <b-col class="text-center">
                     <p>Member since: <span class="bold">2022-08-01</span></p>
@@ -59,6 +63,15 @@ export default {
     </div>
 </template>
 <style scoped>
+.starRatingGrey{
+  filter: grayscale(1);
+
+}
+.starRating{
+  position: absolute;
+  margin-left: -80px;
+  overflow:hidden;
+}
 .reviews{
   background-image: url(../../public/bg.png);
     background-repeat: repeat;
