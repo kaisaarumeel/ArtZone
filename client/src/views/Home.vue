@@ -1,40 +1,68 @@
 <template>
-  <div>
-    <b-jumbotron header="DIT342 Frontend" lead="Welcome to your DIT342 Frontend Vue.js App">
-      <b-button class="btn_message" variant="primary" v-on:click="getMessage()" >Get Message from Server</b-button>
-      <p>Message from the server:<br/>
-      {{ message }}</p>
-    </b-jumbotron>
+  <div class="home-page">
+    <h1 class="header pb-1 text-center">
+      <span class="bold-text">Discover</span> and <span class="bold-text">sell</span> <br> your <span class="bold-text">artwork</span>.
+    </h1>
+    <ArtCarouselVue></ArtCarouselVue>
+    <b-row class="about-us mt-4 align-items-center" id="aboutUsSection">
+      <b-col cols="12" lg="4" md="6"><img src="images/wave.jpeg" alt="Painting" class="painting p-5"></b-col>
+      <b-col cols="12" lg="8" md="6"><h2 class="pt-3 pr-4 text-right">About us</h2><p class="p-3">At Artzone, we believe that art is more than just paint on canvas or sculptures in a gallery; it's a powerful form of expression that connects individuals and cultures worldwide. Our mission is to create a vibrant and inclusive online community where artists of all backgrounds can showcase their creativity, share their stories, and find new audiences for their work. Whether you're a seasoned artist or a passionate art enthusiast, ArtZone provides a platform for you to explore, appreciate, and acquire unique pieces of art.
+        <br>
+        <br>
+        We have developed this platfrom with love and care. Here you can sell your own art or artwork made by another author. The platfrom offers a wide range of artwork, starting with paintings and drawings and ending with sculptures or graphical design. Join us on this creative journey, and together, let's celebrate the beauty and diversity of the art world. </p></b-col>
+    </b-row>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import { Api } from '@/Api'
+import ArtCarouselVue from '../components/ArtCarousel.vue'
 
 export default {
   name: 'home',
-  data() {
-    return {
-      message: 'none'
-    }
-  },
-  methods: {
-    getMessage() {
-      Api.get('/')
-        .then(response => {
-          this.message = response.data.message
-        })
-        .catch(error => {
-          this.message = error
-        })
-    }
+  components: {
+    ArtCarouselVue
   }
 }
 </script>
 
 <style>
-.btn_message {
-  margin-bottom: 1em;
+
+h1 {
+  color: #606C5D;
+}
+.header {
+  font-size: 36px;
+}
+
+.bold-text {
+  font-weight:900;
+}
+
+.painting {
+  width: 100%;
+  height: auto;
+}
+.about-us {
+  background: #606C5D;
+}
+p {
+  color: #F7E6C4;
+}
+h2 {
+  color: #F7E6C4;
+}
+@media (max-width: 768px){
+  .header {
+    font-size: 36px;
+  }
+}
+@media (max-width: 768px){
+  p {
+    padding-top: 1rem;
+  }
+
+  .header {
+    padding-top: 3rem;
+  }
 }
 </style>
