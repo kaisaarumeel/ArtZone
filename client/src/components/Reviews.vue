@@ -35,7 +35,7 @@ export default {
 </script>
 <template>
     <div class="reviews">
-        <div class="profile-wrapper">
+        <div class="profile-wrapper mb-1">
             <h2>Seller profile</h2>
             <p class="underline">{{ seller }}</p>
         </div>
@@ -47,12 +47,12 @@ export default {
                     <span class="starRatingGrey">⭐⭐⭐⭐⭐</span><span :style="'width:'+this.starWidth+'px'" class="starRating">⭐⭐⭐⭐⭐</span>
                 </b-col>
                 <b-col class="text-center">
-                    <p>Member since: <span class="bold">2022-08-01</span></p>
+                    <p class="font-weight-light">Member since: <span class="font-weight-bold">2022-08-01</span></p>
                 </b-col>
             </b-row>
             <hr>
         </div>
-        <div class="reviews-wrapper">
+        <div class="reviews-wrapper px-3">
         <div v-for="(review, index) in reviews" :key="index">
             <div class="box">
                 <p>{{ review.description }} ⭐ {{ review.rating }}</p>
@@ -65,7 +65,6 @@ export default {
 <style scoped>
 .starRatingGrey{
   filter: grayscale(1);
-
 }
 .starRating{
   position: absolute;
@@ -78,25 +77,18 @@ export default {
     background-size: contain;
     background-blend-mode: multiply;
 }
-.profile-wrapper {
-    margin-bottom:0.5rem;
-}
+
 .underline{
     text-decoration:underline;
 }
-.bold {
-    font-weight:600
-}
+
 p{
-    font-weight:300;
     margin-bottom:0px;
 }
 h2 {
     font-size: 1.3rem;
 }
-h3 {
-    font-weight:300;
-}
+
 .box {
     margin-top:1rem;
     padding:0.5rem;
@@ -109,7 +101,7 @@ h3 {
 
 .reviews-wrapper::-webkit-scrollbar {
   width: 5px;
-border-radius:30px;
+  border-radius:30px;
 }
 
 /* Track */
@@ -131,8 +123,6 @@ border-radius:30px;
     max-height:10rem;
     overflow-x:hidden;
     overflow-y:scroll;
-    padding-left: 1rem;
-    padding-right: 1rem;
 
 }
 </style>
