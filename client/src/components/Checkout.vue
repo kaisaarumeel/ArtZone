@@ -10,7 +10,7 @@ async function getPaymentIntent(id) {
       'Content-Type': 'application/json'
     }
   })
-  return await response.json()
+  return response.data
 }
 
 export default {
@@ -75,7 +75,7 @@ export default {
     <div class="payment">
       <div class="payment-window m-auto p-4">
         <div v-if="!this.success" class="unpaid">
-          <p>Enter <strong>your payment</strong> details</p>
+          <p class="mb-1">Enter <strong>your payment</strong> details</p>
             <stripe-element-payment
               v-if="this.intentReceived===true"
               ref="paymentRef"
@@ -83,10 +83,10 @@ export default {
               :elements-options="elementsOptions"
               :confirm-params="confirmParams"
             />
-            <button class="mt-2 btn btn-primary" @click="pay">Pay SEK 129,000,000</button>
+            <button class="w-100 mt-2 btn btn-primary" @click="pay">Pay SEK 129,000,000</button>
         </div>
         <div v-else class="unpaid">
-          <p>Thank you for <strong>your order!</strong></p>
+          <p class="mb-1">Thank you for <strong>your order!</strong></p>
 
             <a href="" class="mt-2 btn btn-primary" @click="pay">Show my orders</a>
         </div>
@@ -99,13 +99,6 @@ export default {
     background-repeat: repeat;
     background-size: contain;
     background-blend-mode: multiply;
-  }
-  .payment-window button {
-    width: 100%;
-
-  }
-  p{
-    margin-bottom: 0.5rem;
   }
   button,a{
     border:1px solid #F7E6C4;
