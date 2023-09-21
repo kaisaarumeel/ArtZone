@@ -1,7 +1,7 @@
 <template>
- <div class="page-container">
-    <div class="image-container col-6"><img class="image" src="painting.jpeg" alt="Picture"></div>
-    <div class="input-fields-container col-6">
+ <b-row class="page-container">
+    <b-col cols="6"   class="image-container"><img class="image p-5" src="painting.jpeg" alt="Picture"></b-col>
+    <b-col cols="12" lg="6"  class="p-5">
         <h1>Add a new listing</h1>
 
     <b-form @submit="onSubmit" v-if="show">
@@ -64,8 +64,8 @@
 
     </b-form>
 
-    </div>
-</div>
+    </b-col>
+</b-row>
 </template>
 <script>
 import axios from 'axios'
@@ -116,20 +116,14 @@ export default {
   }
 }
 </script>
-<style>
-.page-container{
-    display: flex;
-    justify-content: center;
-}
+<style scoped>
 .image{
     height: auto;
     width: 100%;
-    padding: 3rem;
 }
 .image-container {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
 }
 h1 {
     font-weight: bold !important;
@@ -141,14 +135,9 @@ p {
 }
 
 .btn-container {
-    width: 100%;
     display: flex;
     justify-content: center;
     margin-top: 2rem;
-}
-
-.input-fields-container {
-    margin-right: 3rem;
 }
 
 .input-field {
@@ -156,7 +145,6 @@ p {
     color: #606C5D !important;
     mix-blend-mode: multiply !important;
     border-radius: 0 !important;
-    width: 100% !important;
 }
 .label {
     color: #606C5D !important;
@@ -174,7 +162,6 @@ p {
 .custom-file-label {
     border: none !important;
     border-radius: 0 !important;
-    width: 100% !important;
 }
 
 .custom-file-label::after {
@@ -183,17 +170,10 @@ p {
     border-radius: 0 !important;
 }
 
-@media screen and (max-width:900px) {
+@media screen and (max-width:1000px) {
     .image {
         display: none;
     }
-
-    .page-container {
-    flex-direction: column;
-}
-.input-fields-container {
-    max-width: 100% !important;
-}
 
 }
 </style>
