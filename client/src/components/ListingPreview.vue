@@ -3,13 +3,15 @@
       <div class="text-center">
       <img class="artwork" :src="picture">
       </div>
-      <div class="bottom">
-        <div class="author-name">
+      <b-row class="bottom">
+        <b-col cols="12" lg="6" class="author-name">
             <h1>{{name}}</h1>
             <p>{{author}}</p>
-        </div>
-            <b-button variant="primary">Buy now</b-button>
-      </div>
+        </b-col>
+        <b-col cols="12" lg="6">
+          <b-button variant="primary">Buy now</b-button>
+        </b-col>
+      </b-row>
 </div>
 </template>
 
@@ -40,10 +42,6 @@ export default {
 
 </script>
 <style scoped>
-  .border{
-    border:1px solid #606C5D !important;
-    padding:1rem;
-  }
 
   h1{
     font-size: 21px;
@@ -62,30 +60,14 @@ export default {
     width:100%;
     max-width: fit-content;
   }
-    .bottom {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content:space-between;
-    padding-bottom: 0;
-    margin: 0;
-    }
   .btn-primary{
-    width:40%;
+    width:100%;
     height: 50px;
     margin-top:1rem;
     margin-bottom: 0;
   }
 
   @media screen and (max-width:576px){
-
-    .bottom {
-        flex-direction: column;
-    }
-
-    .btn-primary {
-        width:100%;
-    }
 
     h1 {
         font-size: 16px;
