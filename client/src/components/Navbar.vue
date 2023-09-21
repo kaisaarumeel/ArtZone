@@ -15,7 +15,7 @@
     </div>
   <b-navbar-nav class="ml-auto">
 
-        <b-nav-nav>
+        <b-navbar-nav>
           <!-- Using 'button-content' slot -->
           <div class="login">
             <button class="sign-in-btn" href="#">Sign in</button>
@@ -23,7 +23,7 @@
               <b-button variant="primary" size="sm" class="sign-up-btn" href="#">Sign up for free</b-button>
             </div>
           </div>
-        </b-nav-nav>
+        </b-navbar-nav>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -55,7 +55,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 
 .nav-bar {
   padding: 2rem;
