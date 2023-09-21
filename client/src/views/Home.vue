@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <h1 class="header pb-1 text-center">
+    <h1 class="header pb-1 text-center mb-5">
       <span class="bold-text">Discover</span> and <span class="bold-text">sell</span> <br> your <span class="bold-text">artwork</span>.
     </h1>
     <ArtCarouselVue></ArtCarouselVue>
@@ -25,13 +25,13 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 h1 {
   color: #606C5D;
 }
 .header {
-  font-size: 36px;
+  font-size: 3rem;
 }
 
 .bold-text {
