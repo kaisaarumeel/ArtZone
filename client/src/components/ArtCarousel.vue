@@ -1,59 +1,65 @@
 <template>
-  <div class="carousel-container">
-    <carousel :perPage="1" :pagination="false" :autoplay="true">
-      <slide class="slide" v-for="(listing, index) in listings" :key="index">
-            <ListingPreviewVue :listing="listing"></ListingPreviewVue>
-      </slide>
-    </carousel>
+  <div>
+    <b-carousel
+      id="carousel-1"
+      v-model="slide"
+      :interval="4000"
+      controls
+      indicators
+      img-width="1024"
+      img-height="480"
+      style="text-shadow: 1px 1px 2px #333;"
+      @sliding-start="onSlideStart"
+      @sliding-end="onSlideEnd"
+    >
+
+      <b-carousel-slide
+        v-for="(slideData, index) in listings"
+        :key="index"
+        :img-blank="true"
+      >
+        <ListingPreviewVue :listing="slideData"></ListingPreviewVue>
+      </b-carousel-slide>
+
+    </b-carousel>
+
+    <p class="mt-4">
+      Slide #: {{ slide }}<br>
+      Sliding: {{ sliding }}
+    </p>
   </div>
 </template>
 
 <script>
-import { Carousel, Slide } from 'vue-carousel'
 import ListingPreviewVue from './ListingPreview.vue'
-
 export default {
-  components: {
-    Carousel,
-    Slide,
-    ListingPreviewVue
-  },
   data() {
     return {
+      slide: 0,
+      sliding: null,
+      isLargeScreen: window.innerWidth > 768,
       listings: [
-        { title: 'Listing 1' },
-        { title: 'Listing 2' },
-        { title: 'Listing 3' },
-        { title: 'Listing 3' },
-        { title: 'Listing 3' },
-        { title: 'Listing 3' },
-        { title: 'Listing 3' }
+        { title: 'Listing 1', picture: 'image1.jpg', author: 'Author 1' },
+        { title: 'Listing 2', picture: 'image2.jpg', author: 'Author 2' },
+        { title: 'Listing 3', picture: 'image3.jpg', author: 'Author 3' }
+        // Add more listing data objects as needed
       ]
+    }
+  },
+  components: {
+    ListingPreviewVue
+  },
+  methods: {
+    onSlideStart(slide) {
+      this.sliding = true
+    },
+    onSlideEnd(slide) {
+      this.sliding = false
     }
   }
 }
 </script>
 
-<style>
-.carousel-container {
-  width: 40%;
-  margin: 0 auto;
-}
-
-button.VueCarousel-dot--active {
-  background-color: #606C5D !important ;
-  outline: none !important;
-}
-
-.VueCarousel-dot {
-    outline: #606C5D !important;
-}
-
-@media screen and (max-width:900px){
-    .carousel-container {
-  width: 90%;
-  margin: 0 auto;
-}
-}
+<style scoped>
 
 </style>

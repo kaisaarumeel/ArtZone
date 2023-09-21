@@ -58,11 +58,10 @@ export default {
 
   .artwork{
     width:100%;
-    max-width: fit-content;
   }
   .btn-primary{
     width:100%;
-    height: 50px;
+    height: auto;
     margin-top:1rem;
     margin-bottom: 0;
   }
@@ -72,5 +71,6 @@ export default {
     h1 {
         font-size: 16px;
     }
+
   }
 </style>
