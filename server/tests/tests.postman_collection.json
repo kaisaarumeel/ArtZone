@@ -3,8 +3,8 @@
 		"_postman_id": "01dc0833-1f40-4086-96d5-090fc8711a50",
 		"name": "Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "28264405",
-		"_collection_link": "https://dark-flare-212796.postman.co/workspace/Web-Development~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-01dc0833-1f40-4086-96d5-090fc8711a50?action=share&source=collection_link&creator=28264405"
+		"_exporter_id": "28868794",
+		"_collection_link": "https://dark-flare-212796.postman.co/workspace/Web-Development~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-01dc0833-1f40-4086-96d5-090fc8711a50?action=share&source=collection_link&creator=28868794"
 	},
 	"item": [
 		{
@@ -1180,6 +1180,10 @@
 									"listen": "test",
 									"script": {
 										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"   pm.response.to.have.status(200);",
+											"});",
+											"",
 											"pm.test(\"Received listing\", function () {",
 											"        var jsonData = pm.response.json();",
 											"        pm.expect(jsonData.listings.length).to.eql(2);",
@@ -1239,6 +1243,10 @@
 									"listen": "test",
 									"script": {
 										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"   pm.response.to.have.status(200);",
+											"});",
+											"",
 											"pm.test(\"Received listing\", function () {",
 											"        var jsonData = pm.response.json();",
 											"        pm.expect(jsonData.listings.length).to.eql(2);",
@@ -1574,7 +1582,9 @@
 											"   pm.response.to.have.status(201);",
 											"});",
 											"",
+											"var postRespone = pm.response.json();",
 											"",
+											"pm.globals.set(\"listingToBeBoughtId\", postRespone.id)",
 											""
 										],
 										"type": "text/javascript"
@@ -1653,7 +1663,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"seller\": \"bobylon@gmail.com\",\r\n    \"listing\": \"{{orderToBeBoughtId}}\"\r\n}"
+									"raw": "{\r\n    \"seller\": \"bobylon@gmail.com\",\r\n    \"listing\": \"{{listingToBeBoughtId}}\"\r\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/orders",
@@ -1677,15 +1687,6 @@
 							"name": "Get all orders",
 							"event": [
 								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
 									"listen": "test",
 									"script": {
 										"exec": [
@@ -1695,9 +1696,18 @@
 											"\r",
 											"pm.test(\"Response message\", () => {\r",
 											"    const jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData[0].isReceived).to.eql(false);\r",
-											"    pm.collectionVariables.set(\"orderID\", jsonData[0]._id);\r",
+											"    pm.expect(jsonData.orders[0].isReceived).to.eql(false);\r",
+											"    pm.collectionVariables.set(\"orderID\", jsonData.orders[0]._id);\r",
 											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
 										],
 										"type": "text/javascript"
 									}
