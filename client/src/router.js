@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import SingleListing from './views/SingleListing.vue'
+import AddListing from './views/AddListing.vue'
 
 Vue.use(Router)
 export default new Router({
@@ -18,6 +19,11 @@ export default new Router({
       name: 'listing',
       props: true,
       component: SingleListing
+    },
+    {
+      path: '/addListing',
+      name: 'addListing',
+      component: AddListing
     }
   ]
 })

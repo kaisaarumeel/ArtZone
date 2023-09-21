@@ -1,6 +1,6 @@
 <template>
  <b-row class="page-container">
-    <b-col cols="6"   class="image-container"><img class="image p-5" src="painting.jpeg" alt="Picture"></b-col>
+    <b-col cols="6"   class="image-container"><img class="image p-5" src="/painting.jpeg" alt="Picture"></b-col>
     <b-col cols="12" lg="6"  class="p-5">
         <h1>Add a new listing</h1>
 
