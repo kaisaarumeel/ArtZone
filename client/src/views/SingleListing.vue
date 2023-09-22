@@ -52,7 +52,7 @@ export default {
       const paymentIntent = urlParams.get('payment_intent')
       if (paymentIntent == null) return
       this.success = true
-      document.getElementById('payment-button').click()
+      this.$refs.paymentModalTrigger.click()
       // User has completed order
 
       /*
@@ -132,7 +132,7 @@ export default {
         </b-row>
       </div>
       <div class="text-center">
-        <b-button class="mt-2" id="payment-button" v-b-modal.modal-2 variant="primary">Buy now</b-button>
+        <b-button id="payment-button" ref="paymentModalTrigger" v-b-modal.modal-2 variant="primary">Buy now</b-button>
       </div>
     </b-col>
   </b-row>
