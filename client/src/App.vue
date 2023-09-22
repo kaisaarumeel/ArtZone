@@ -2,6 +2,8 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link>
+      <router-link to="/listing/:id">Listing</router-link>
+      <router-link to="/user/register">Sign Up</router-link>
     </div>
     <!-- Render the content of the current page view -->
     <router-view/>
