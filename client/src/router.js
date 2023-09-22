@@ -21,7 +21,7 @@ export default new Router({
       component: SingleListing
     },
     {
-      path: '/addListing',
+      path: '/add-listing',
       name: 'addListing',
       component: AddListing
     }
