@@ -4,11 +4,11 @@
       <img class="artwork" :src="picture">
       </div>
       <b-row class="bottom">
-        <b-col cols="12" lg="6" class="author-name">
+        <b-col cols="6" class="author-name">
             <h1>{{name}}</h1>
             <p>{{author}}</p>
         </b-col>
-        <b-col cols="12" lg="6">
+        <b-col cols="6">
           <router-link :to="{ name: 'listing', params: { id: id } }">
           <b-button variant="primary">{{price}} <sup>SEK</sup></b-button>
           </router-link>
@@ -50,13 +50,15 @@ export default {
     font-size: 16px;
     font-weight: 600;
     text-align: left;
-    padding-top: 0.5rem;
+    padding-top: 1rem;
+    margin: 0;
   }
   p{
     font-size: 14px;
     text-align: left;
     color: #606C5D;
     padding: 0;
+    margin: 0;
   }
   .price p {
     font-size: 16px;
