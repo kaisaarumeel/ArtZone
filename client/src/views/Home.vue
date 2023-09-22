@@ -12,6 +12,7 @@
         We have developed this platfrom with love and care. Here you can sell your own art or artwork made by another author. The platfrom offers a wide range of artwork, starting with paintings and drawings and ending with sculptures or graphical design. Join us on this creative journey, and together, let's celebrate the beauty and diversity of the art world. </p></b-col>
     </b-row>
   </div>
+
 </template>
 
 <script>
