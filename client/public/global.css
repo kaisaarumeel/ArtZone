@@ -6,6 +6,7 @@ html,body{
     background-repeat: repeat;
     background-size: contain;
     background-blend-mode: multiply;
+    color:#606C5D;
 }
 .reviews .modal-footer { display: none; }
 .reviews .modal-content {

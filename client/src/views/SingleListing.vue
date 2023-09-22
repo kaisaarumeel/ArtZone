@@ -101,24 +101,24 @@ export default {
 
 </script>
 <template>
-<div class="single-listing">
-  <b-modal id="modal-2" modal-class="reviews" hide-backdrop>
+<div class="single-listing p-5">
+  <b-modal id="modal-2" modal-class="reviews w-100" hide-backdrop>
     <Checkout :id="this.id" :success="this.success"></Checkout>
   </b-modal>
-  <b-modal id="modal-1" modal-class="reviews" hide-backdrop>
+  <b-modal id="modal-1" modal-class="reviews w-100" hide-backdrop>
     <Reviews :email='seller' :seller='sellerReviewsName'></Reviews>
   </b-modal>
   <b-row cols="2">
     <b-col sm="12" md="12" lg="8" cols="12" >
       <div class="text-center">
-      <img class="border artwork" :src="picture">
+      <img class="border artwork w-100" :src="picture">
       </div>
     </b-col>
     <b-col sm="12" md="12" lg="4" cols="12">
-      <div class="border">
-      <h1>{{name}}</h1>
-      <p>{{author}} <br> by <span class="seller" v-b-modal.modal-1>{{seller }} ⭐{{sellerRating}}</span></p>
-      <p>{{ description }}</p>
+      <div class="border p-3">
+      <h1 class="font-weight-bold text-left">{{name}}</h1>
+      <p class="text-left">{{author}} <br> by <span class="seller font-weight-bold" v-b-modal.modal-1>{{seller }} ⭐{{sellerRating}}</span></p>
+      <p class="text-left">{{ description }}</p>
         <b-row cols="2">
           <b-col><span>Size: {{ size }}</span></b-col>
           <b-col><span>Type: {{ type }}</span></b-col>
@@ -128,7 +128,7 @@ export default {
           <b-col>Condition: {{ condition}}</b-col>
         </b-row>
         <b-row cols="1">
-          <b-col class="listing-price"><span><span class="price">SEK: {{ price }}</span> <sup>+ free shipping</sup></span></b-col>
+          <b-col class="listing-price text-center m-2"><span><span class="price font-weight-bold">SEK: {{ price }}</span> <sup>+ free shipping</sup></span></b-col>
         </b-row>
       </div>
       <div class="text-center">
@@ -141,61 +141,30 @@ export default {
 <style scoped>
   .border{
     border:1px solid #606C5D !important;
-    padding:1rem;
   }
   .seller{
     text-decoration: underline;
-    font-weight: 600;
   }
   h1{
     font-size: 21px;
-    font-weight: 600;
-    text-align: left;
   }
   p{
     font-size: 15px;
-    text-align: left;
   }
   .price{
-    font-weight: 600;
     font-size: 21px;
   }
-  .listing-price{
-    text-align: center;
-    margin:1rem;
-
-  }
   .artwork{
-    width:100%;
     max-width: fit-content;
     max-height: 80vh;
-  }
-  .single-listing{
-    padding:5rem;
   }
 
   .btn-primary{
     width:80%;
-    margin-top:1rem;
-
   }
   .modal-header,.modal-content,.modal-footer,#modal-1 {
     background-color: #606C5D;
-
   }
-
-  .modal-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    pointer-events: auto;
-    background-color: #606C5D !important;
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0.3rem;
-    outline: 0;
-}
 
   @media screen and (max-width:576px){
     .single-listing{
