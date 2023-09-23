@@ -1,6 +1,8 @@
 <script>
 import { Api } from '../Api.js'
 import ProfileForm from '../components/ProfileForm.vue'
+import sha256 from 'crypto-js/sha256'
+import CryptoJS from 'crypto-js'
 
 export default {
   components: {
@@ -14,7 +16,9 @@ export default {
   },
   methods: {
     async createUser(user) {
-      const response = await Api.post('http://localhost:3000/api/v1/users/register', user, {
+      const newUser = Object.assign(user)
+      newUser.password = sha256(user.password).toString(CryptoJS.enc.Hex)
+      const response = await Api.post('http://localhost:3000/api/v1/users/register', newUser, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -29,7 +33,7 @@ export default {
 <template>
   <div>
     <b-row>
-      <b-col class="pl-5 pt-5 ml-5 mt-5" cols="10">
+      <b-col class="pl-5 ml-5 pb-5" cols="10">
         <h4 class="titel">
           <span class="fontThickness">Sign up</span>
           <span> to </span>
@@ -38,16 +42,16 @@ export default {
       </b-col>
     </b-row>
     <b-row>
-      <b-col class="pl-5" md="6">
+      <b-col class="pl-5 pr-5" md="6">
         <ProfileForm v-on:user-creation="createUser($event)">Create Account</ProfileForm>
       </b-col>
       <b-col md="6">
-        <img src="../../public/SignupImage.png"
+        <img class="pl-5 pr-5 pb-3" src="../../public/SignupImage.png"
         alt="Sign up images">
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols="12">
+      <b-col cols="12" class="pb-3">
         <span class="signInText">
           <span>Already have an account? </span>
           <span class="signInLink">
@@ -61,7 +65,7 @@ export default {
 
 <style scoped>
   img{
-    width: 80%;
+    width: 100%;
     height: auto;
   }
   .titel{
