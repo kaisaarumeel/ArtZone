@@ -1,27 +1,36 @@
 <template>
 <div class="nav-bar">
   <b-navbar toggleable="lg">
+    <router-link to="/">
     <b-navbar-nav class="logo">
       Artzone
       </b-navbar-nav>
+      </router-link>
     <b-navbar-toggle target="nav-collapse" class="pages"></b-navbar-toggle>
 
     <b-collapse class="pages" id="nav-collapse" is-nav>
 
 <div class="middle">
+            <router-link to="/discover">
             <button size="sm" class="discover-btn" href="#">Discover</button>
+            </router-link>
             <button size="sm" class="about-us-btn" @click="navigateToAboutUs">About us</button>
+            <router-link to="/add-listing">
             <button size="sm" class="sell-btn" href="#">Sell your artwork</button>
+            </router-link>
     </div>
   <b-navbar-nav class="ml-auto">
 
         <b-navbar-nav>
           <!-- Using 'button-content' slot -->
           <div class="login">
-            <button class="sign-in-btn" href="#">Sign in</button>
+            <router-link to="/user/login">
+            <button class="sign-in-btn">Sign in</button>
+            </router-link>
+            <router-link to="/user/register">
             <div class="text-center">
-              <b-button variant="primary" size="sm" class="sign-up-btn" href="#">Sign up for free</b-button>
-            </div>
+              <b-button variant="primary" size="sm" class="sign-up-btn" >Sign up for free</b-button>
+            </div></router-link>
           </div>
         </b-navbar-nav>
       </b-navbar-nav>
@@ -47,8 +56,14 @@ export default {
 
       if (aboutUsSection) {
         aboutUsSection.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        this.$router.push('/').then(() => {
+          const aboutUsSection = document.getElementById('aboutUsSection')
+          if (aboutUsSection) {
+            aboutUsSection.scrollIntoView({ behavior: 'smooth' })
+          }
+        })
       }
-      this.toggleResponsiveMenu()
     }
   }
 }

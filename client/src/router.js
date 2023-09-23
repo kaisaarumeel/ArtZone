@@ -5,6 +5,7 @@ import SingleListing from './views/SingleListing.vue'
 import SignUp from './views/SignUp.vue'
 import SignIn from './views/SignIn.vue'
 import AddListing from './views/AddListing.vue'
+import Discover from './views/Discover.vue'
 
 Vue.use(Router)
 export default new Router({
@@ -33,11 +34,16 @@ export default new Router({
       name: 'sign in',
       props: true,
       component: SignIn
-    }, 
+    },
     {
       path: '/add-listing',
       name: 'addListing',
       component: AddListing
+    },
+    {
+      path: '/discover',
+      name: 'discover',
+      component: Discover
     }
   ]
 })
