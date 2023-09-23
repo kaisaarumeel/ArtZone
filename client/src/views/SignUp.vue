@@ -30,7 +30,7 @@ export default {
   <div>
     <b-row>
       <b-col cols="12">
-        <h4 class="titel">
+        <h4 class="title text-center">
           <span class="fontThickness">Sign up</span>
           <span> to </span>
           <span class="fontThickness">Artzone</span>
@@ -60,9 +60,7 @@ export default {
     width: 80%;
     height: auto;
   }
-  .titel{
-    margin-left: 10%;
-  }
+
   .fontThickness{
     font-size: 140%;
     font-weight: bold;
@@ -81,8 +79,6 @@ export default {
     .signInText{
         margin-left: 33%;
     }
-    .titel{
-        margin-left: 25%;
-    }
+
   }
 </style>
