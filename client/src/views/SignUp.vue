@@ -29,7 +29,7 @@ export default {
 <template>
   <div>
     <b-row>
-      <b-col class="pl-5 pt-5 ml-5 mt-5" cols="10">
+      <b-col cols="12">
         <h4 class="titel">
           <span class="fontThickness">Sign up</span>
           <span> to </span>
@@ -40,6 +40,7 @@ export default {
     <b-row>
       <b-col class="pl-5" md="6">
         <ProfileForm v-on:user-creation="createUser($event)">Create Account</ProfileForm>
+
       </b-col>
       <b-col md="6">
         <img src="../../public/SignupImage.png"
@@ -48,12 +49,7 @@ export default {
     </b-row>
     <b-row>
       <b-col cols="12">
-        <span class="signInText">
-          <span>Already have an account? </span>
-          <span class="signInLink">
-            <router-link to="/user/login">Sign in</router-link>
-          </span>
-        </span>
+
       </b-col>
     </b-row>
   </div>
