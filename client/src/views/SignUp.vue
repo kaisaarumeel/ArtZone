@@ -33,8 +33,8 @@ export default {
 <template>
   <div>
     <b-row>
-      <b-col class="pl-5 ml-5 pb-5" cols="10">
-        <h4 class="titel">
+      <b-col md="7" sm="12">
+        <h4 class="title text-center">
           <span class="fontThickness">Sign up</span>
           <span> to </span>
           <span class="fontThickness">Artzone</span>
@@ -42,22 +42,12 @@ export default {
       </b-col>
     </b-row>
     <b-row>
-      <b-col class="pl-5 pr-5" md="6">
+      <b-col class="pl-5 pr-3" md="6">
         <ProfileForm v-on:user-creation="createUser($event)">Create Account</ProfileForm>
       </b-col>
       <b-col md="6">
-        <img class="pl-5 pr-5 pb-3" src="../../public/SignupImage.png"
+        <img class="pl-2 pr-5 text-center" src="../../public/SignupImage.png"
         alt="Sign up images">
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols="12" class="pb-3">
-        <span class="signInText">
-          <span>Already have an account? </span>
-          <span class="signInLink">
-            <router-link to="/user/login">Sign in</router-link>
-          </span>
-        </span>
       </b-col>
     </b-row>
   </div>
@@ -68,9 +58,7 @@ export default {
     width: 100%;
     height: auto;
   }
-  .titel{
-    margin-left: 10%;
-  }
+
   .fontThickness{
     font-size: 140%;
     font-weight: bold;
@@ -89,8 +77,6 @@ export default {
     .signInText{
         margin-left: 33%;
     }
-    .titel{
-        margin-left: 25%;
-    }
+
   }
 </style>

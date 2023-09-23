@@ -359,6 +359,7 @@ export default {
           v-model="user.address.zip"
           type="number"
           placeholder="75234"
+          min="0"
           ></b-form-input>
         </b-col>
         <b-col cols="6">
@@ -367,9 +368,18 @@ export default {
         </b-col>
       </b-row>
       <b-row align-h="center">
-        <b-col  sm="5" md="5" lg="5">
-          <button class="mt-4 btn btn-primary ml-5" @click="$emit('user-creation', user)"><slot>Save</slot></button>
+        <b-col cols="12 text-center">
+          <button class="mt-4 btn btn-primary" @click="$emit('user-creation', user)"><slot>Save</slot></button>
         </b-col>
+        <b-col cols="12">
+          <p class="signInText text-center mt-2">
+          <span>Already have an account? </span>
+          <span class="signInLink">
+            <router-link to="/user/login">Sign in</router-link>
+          </span>
+        </p>
+        </b-col>
+
       </b-row>
   </div>
 </template>
