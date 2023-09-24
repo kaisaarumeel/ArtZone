@@ -24,13 +24,20 @@
         <b-navbar-nav>
           <!-- Using 'button-content' slot -->
           <div class="login">
-            <router-link to="/user/login">
-            <button class="sign-in-btn">Sign in</button>
-            </router-link>
-            <router-link to="/user/register">
-            <div class="text-center">
-              <b-button variant="primary" size="sm" class="sign-up-btn" >Sign up for free</b-button>
-            </div></router-link>
+            <div class="text-right" v-if="hasSession()">
+              <router-link to="/user/profile">
+                <img src="../../public/profile.png">
+              </router-link>
+            </div>
+            <div v-else>
+              <router-link to="/user/login">
+              <button class="sign-in-btn">Sign in</button>
+              </router-link>
+              <router-link to="/user/register">
+              <div class="text-center">
+                <b-button variant="primary" size="sm" class="sign-up-btn" >Sign up for free</b-button>
+              </div></router-link>
+            </div>
           </div>
         </b-navbar-nav>
       </b-navbar-nav>
@@ -53,6 +60,7 @@ export default {
   methods: {
     navigateToAboutUs() {
       const aboutUsSection = document.getElementById('aboutUsSection')
+      console.log(localStorage.getItem('sessionKey'))
 
       if (aboutUsSection) {
         aboutUsSection.scrollIntoView({ behavior: 'smooth' })
@@ -64,6 +72,13 @@ export default {
           }
         })
       }
+    },
+    hasSession() {
+      if (!localStorage.getItem('sessionKey')) {
+        return false
+      } else {
+        return true
+      }
     }
   }
 }
@@ -74,6 +89,18 @@ export default {
 
 .nav-bar {
   padding: 2rem;
+}
+img{
+  width: 10%;
+  height: auto;
+}
+.profile-btn{
+    background: none;
+    border: none;
+    color: #606C5D;
+    font-weight: bold;
+    width: 10cm;
+    height: auto;
 }
 .logo {
     text-decoration: underline;

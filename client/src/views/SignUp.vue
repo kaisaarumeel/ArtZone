@@ -18,7 +18,7 @@ export default {
     async createUser(user) {
       const newUser = Object.assign(user)
       newUser.password = sha256(user.password).toString(CryptoJS.enc.Hex)
-      const response = await Api.post('http://localhost:3000/api/v1/users/register', newUser, {
+      const response = await Api.post('users/register', newUser, {
         headers: {
           'Content-Type': 'application/json'
         }

@@ -301,6 +301,7 @@ export default {
           v-model="user.dateOfBirth"
           type="date"
           placeholder="Enter your birth date"
+          required
           ></b-form-input>
         </b-col>
       </b-row>
@@ -313,6 +314,7 @@ export default {
           v-model="user.userEmail"
           type="email"
           placeholder="bob@gmail.com"
+          required
           ></b-form-input>
         </b-col>
       </b-row>
@@ -325,6 +327,7 @@ export default {
           v-model="user.password"
           type="password"
           placeholder="Enter your password"
+          required
           ></b-form-input>
         </b-col>
       </b-row>
@@ -337,6 +340,7 @@ export default {
           v-model="user.address.street"
           type="text"
           placeholder="Enter your street name"
+          required
           ></b-form-input>
         </b-col>
         <b-col cols="6">
@@ -347,6 +351,7 @@ export default {
           v-model="user.address.city"
           type="text"
           placeholder="Enter your city name"
+          required
           ></b-form-input>
         </b-col>
       </b-row>
@@ -360,11 +365,12 @@ export default {
           type="number"
           placeholder="75234"
           min="0"
+          required
           ></b-form-input>
         </b-col>
         <b-col cols="6">
           <label> Country </label>
-          <b-form-select id="country-input" class="input" v-model="user.address.country" :options="countries"></b-form-select>
+          <b-form-select id="country-input" class="input" v-model="user.address.country" :options="countries" requred></b-form-select>
         </b-col>
       </b-row>
       <b-row align-h="center">
