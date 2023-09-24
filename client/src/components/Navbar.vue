@@ -14,7 +14,7 @@
             <router-link to="/discover">
             <button size="sm" class="discover-btn" href="#">Discover</button>
             </router-link>
-            <button size="sm" class="about-us-btn" @click="navigateToAboutUs">About us</button>
+            <button size="sm" class="about-us-btn" @click="navigateToAboutUs()">About us</button>
             <router-link to="/add-listing">
             <button size="sm" class="sell-btn" href="#">Sell your artwork</button>
             </router-link>
@@ -23,13 +23,13 @@
 
         <b-navbar-nav>
           <!-- Using 'button-content' slot -->
-          <div class="login">
-            <div class="text-right" v-if="hasSession()">
+          <div class="login text-right" >
+            <div v-if="userData !== null">
               <router-link to="/user/profile">
                 <img src="../../public/profile.png">
               </router-link>
             </div>
-            <div v-else>
+            <div class="login" v-else>
               <router-link to="/user/login">
               <button class="sign-in-btn">Sign in</button>
               </router-link>
@@ -57,10 +57,14 @@ export default {
       isResponsive: false
     }
   },
+  computed: {
+    userData: function () { return localStorage.getItem('userData') }
+  },
   methods: {
     navigateToAboutUs() {
       const aboutUsSection = document.getElementById('aboutUsSection')
-      console.log(localStorage.getItem('sessionKey'))
+      localStorage.setItem('sessionKey', '')
+      console.log(this.userData)
 
       if (aboutUsSection) {
         aboutUsSection.scrollIntoView({ behavior: 'smooth' })
@@ -73,12 +77,10 @@ export default {
         })
       }
     },
-    hasSession() {
-      if (!localStorage.getItem('sessionKey')) {
-        return false
-      } else {
-        return true
-      }
+    initEventListener() {
+      window.addEventListener('loggedInEvent', (e) => {
+        this.userData = localStorage.getItem('userData')
+      })
     }
   }
 }

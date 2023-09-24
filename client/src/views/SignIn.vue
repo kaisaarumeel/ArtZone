@@ -15,23 +15,28 @@ export default {
   },
   methods: {
     async logUserIn() {
-      console.log(this.data)
       const request = Object.assign(this.data)
-      console.log(request)
       request.password = sha256(request.password).toString(CryptoJS.enc.Hex)
-      console.log(request)
-      const response = await Api.post('users/login', request, {
+      Api.post('users/login', request, {
         headers: {
           'Content-Type': 'application/json'
         }
+      }).then((response) => {
+        if (response.status === 200) {
+          const data = {
+            userEmail: request.userEmail,
+            sessionKey: response.data.key
+          }
+          localStorage.setItem('userData', JSON.stringify(data))
+          const loggedInEvent = new CustomEvent('loggedIn', {})
+          window.dispatchEvent(loggedInEvent)
+          this.success = true
+          this.$router.push({ path: '/' })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.loginRespose = 'Could not find an account with given email or password. Please try again'
       })
-      if (response.status === 200) {
-        localStorage.setItem('sessionKey', response.data.key)
-        this.success = true
-        this.$router.push({ path: '/' })
-      } else {
-        this.loginRespose = 'Something went wrong.'
-      }
     }
   }
 }
@@ -42,7 +47,7 @@ export default {
         <b-row>
             <b-col cols="12" md="6">
                 <h4 class="text-center">
-                    <span class="fontThickness">Sign up</span>
+                    <span class="fontThickness">Sign in</span>
                     <span> to </span>
                     <span class="fontThickness">Artzone</span>
                 </h4>
@@ -56,7 +61,7 @@ export default {
                     class="input-field"
                     ></b-form-input>
                 </b-form-group>
-                <b-form-group class="label" label="password" label-for="input-2">
+                <b-form-group class="label" label="password*" label-for="input-2">
                     <b-form-input
                     id="input-2"
                     v-model="data.password"
@@ -69,7 +74,7 @@ export default {
                 <div class="text-center">
                     <b-button v-on:click="logUserIn()" variant="primary">Log in</b-button>
                 </div>
-                <p v-if="!success"> {{loginRespose}} </p>
+                <p class="error" v-if="!success"> {{loginRespose}} </p>
             </b-col>
             <b-col cols="6">
                 <img class="pl-2 pr-5 text-center" src="../../public/SignupImage.png"
@@ -83,6 +88,9 @@ export default {
   .fontThickness{
     font-size: 140%;
     font-weight: bold;
+  }
+  .error{
+    color: red;
   }
   .input-field {
     background: #FFF4F4;
