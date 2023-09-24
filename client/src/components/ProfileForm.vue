@@ -1,20 +1,21 @@
 <script>
 export default {
-  props: [
-
-  ],
   data() {
     return {
       user: {
-        firstName: '',
-        lastName: '',
-        dateOfBirth: null,
-        email: '',
+        name: {
+          firstName: '',
+          lastName: ''
+        },
+        dateOfBirth: '',
+        userEmail: '',
         password: '',
-        street: '',
-        city: '',
-        zip: 0,
-        country: ''
+        address: {
+          country: '',
+          street: '',
+          zip: 0,
+          city: ''
+        }
       },
       countries: [
         { text: 'Afghanistan', value: 'AF' },
@@ -268,15 +269,14 @@ export default {
 </script>
 
 <template>
-  <div class="inputForm">
-    <b-form class="formClass">
+  <div class="">
       <b-row>
         <b-col cols="6">
           <label> First name </label>
           <b-form-input
           class="input"
           id="firstName-input"
-          v-model="user.firstName"
+          v-model="user.name.firstName"
           type="text"
           placeholder="Enter your first name"
           ></b-form-input>
@@ -286,7 +286,7 @@ export default {
           <b-form-input
           class="input"
           id="lastName-input"
-          v-model="user.lastName"
+          v-model="user.name.lastName"
           type="text"
           placeholder="Enter your last name"
           ></b-form-input>
@@ -310,7 +310,7 @@ export default {
           <b-form-input
           class="input"
           id="email-input"
-          v-model="user.email"
+          v-model="user.userEmail"
           type="email"
           placeholder="bob@gmail.com"
           ></b-form-input>
@@ -334,7 +334,7 @@ export default {
           <b-form-input
           class="input"
           id="street-input"
-          v-model="user.street"
+          v-model="user.address.street"
           type="text"
           placeholder="Enter your street name"
           ></b-form-input>
@@ -344,7 +344,7 @@ export default {
           <b-form-input
           class="input"
           id="city-input"
-          v-model="user.city"
+          v-model="user.address.city"
           type="text"
           placeholder="Enter your city name"
           ></b-form-input>
@@ -355,23 +355,32 @@ export default {
           <label> ZIP </label>
           <b-form-input
           class="input"
-          id="firstName-input"
-          v-model="user.zip"
+          id="zip-input"
+          v-model="user.address.zip"
           type="number"
           placeholder="75234"
+          min="0"
           ></b-form-input>
         </b-col>
         <b-col cols="6">
           <label> Country </label>
-          <b-form-select class="input" v-model="user.country" :options="countries"></b-form-select>
+          <b-form-select id="country-input" class="input" v-model="user.address.country" :options="countries"></b-form-select>
         </b-col>
       </b-row>
       <b-row align-h="center">
-        <b-col cols="5">
-          <button class="mt-4 btn btn-primary ml-5" @click="$emit('user-creation', user)"><slot>Save</slot></button>
+        <b-col cols="12 text-center">
+          <button class="mt-4 btn btn-primary" @click="$emit('user-creation', user)"><slot>Save</slot></button>
         </b-col>
+        <b-col cols="12">
+          <p class="signInText text-center mt-2">
+          <span>Already have an account? </span>
+          <span class="signInLink">
+            <router-link to="/user/login">Sign in</router-link>
+          </span>
+        </p>
+        </b-col>
+
       </b-row>
-    </b-form>
   </div>
 </template>
 
