@@ -56,6 +56,9 @@ app.use("/api/v1/users/:email/orders", orders);
 app.use("/api/v1/checkout", checkout);
 app.use("/api/v1/users/:email/reviews", reviews);
 app.use("/api/v1/random-listings", randomListings)
+app.get('/api', function(req, res) {
+    res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
+});
 
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
