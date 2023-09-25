@@ -6,7 +6,7 @@ const User = require('../models/user.js');
 router.get('/', async (req, res) => {
   try {
     const page = parseInt(req.params.page); // Requested page number
-    const perPage = 2; // Number of listings per page 
+    const perPage = 6; // Number of listings per page 
     const skip = (page - 1) * perPage;
 
     // Find all users

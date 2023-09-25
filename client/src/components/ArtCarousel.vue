@@ -64,19 +64,14 @@ export default {
     async fetchRandomListings() {
       try {
         const response = await axios.get('http://localhost:3000/api/v1/random-listings')
-        this.listings = response.data.map(listing => ({
-          author: listing.author,
-          name: listing.name,
-          picture: listing.picture,
-          id: listing.id
-        }))
+        this.listings = response.data
       } catch (error) {
         console.log(error)
       }
     },
     buyNowClick() {
       if (this.userLoggedIn) {
-        this.$router.push({ name: 'listing', params: 1 })
+        this.$router.push({ name: 'listing', params: { id: this.id } })
       } else {
         this.$bvModal.show('loginModal')
       }

@@ -20,26 +20,12 @@
 <script>
 
 export default {
-  mounted() {
-    this.getData()
-  },
-  data() {
-    return {
-      picture: null,
-      name: null,
-      author: null,
-      price: null,
-      id: null
-    }
-  },
-  methods: {
-    async getData() {
-      this.picture = 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg'
-      this.name = 'The Last Supper'
-      this.author = 'Leonardo Da Vinci'
-      this.price = 200000
-      this.id = 1
-    }
+  props: {
+    picture: String,
+    name: String,
+    author: String,
+    price: Number,
+    id: Number
   }
 }
 
@@ -67,7 +53,8 @@ export default {
     margin: 0;
   }
   .artwork{
-    width:100%;
+    max-height: 30vh;
+    width: auto;
   }
   .btn-primary{
     width:100%;
