@@ -11,13 +11,19 @@ const client = new paypal.core.PayPalHttpClient(env);
 
 
 router.post("/",async (req,res)=>{
-  console.log(req.body)
+  if(!req.auth) res.sendStatus(403);
 
   try{
+    const buyer = await UserSchema.findOne({userEmail:req.body.buyer});
+    if (!buyer) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    console.log(buyer)
     const user = await UserSchema.findOne({userEmail:req.body.email});
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
     }
+    console.log(user)
 
     // Get the listing with the given name
     const foundListing = user.listings.find(listing => listing.id ===  req.body.id);
@@ -38,7 +44,20 @@ router.post("/",async (req,res)=>{
                 },
                 "payee": {
                     "email_address": "bobtheseller@person.example.com"
-                }
+                },
+                "shipping": {
+                  "name": {
+                      "full_name": buyer.name.firstName+" "+buyer.name.lastName
+                  },
+                  "address": {
+                      "address_line_1": buyer.address.street,
+                      "address_line_2": "",
+                      "admin_area_2": buyer.address.city,
+                      "admin_area_1": "",
+                      "postal_code": buyer.address.zip,
+                      "country_code": buyer.address.country
+                  }
+              }
             }
         ]
     });
@@ -48,7 +67,7 @@ router.post("/",async (req,res)=>{
         console.log(`Response: ${JSON.stringify(response)}`);
         // If call returns body in response, you can get the deserialized version from the result attribute of the response.
         console.log(`Order: ${JSON.stringify(response.result)}`);
-        return res.status(200).json(response.result);
+        return res.status(201).json(response.result);
     };
     createOrder();
 
@@ -59,19 +78,5 @@ router.post("/",async (req,res)=>{
 
 })
 
-router.post("/:id",async (req,res)=>{
-
-  let captureOrder =  async function(orderId) {
-    request = new paypal.orders.OrdersCaptureRequest(orderId);
-    request.requestBody({});
-    // Call API with your client and get a response for your call
-    let response = await client.execute(request);
-    return response.result;
-}
-
-
-  const capture=await captureOrder(req.params.id)
-  res.status(200).json(capture)
-})
 
 module.exports=router;

@@ -25,7 +25,8 @@ router.post("/", async function(req, res){
             price: listingPrice,
             picture: listingPicture,
             description: listingDescription,
-            creator:userEmail
+            creator:userEmail,
+            sold:false,
         })
         try{
             const error =  await newListing.validate();
@@ -211,6 +212,7 @@ router.patch("/:id", async function(req, res){
         for (let key in req.body){
             patch_data["listings.$."+key]=req.body[key];
         }
+        
         let result=await UserSchema.findOneAndUpdate(
             {
                 userEmail:userEmail,

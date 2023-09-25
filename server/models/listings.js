@@ -9,7 +9,8 @@ const listingSchema = new mongoose.Schema({
      picture: { type: String, required: true},
      description: {type: String, minlength: 0,
           maxlength: 1000},
-     creator: {type: String, immutable:true,required:true}
+     creator: {type: String, immutable:true,required:true},
+     sold:{type:Boolean,required:true}
 });
 
 const ListingModel = mongoose.model("Listing", listingSchema);

@@ -30,6 +30,7 @@ async function restricted_resource_general(req, res, next){
 async function restricted_resource_email(req, res, next){
     const requestedPath=req.originalUrl.split("/")
     if(BYPASS_RESTRICTED_EMAIL_RESOURCE.includes(requestedPath[requestedPath.length-1])) return next(); 
+    console.log(req.headers)
     if(req.headers["x-auth-token"]==undefined) return res.sendStatus(403);
     let auth_obj={
         "auth":false, // is user authorized
@@ -41,7 +42,8 @@ async function restricted_resource_email(req, res, next){
     
     if(result!=null){
         if(result.session.key==req.headers["x-auth-token"]){
-            if(req.params.email==result.userEmail && parseInt(Date.now()/1000)<parseInt(result.session.expires)){
+            if((!result.isAdmin && req.params.email==result.userEmail && parseInt(Date.now()/1000)<parseInt(result.session.expires)) 
+            || (result.isAdmin && parseInt(Date.now()/1000)<parseInt(result.session.expires))){
                 auth_obj.auth=true;
                 auth_obj.authEmail=result.userEmail;
                 if(result.isAdmin){

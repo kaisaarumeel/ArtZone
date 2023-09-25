@@ -28,17 +28,21 @@ export default {
         this.$router.push('login')
       }
       const headers = {
-        'X-Auth-Token': userData.sessionKey
+        'X-Auth-Token': parsedData.sessionKey
       }
       const payload = {
-        id: this.id, email: this.email
+        id: this.id, email: this.email, buyer: parsedData.userEmail
+      }
+      const orderPayload = {
+        seller: this.email,
+        listing: this.id
       }
       const self = this
       paypal.Buttons({
 
         // Call your server to set up the transaction
         createOrder: function (data, actions) {
-          return Api.post('checkout', payload, headers).then(function (res) {
+          return Api.post('checkout', payload, { headers }).then(function (res) {
             return res.data
           }).then(function (orderData) {
             console.log(orderData)
@@ -48,7 +52,8 @@ export default {
 
         // Call your server to finalize the transaction
         onApprove: function (data, actions) {
-          return Api.post('checkout/' + data.orderID, payload, headers).then(function (res) {
+          orderPayload.paypalOrderId = data.orderID
+          return Api.post('users/' + parsedData.userEmail + '/orders', orderPayload, { headers }).then(function (res) {
             return res.data
           }).then((orderData) => {
             // Three cases to handle:
@@ -79,6 +84,11 @@ export default {
             // element.innerHTML = '';
             // element.innerHTML = '<h3>Thank you for your payment!</h3>';
             // Or go to another URL:  actions.redirect('thank_you.html');
+          }).catch(() => {
+            self.showError = true
+            setTimeout(() => {
+              self.showError = false
+            }, 3000)
           })
         }
 
@@ -94,22 +104,27 @@ export default {
 <template>
     <div class="payment">
       <div class="payment-window m-auto p-4">
+        <p class="p-2 error" v-if="showError">An error occurred. Please try again later.</p>
+
         <div v-if="!this.success" class="unpaid">
           <div id="paypal-button-container"></div>
         </div>
         <div v-else>
-          <div class="paid">
-          <p class="py-3"><span class="pay">Your order</span> <strong class="pal">is confirmed!</strong></p>
-        </div>
-        <div class="paid-orders">
-          <a href="" class="py-3">My orders</a>
-        </div>
+            <div class="paid">
+            <p class="py-3"><span class="pay">Your order</span> <strong class="pal">is confirmed!</strong></p>
+          </div>
+          <div class="paid-orders">
+            <p href="" class="py-3">My orders</p>
+          </div>
         </div>
 
       </div>
     </div>
   </template>
 <style scoped>
+.error {
+  color:red;
+}
   .payment{
     background-image: url(../../public/bg.png);
     background-repeat: repeat;
