@@ -32,6 +32,11 @@ export default {
 </script>
 <style scoped>
 
+.single-listing {
+  padding: 1rem;
+  border: 1px solid #606C5D;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
   h1{
     font-size: 16px;
     font-weight: 600;

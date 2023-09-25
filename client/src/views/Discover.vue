@@ -94,7 +94,7 @@ export default {
   grid-template-columns: repeat(3, 1fr);
   gap: 3rem; /* Adjust the gap between listings */
 }
-@media screen and (max-width:992px) {
+@media screen and (max-width:1200px) {
     .listing-grid {
      grid-template-columns: repeat(2, 1fr);
     }
