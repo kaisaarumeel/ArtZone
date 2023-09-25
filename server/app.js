@@ -30,6 +30,7 @@ const orders = require("./controllers/orders.controller");
 const port = process.env.PORT || 3000;
 const checkout = require("./controllers/checkout.controller")
 const registration=require("./controllers/registration.controller")
+const randomListings = require("./controllers/randomListings.controller")
 
 // Create Express app
 const app = express();
@@ -54,17 +55,8 @@ app.use("/api/v1/listings/page/:page", listingsPage);
 app.use("/api/v1/users/:email/orders", orders);
 app.use("/api/v1/checkout", checkout);
 app.use("/api/v1/users/:email/reviews", reviews);
+app.use("/api/v1/random-listings", randomListings)
 
-// Import routes
-/*app.get('/api', function(req, res) {
-    res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
-});*/
-
-
-
-app.get('/api', function(req, res) {
-    res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
-});
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {

@@ -93,7 +93,7 @@ export default {
   padding: 2rem;
 }
 img{
-  width: 10%;
+  width: 8%;
   height: auto;
 }
 .profile-btn{
@@ -168,6 +168,11 @@ background: none;
     margin-right: 1.5rem!important;
   }
 
+img{
+  width: 6%;
+  height: auto;
+  margin-right: 2rem;
+}
 }
 
 </style>

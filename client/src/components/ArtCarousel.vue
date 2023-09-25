@@ -11,47 +11,41 @@
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
     >
-
-     <!-- <b-carousel-slide
-      <b-row class="bottom">
-        <b-col cols="12" lg="6" class="author-name">
-            <h1>{{name}}</h1>
-            <p>{{author}}</p>
-        </b-col>
-        <b-col cols="12" lg="6">
-          <b-button variant="primary">Buy now</b-button>
-        </b-col>
-      </b-row>
-
-        <ListingPreviewVue></ListingPreviewVue>
-      </b-carousel-slide> -->
       <b-carousel-slide
       v-for="(slideData, index) in listings"
         :key="index"
         :img-src="slideData.picture"
-        :caption-html="slideData.captionHTML"
-      ></b-carousel-slide>
-
+      >
+      <b-row cols="2" class="carousel-caption">
+        <b-col cols="12" lg="6" md="6" sm="12"><h1>{{ slideData.name }}</h1>
+          <p>{{ slideData.author }}</p></b-col>
+        <b-col class="btn-container" cols="12" lg="6" md="6" sm="12">
+          <button @click="buyNowClick" variant= "primary" class="buyButton">Buy now</button>
+          </b-col>
+        </b-row>
+      </b-carousel-slide>
     </b-carousel>
 
+<b-modal id="loginModal" title="Login Required">
+    <p>You need to be logged in to buy this piece.</p>
+  </b-modal>
   </div>
 </template>
 
 <script>
-
+import axios from 'axios'
+import { BModal } from 'bootstrap-vue'
 export default {
   data() {
     return {
       slide: 0,
       sliding: null,
-      isLargeScreen: window.innerWidth > 768,
-      listings: [
-        { title: 'Listing 1', picture: 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg', author: 'Author 1', captionHTML: '<div class="row bottom"><div class="col"><h1>The Last Supper</h1><p>Leonardo Da Vinci</p></div><div class="col"><button class="btn btn-primary">Buy now</button></div></div>' },
-        { title: 'Listing 2', picture: 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg', author: 'Author 1', captionHTML: '<div class="row bottom"><div class="col"><h1>The Last Supper</h1><p>Leonardo Da Vinci</p></div><div class="col"><button class="btn btn-primary">Buy now</button></div></div>' },
-        { title: 'Listing 3', picture: 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg', author: 'Author 1', captionHTML: '<div class="row bottom"><div class="col"><h1>The Last Supper</h1><p>Leonardo Da Vinci</p></div><div class="col"><button class="btn btn-primary">Buy now</button></div></div>' }
-        // Add more listing data objects as needed
-      ]
+      userLoggedIn: false,
+      listings: []
     }
+  },
+  components: {
+    BModal
   },
   methods: {
     onSlideStart(slide) {
@@ -59,19 +53,51 @@ export default {
     },
     onSlideEnd(slide) {
       this.sliding = false
+    },
+    getUserDataFromLocalStorage() {
+      // Retrieve user data from local storage
+      const userData = localStorage.getItem('userData')
+      if (userData) {
+        this.userLoggedIn = true
+      }
+    },
+    async fetchRandomListings() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/v1/random-listings')
+        this.listings = response.data.map(listing => ({
+          author: listing.author,
+          name: listing.name,
+          picture: listing.picture,
+          id: listing.id
+        }))
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    buyNowClick() {
+      if (this.userLoggedIn) {
+        this.$router.push({ name: 'listing', params: 1 })
+      } else {
+        this.$bvModal.show('loginModal')
+      }
     }
+  },
+  mounted() {
+    this.getUserDataFromLocalStorage()
+    this.fetchRandomListings()
   }
 }
 </script>
 
 <style>
-
+#carousel-homepage .w-100 {
+    width: auto !important;
+}
 #carousel-homepage img {
-    /* padding: 10rem; */
     padding-left: 5rem;
     padding-right: 5rem;
     padding-bottom: 10rem;
-    max-width: 65vw;
+    max-height: 65vh;
     margin-left: auto;
     margin-right: auto;
 }
@@ -79,6 +105,7 @@ export default {
     max-width: 55vw;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 30px !important;
 }
 
 #carousel-homepage .carousel-inner {
@@ -88,7 +115,6 @@ export default {
     font-size: 21px;
     font-weight: 800;
     text-align: left;
-    padding-top: 1rem;
     color: #606C5D;
 
   }
@@ -113,20 +139,8 @@ export default {
     margin-bottom: 0;
   }
 
-  @media screen and (max-width:576px){
-
-    #carousel-homepage .carousel-caption h1 {
-        font-size: 16px;
-    }
-
-  }
-
   @media screen and (max-width:1200px){
 
-    #carousel-homepage img {
-  max-width: 65vw;
-
-}
 #carousel-homepage .carousel-caption {
   max-width: 55vw;
 
@@ -143,7 +157,34 @@ export default {
 }
 }
 
-</style>
-<style scoped>
+@media screen and (max-width:768px){
+    #carousel-homepage img {
+    margin-bottom: 20px;
+  }
 
+}
+</style>
+
+<style scoped>
+.btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+
+h1 {
+  font-size: 14px !important;
+}
+
+p {
+  font-size: 12px !important;
+}
+
+.buyButton {
+  width: 100%;
+}
+
+}
 </style>

@@ -47,7 +47,11 @@ async function restricted_resource_email(req, res, next){
                 }
                 req.auth=auth_obj;    
                 return next();
-            } else {
+            }
+            if (req.path === "/api/v1/random-listings") {
+                return next();
+              }
+             else {
                 req.auth=auth_obj;    
                 return res.sendStatus(403);
             }
