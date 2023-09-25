@@ -12,11 +12,11 @@
 
 <div class="middle">
             <router-link to="/discover">
-            <button size="sm" class="discover-btn" href="#">Discover</button>
+            <button size="sm" class="discover-btn" :class="{ 'active': currentRoute === '/discover' }">Discover</button>
             </router-link>
-            <button size="sm" class="about-us-btn" @click="navigateToAboutUs()">About us</button>
+            <button size="sm" class="about-us-btn" @click="navigateToAboutUs()" >About us</button>
             <router-link to="/add-listing">
-            <button size="sm" class="sell-btn" href="#">Sell your artwork</button>
+            <button size="sm" class="sell-btn" :class="{ 'active': currentRoute === '/add-listing' }" >Sell your artwork</button>
             </router-link>
     </div>
   <b-navbar-nav class="ml-auto">
@@ -54,7 +54,13 @@ export default {
   name: 'navbar',
   data() {
     return {
-      isResponsive: false
+      isResponsive: false,
+      currentRoute: '/'
+    }
+  },
+  watch: {
+    $route(to) {
+      this.currentRoute = to.path
     }
   },
   computed: {
@@ -88,7 +94,10 @@ export default {
 </script>
 
 <style scoped>
-
+.active {
+  color: #F1C376 !important;
+  text-decoration: underline !important;
+}
 .nav-bar {
   padding: 2rem;
 }
