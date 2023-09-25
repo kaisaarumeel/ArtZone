@@ -122,18 +122,19 @@ export default {
           payload[key] = state.listing[key].value
         }
         payload.picture = reader.result
-        const loginData = {
-          userEmail: 'bob@gmail.com',
-          password: '81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9'
-        }
 
-        const loginResult = await axios.post('http://localhost:3000/api/v1/users/login', loginData)
-        const sessionKey = loginResult.data.key
+        const userDataString = localStorage.getItem('userData')
+        const userData = JSON.parse(userDataString)
+        const sessionKey = userData.sessionKey
+        const email = userData.userEmail
+
+        const apiUrl = `http://localhost:3000/api/v1/users/${email}/listings`
+        console.log(apiUrl)
         const headers = {
           'X-Auth-Token': sessionKey
         }
 
-        axios.post('http://localhost:3000/api/v1/users/bob@gmail.com/listings', payload, { headers })
+        axios.post(apiUrl, payload, { headers })
           .then(response => {
             // Handle the successful response, e.g., show a success message or redirect
             console.log(response.data)

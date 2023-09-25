@@ -3,8 +3,8 @@
 		"_postman_id": "01dc0833-1f40-4086-96d5-090fc8711a50",
 		"name": "Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "28868794",
-		"_collection_link": "https://dark-flare-212796.postman.co/workspace/Web-Development~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-01dc0833-1f40-4086-96d5-090fc8711a50?action=share&source=collection_link&creator=28868794"
+		"_exporter_id": "28264405",
+		"_collection_link": "https://dark-flare-212796.postman.co/workspace/Web-Development~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-01dc0833-1f40-4086-96d5-090fc8711a50?action=share&source=collection_link&creator=28264405"
 	},
 	"item": [
 		{
@@ -117,7 +117,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"userEmail\":\"bob@gmail.com\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\"\n}"
+									"raw": "{\n    \"userEmail\":\"bob@gmail.com\",\n    \"password\":\"b493d48364afe44d11c0165cf470a4164d1e2609911ef998be868d46ade3de4e\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/login",
@@ -820,7 +820,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Lauri\",\n    \"author\": \"author\",\n    \"price\": 9,\n    \"picture\": \"listing.jpg\"\n}"
+									"raw": "{\n    \"name\": \"Lauri\",\n    \"author\": \"author\",\n    \"price\": 9,\n    \"picture\": \"listing.jpg\",\n    \"description\": \"very nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings/{{listingPostId}}",
@@ -1045,7 +1045,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Kaisa\",\n    \"author\": \"Listing Author\",\n    \"price\": 20.99,\n    \"picture\": \"listing.jpg\"\n}"
+									"raw": "{\n    \"name\": \"Kaisa\",\n    \"author\": \"Listing Author\",\n    \"price\": 20.99,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings",
@@ -1099,7 +1099,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Bob\",\n    \"author\": \"Listing Author\",\n    \"price\": 22.99,\n    \"picture\": \"listing.jpg\"\n}"
+									"raw": "{\n    \"name\": \"Bob\",\n    \"author\": \"Listing Author\",\n    \"price\": 22.99,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings",
@@ -1153,7 +1153,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Michael\",\n    \"author\": \"Listing Author\",\n    \"price\": 25.99,\n    \"picture\": \"listing.jpg\"\n}"
+									"raw": "{\n    \"name\": \"Michael\",\n    \"author\": \"Listing Author\",\n    \"price\": 25.99,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings",
@@ -1497,7 +1497,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Kaisa\",\n    \"author\": \"Listing Author\",\n    \"price\": 20.99,\n    \"picture\": \"listing.jpg\"\n}"
+									"raw": "{\n    \"name\": \"Kaisa\",\n    \"author\": \"Listing Author\",\n    \"price\": 20.99,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings",
@@ -1551,7 +1551,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Bob\",\n    \"author\": \"Listing Author\",\n    \"price\": 20.99,\n    \"picture\": \"listing.jpg\"\n}"
+									"raw": "{\n    \"name\": \"Bob\",\n    \"author\": \"Listing Author\",\n    \"price\": 20.99,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings",
@@ -1607,7 +1607,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Michael\",\n    \"author\": \"Listing Author\",\n    \"price\": 20.99,\n    \"picture\": \"listing.jpg\"\n}"
+									"raw": "{\n    \"name\": \"Michael\",\n    \"author\": \"Listing Author\",\n    \"price\": 20.99,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings",

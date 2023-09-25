@@ -30,12 +30,13 @@ const orders = require("./controllers/orders.controller");
 const port = process.env.PORT || 3000;
 const checkout = require("./controllers/checkout.controller")
 const registration=require("./controllers/registration.controller")
+const randomListings = require("./controllers/randomListings.controller")
 
 // Create Express app
 const app = express();
 // Parse requests of content-type 'application/json'
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true,limit:'5mb' }));
+app.use(express.json({limit:'5mb'}));
 // HTTP request logger
 app.use(morgan('dev'));
 app.use(methodOverride('X-HTTP-Method')) //          Microsoft
@@ -54,17 +55,11 @@ app.use("/api/v1/listings/page/:page", listingsPage);
 app.use("/api/v1/users/:email/orders", orders);
 app.use("/api/v1/checkout", checkout);
 app.use("/api/v1/users/:email/reviews", reviews);
-
-// Import routes
-/*app.get('/api', function(req, res) {
-    res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
-});*/
-
-
-
+app.use("/api/v1/random-listings", randomListings)
 app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });
+
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {
@@ -117,7 +112,7 @@ app.listen(port, function(err) {
                 city:"Bobtown"
             },
             dateOfBirth: "2002-03-24",
-            password: "81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9",
+            password: "b493d48364afe44d11c0165cf470a4164d1e2609911ef998be868d46ade3de4e",
             verificationStatus: true,
             userEmail: "bob@gmail.com",
             isAdmin: true,

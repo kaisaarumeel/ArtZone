@@ -28,8 +28,6 @@ export default {
             sessionKey: response.data.key
           }
           localStorage.setItem('userData', JSON.stringify(data))
-          const loggedInEvent = new CustomEvent('loggedIn', {})
-          window.dispatchEvent(loggedInEvent)
           this.success = true
           this.$router.push({ path: '/' })
         }

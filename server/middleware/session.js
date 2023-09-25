@@ -47,7 +47,8 @@ async function restricted_resource_email(req, res, next){
                 }
                 req.auth=auth_obj;    
                 return next();
-            } else {
+            }
+             else {
                 req.auth=auth_obj;    
                 return res.sendStatus(403);
             }
