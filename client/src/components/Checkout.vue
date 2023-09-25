@@ -1,68 +1,88 @@
 <script>
-import { StripeElementPayment } from '@vue-stripe/vue-stripe'
-import axios from 'axios'
-
-async function getPaymentIntent(id) {
-  // Default options are marked with *
-  const data = { id }
-  const response = await axios.post('http://localhost:3000/api/v1/checkout/', data, {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  return response.data
-}
-
+/* global paypal */
+import { Api } from '../Api'
 export default {
-  components: {
-    StripeElementPayment
-  },
   props: {
     id: String,
-    success: Boolean
+    email: String
   },
   data() {
     return {
-      pk: 'pk_test_51NpDadKO47ufOaktkTaAml02MUFF7keMzi8Un5ycJo65jxW4VfGaqMNMBgBfhuJGEmCecmw0J7FbNq2dZbO4s9du00fpUwM8rg',
-      elementsOptions: {
-        appearance: {
-          theme: 'flat',
-          variables: {
-            colorPrimary: '#F7E6C4',
-            colorBackground: '#F7E6C4',
-            colorText: '#606C5D',
-            colorDanger: '#df1b41',
-            fontFamily: 'Inter, system-ui, sans-serif',
-            spacingUnit: '2px',
-            borderRadius: '0px'
-          },
-          rules: {
-            '.Input': {
-              border: '1px solid #606C5D'
 
-            },
-            '.Label': {
-              color: '#F7E6C4'
-            }
-
-          }
-
-        }
-      },
-      confirmParams: {
-        return_url: document.location.href // success url
-      },
-      intentReceived: false
+      success: false,
+      showError: false,
+      transaction: ''
     }
   },
   mounted() {
+    console.log(this.id)
+    console.log(this.email)
     this.generatePaymentIntent()
   },
   methods: {
     async generatePaymentIntent() {
-      const paymentIntent = await getPaymentIntent(this.id) // this is just a dummy, create your own API call
-      this.elementsOptions.clientSecret = paymentIntent.clientSecret
-      this.intentReceived = true
+      const userData = localStorage.getItem('userData')
+      if (userData === null) window.location.replace('/login')
+      const parsedData = JSON.parse(userData)
+      if (parseInt(Date.now() / 1000) > parsedData.expiry) {
+        this.$router.push('login')
+      }
+      const headers = {
+        'X-Auth-Token': userData.sessionKey
+      }
+      const payload = {
+        id: this.id, email: this.email
+      }
+      const self = this
+      paypal.Buttons({
+
+        // Call your server to set up the transaction
+        createOrder: function (data, actions) {
+          return Api.post('checkout', payload, headers).then(function (res) {
+            return res.data
+          }).then(function (orderData) {
+            console.log(orderData)
+            return orderData.id
+          })
+        },
+
+        // Call your server to finalize the transaction
+        onApprove: function (data, actions) {
+          return Api.post('checkout/' + data.orderID, payload, headers).then(function (res) {
+            return res.data
+          }).then((orderData) => {
+            // Three cases to handle:
+            //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+            //   (2) Other non-recoverable errors -> Show a failure message
+            //   (3) Successful transaction -> Show confirmation or thank you
+
+            // This example reads a v2/checkout/orders capture response, propagated from the server
+            // You could use a different API or structure for your 'orderData'
+            const errorDetail = Array.isArray(orderData.details) && orderData.details[0]
+
+            if (errorDetail && errorDetail.issue === 'INSTRUMENT_DECLINED') {
+              return actions.restart() // Recoverable state, per:
+            // https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
+            }
+
+            if (errorDetail) {
+              this.showError = true
+              return
+            }
+
+            // Successful capture! For demo purposes:
+            const transaction = orderData.purchase_units[0].payments.captures[0]
+            self.success = true
+            self.transaction = transaction.id
+            // Replace the above to show a success message within this page, e.g.
+            // const element = document.getElementById('paypal-button-container');
+            // element.innerHTML = '';
+            // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+            // Or go to another URL:  actions.redirect('thank_you.html');
+          })
+        }
+
+      }).render('#paypal-button-container')
     },
     pay() {
       this.$refs.paymentRef.submit()
@@ -75,21 +95,17 @@ export default {
     <div class="payment">
       <div class="payment-window m-auto p-4">
         <div v-if="!this.success" class="unpaid">
-          <p class="mb-1">Enter <strong>your payment</strong> details</p>
-            <stripe-element-payment
-              v-if="this.intentReceived===true"
-              ref="paymentRef"
-              :pk="pk"
-              :elements-options="elementsOptions"
-              :confirm-params="confirmParams"
-            />
-            <button class="w-100 mt-2 btn btn-primary" @click="pay">Pay SEK 129,000,000</button>
+          <div id="paypal-button-container"></div>
         </div>
-        <div v-else class="unpaid">
-          <p class="mb-1">Thank you for <strong>your order!</strong></p>
+        <div v-else>
+          <div class="paid">
+          <p class="py-3"><span class="pay">Your order</span> <strong class="pal">is confirmed!</strong></p>
+        </div>
+        <div class="paid-orders">
+          <a href="" class="py-3">My orders</a>
+        </div>
+        </div>
 
-            <a href="" class="mt-2 btn btn-primary" @click="pay">Show my orders</a>
-        </div>
       </div>
     </div>
   </template>
@@ -103,10 +119,50 @@ export default {
   button,a{
     border:1px solid #F7E6C4;
   }
-  button:hover,a:hover {
-    text-decoration: underline;
-    color:#F7E6C4;
-    border:1px solid #F7E6C4;
+.paid{
+  background: #ffc439;
+  border-radius: 4px;
+  width:100%;
+}
 
+.paid-orders{
+  border-radius: 4px;
+  background-color: #2C2E2F;
+  color:#fff;
+}
+.pay {
+    color:#00457c;
+    font-size:1.2rem;
+    font-weight: 600;
+
+}
+.pal{
+ color:#0079C1;
+ font-size:1.2rem;
+  font-weight: 600;
+}
+.paid-orders:hover {
+  background-color: #585858 !important;
+  cursor: pointer;
+}
+.paid-orders p{    position: static;
+    visibility: visible;
+    max-width: 0%;
+    opacity: 0;
+    overflow: hidden;
+    animation: show-text 1s 0s forwards;
+    font-weight: 600;
   }
+
+@keyframes show-text {
+  0%{
+    max-width: 0%;
+    opacity: 0;
+    overflow: hidden;
+  }
+  100% {
+    max-width: 100%;
+    opacity: 1;
+}
+}
 </style>

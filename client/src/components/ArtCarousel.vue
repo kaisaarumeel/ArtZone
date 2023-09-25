@@ -20,7 +20,7 @@
         <b-col cols="12" lg="6" md="6" sm="12"><h1>{{ slideData.name }}</h1>
           <p>{{ slideData.author }}</p></b-col>
         <b-col class="btn-container" cols="12" lg="6" md="6" sm="12">
-          <button @click="buyNowClick" variant= "primary" class="buyButton">Buy now</button>
+          <button v-on:click="buyNowClick(index)" variant= "primary" class="buyButton">Buy now</button>
           </b-col>
         </b-row>
       </b-carousel-slide>
@@ -64,19 +64,18 @@ export default {
     async fetchRandomListings() {
       try {
         const response = await axios.get('http://localhost:3000/api/v1/random-listings')
-        this.listings = response.data.map(listing => ({
-          author: listing.author,
-          name: listing.name,
-          picture: listing.picture,
-          id: listing.id
-        }))
+        console.log(response.data)
+        this.listings = response.data
       } catch (error) {
         console.log(error)
       }
     },
-    buyNowClick() {
+    buyNowClick(index) {
+      console.log(index)
       if (this.userLoggedIn) {
-        this.$router.push({ name: 'listing', params: 1 })
+        const listing = this.listings[index]
+        localStorage.setItem('singleListing', JSON.stringify(listing))
+        this.$router.push('listing')
       } else {
         this.$bvModal.show('loginModal')
       }

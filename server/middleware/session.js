@@ -1,6 +1,8 @@
 const UserSchema = require("../models/user"); //this is the schema class. Use this class to make 
 const { randomUUID } = require("crypto");
-
+const BYPASS_RESTRICTED_EMAIL_RESOURCE=[
+    "reviews"
+]
 
 async function restricted_resource_general(req, res, next){
     let auth_obj={
@@ -26,6 +28,8 @@ async function restricted_resource_general(req, res, next){
 }
 
 async function restricted_resource_email(req, res, next){
+    const requestedPath=req.originalUrl.split("/")
+    if(BYPASS_RESTRICTED_EMAIL_RESOURCE.includes(requestedPath[requestedPath.length-1])) return next(); 
     if(req.headers["x-auth-token"]==undefined) return res.sendStatus(403);
     let auth_obj={
         "auth":false, // is user authorized

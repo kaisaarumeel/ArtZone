@@ -69,7 +69,7 @@
 </b-row>
 </template>
 <script>
-import axios from 'axios'
+import { Api } from '../Api.js'
 export default {
   data() {
     return {
@@ -105,7 +105,7 @@ export default {
     if (userData === null) window.location.replace('/login')
     const parsedData = JSON.parse(userData)
     if (parseInt(Date.now() / 1000) > parsedData.expiry) {
-      window.location.replace('/login')
+      this.$router.push('login')
     }
   },
   methods: {
@@ -137,7 +137,7 @@ export default {
           'X-Auth-Token': userData.sessionKey
         }
 
-        axios.post(apiUrl, payload, { headers })
+        Api.post('users/' + userData.userEmail + '/listings', payload, { headers })
           .then(response => {
             // Handle the successful response, e.g., show a success message or redirect
             console.log(response.data)
@@ -153,7 +153,7 @@ export default {
             state.showUnauthorized = true
             setTimeout(() => {
               state.showUnauthorized = false
-              window.location.replace('/login')
+              this.$router.push('login')
             }, 1500)
           })
       }
