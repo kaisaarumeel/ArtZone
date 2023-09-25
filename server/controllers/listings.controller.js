@@ -12,6 +12,7 @@ const UserSchema = require("../models/user.js");
 router.post("/", async function(req, res){
 
     try {
+        console.log(req.auth)
         const userEmail = req.params.email;
         const listingName = req.body.name;
         const listingAuthor = req.body.author;
@@ -23,7 +24,8 @@ router.post("/", async function(req, res){
             author: listingAuthor,
             price: listingPrice,
             picture: listingPicture,
-            description:listingDescription
+            description: listingDescription,
+            creator:userEmail
         })
         try{
             const error =  await newListing.validate();
@@ -165,11 +167,11 @@ router.delete("/", async function(req, res){
             const userEmail = req.params.email;
             const listingID = req.params.id;
             try{
+
                 let put_data={}
                 for (let key in req.body){
                     put_data["listings.$."+key]=req.body[key];
-                }
- 
+                } 
                 let result=await UserSchema.findOneAndUpdate(
                     {
                         userEmail:userEmail,

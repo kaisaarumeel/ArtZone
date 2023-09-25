@@ -1,6 +1,8 @@
 <script>
 import Reviews from '../components/Reviews.vue'
 import Checkout from '../components/Checkout.vue'
+import { Api } from '../Api.js'
+
 async function beautifyLongNumber(num) {
   let result = ''
   const array = num.toString().split('')
@@ -26,9 +28,7 @@ export default {
     Reviews,
     Checkout
   },
-  props: {
-    id: String
-  },
+
   data() {
     return {
       picture: null,
@@ -76,6 +76,13 @@ export default {
       return await response.json() */
     },
     async getData() {
+      const urlParams = new URLSearchParams(document.location.search)
+      const email = urlParams.get('email')
+      const id = urlParams.get('id')
+      console.log(email)
+      console.log(id)
+      const result = await Api.post('users/' + email + '/listings/' + id)
+      console.log(result)
       this.picture = 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg'
       this.name = 'The Last Supper'
       this.author = 'Leonardo Da Vinci'
@@ -103,7 +110,7 @@ export default {
 <template>
 <div class="single-listing p-5">
   <b-modal id="modal-2" modal-class="reviews w-100" hide-backdrop>
-    <Checkout :id="this.id" :success="this.success"></Checkout>
+    <Checkout :success="this.success"></Checkout>
   </b-modal>
   <b-modal id="modal-1" modal-class="reviews w-100" hide-backdrop>
     <Reviews :email='seller' :seller='sellerReviewsName'></Reviews>

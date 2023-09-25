@@ -3,14 +3,12 @@ const { randomUUID } = require("crypto");
 
 
 async function restricted_resource_general(req, res, next){
-    console.log("restricted")
-
     let auth_obj={
         "auth":false, // is user authorized
         "authEmail":"", // the user that is authorized
         "isAdmin":false // if the user is authed as admin
     }
-    const expiry=parseInt(Date.now()/1000)+3600; //1h expiry
+    const expiry=parseInt(Date.now()/1000)+10; //1h expiry
     const result=await UserSchema.findOneAndUpdate({"session.key":req.headers["x-auth-token"]},{expires:expiry});
     if(result!=null){
         if(parseInt(Date.now()/1000)<parseInt(result.session.expires)){
@@ -39,7 +37,7 @@ async function restricted_resource_email(req, res, next){
     
     if(result!=null){
         if(result.session.key==req.headers["x-auth-token"]){
-            if(req.params.email==result.userEmail){
+            if(req.params.email==result.userEmail && parseInt(Date.now()/1000)<parseInt(result.session.expires)){
                 auth_obj.auth=true;
                 auth_obj.authEmail=result.userEmail;
                 if(result.isAdmin){

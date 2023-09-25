@@ -33,6 +33,8 @@ router.put("/",async (req,res)=>{
         try {
             if(!req.auth.auth) res.sendStatus(403);
             if(req.auth.auth && req.auth.authEmail!=email && !req.auth.isAdmin) res.sendStatus(403);
+                let oldUser=await UserSchema.collection.findOne({userEmail:email});
+
                 const new_user=new UserSchema({
                 name: req.body.name,
                 dateOfBirth: req.body.dateOfBirth,
@@ -41,8 +43,8 @@ router.put("/",async (req,res)=>{
                 verificationStatus: false,
                 userEmail: req.body.userEmail,
                 isAdmin: req.body.isAdmin,
-                listings: [],
-                orders: [] 
+                listings:oldUser.listings,
+                orders: oldUser.orders 
             },{_id:false});
             const error=await new_user.validate()
             if(error){

@@ -62,7 +62,7 @@
             <b-button v-on:click="createListing()" type="submit" variant="primary">Add listing</b-button>
             <p v-if="success">Listing created!</p>
             <p v-if="showError">Please fill in the required fields.</p>
-
+            <p v-if="showUnauthorized">Session expired, redirecting...</p>
         </div>
 
     </b-col>
@@ -96,7 +96,16 @@ export default {
         }
       },
       success: false,
-      showError: false
+      showError: false,
+      showUnauthorized: false
+    }
+  },
+  mounted() {
+    const userData = localStorage.getItem('userData')
+    if (userData === null) window.location.replace('/login')
+    const parsedData = JSON.parse(userData)
+    if (parseInt(Date.now() / 1000) > parsedData.expiry) {
+      window.location.replace('/login')
     }
   },
   methods: {
@@ -122,16 +131,10 @@ export default {
           payload[key] = state.listing[key].value
         }
         payload.picture = reader.result
+        const userData = JSON.parse(localStorage.getItem('userData'))
 
-        const userDataString = localStorage.getItem('userData')
-        const userData = JSON.parse(userDataString)
-        const sessionKey = userData.sessionKey
-        const email = userData.userEmail
-
-        const apiUrl = `http://localhost:3000/api/v1/users/${email}/listings`
-        console.log(apiUrl)
         const headers = {
-          'X-Auth-Token': sessionKey
+          'X-Auth-Token': userData.sessionKey
         }
 
         axios.post(apiUrl, payload, { headers })
@@ -146,10 +149,12 @@ export default {
               state.success = false
             }, 3000)
           })
-          .catch(error => {
-            // Handle errors, e.g., show an error message
-            console.error(error)
-            alert('Error adding listing. Please try again.')
+          .catch(() => {
+            state.showUnauthorized = true
+            setTimeout(() => {
+              state.showUnauthorized = false
+              window.location.replace('/login')
+            }, 1500)
           })
       }
     }
