@@ -14,7 +14,7 @@
             <router-link to="/discover">
             <button size="sm" class="discover-btn" href="#">Discover</button>
             </router-link>
-            <button size="sm" class="about-us-btn" @click="navigateToAboutUs">About us</button>
+            <button size="sm" class="about-us-btn" @click="navigateToAboutUs()">About us</button>
             <router-link to="/add-listing">
             <button size="sm" class="sell-btn" href="#">Sell your artwork</button>
             </router-link>
@@ -23,14 +23,21 @@
 
         <b-navbar-nav>
           <!-- Using 'button-content' slot -->
-          <div class="login">
-            <router-link to="/user/login">
-            <button class="sign-in-btn">Sign in</button>
-            </router-link>
-            <router-link to="/user/register">
-            <div class="text-center">
-              <b-button variant="primary" size="sm" class="sign-up-btn" >Sign up for free</b-button>
-            </div></router-link>
+          <div class="login text-right" >
+            <div v-if="userData !== null">
+              <router-link to="/user/profile">
+                <img src="../../public/profile.png">
+              </router-link>
+            </div>
+            <div class="login" v-else>
+              <router-link to="/user/login">
+              <button class="sign-in-btn">Sign in</button>
+              </router-link>
+              <router-link to="/user/register">
+              <div class="text-center">
+                <b-button variant="primary" size="sm" class="sign-up-btn" >Sign up for free</b-button>
+              </div></router-link>
+            </div>
           </div>
         </b-navbar-nav>
       </b-navbar-nav>
@@ -50,9 +57,14 @@ export default {
       isResponsive: false
     }
   },
+  computed: {
+    userData: function () { return localStorage.getItem('userData') }
+  },
   methods: {
     navigateToAboutUs() {
       const aboutUsSection = document.getElementById('aboutUsSection')
+      localStorage.setItem('sessionKey', '')
+      console.log(this.userData)
 
       if (aboutUsSection) {
         aboutUsSection.scrollIntoView({ behavior: 'smooth' })
@@ -64,6 +76,11 @@ export default {
           }
         })
       }
+    },
+    initEventListener() {
+      window.addEventListener('loggedInEvent', (e) => {
+        this.userData = localStorage.getItem('userData')
+      })
     }
   }
 }
@@ -74,6 +91,18 @@ export default {
 
 .nav-bar {
   padding: 2rem;
+}
+img{
+  width: 10%;
+  height: auto;
+}
+.profile-btn{
+    background: none;
+    border: none;
+    color: #606C5D;
+    font-weight: bold;
+    width: 10cm;
+    height: auto;
 }
 .logo {
     text-decoration: underline;

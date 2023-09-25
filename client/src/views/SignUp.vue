@@ -11,19 +11,50 @@ export default {
   data() {
     return {
       user: null,
-      session: null
+      session: null,
+      success: true
     }
   },
   methods: {
     async createUser(user) {
+      let loginData = null
       const newUser = Object.assign(user)
-      newUser.password = sha256(user.password).toString(CryptoJS.enc.Hex)
-      const response = await Api.post('http://localhost:3000/api/v1/users/register', newUser, {
+      newUser.password = sha256(newUser.password).toString(CryptoJS.enc.Hex)
+      Api.post('users/register', newUser, {
         headers: {
           'Content-Type': 'application/json'
         }
+      }).then((response) => {
+        if (response.status === 201) {
+          loginData = {
+            userEmail: newUser.userEmail,
+            password: newUser.password
+          }
+        } else {
+          this.success = false
+          return
+        }
+        Api.post('users/login', loginData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then((loginResponse) => {
+          if (loginResponse.status === 200) {
+            const data = {
+              userEmail: newUser.userEmail,
+              sessionKey: loginResponse.data.key
+            }
+            localStorage.setItem('userData', JSON.stringify(data))
+            this.$router.push({ path: '/' })
+          }
+        }).catch((err) => {
+          console.error(err)
+          alert('Error loging user. Please try again.')
+        })
+      }).catch((err) => {
+        console.error(err)
+        this.success = false
       })
-      return response.data
     }
   }
 }
@@ -49,6 +80,17 @@ export default {
         <img class="pl-2 pr-5 text-center" src="../../public/SignupImage.png"
         alt="Sign up images">
       </b-col>
+       <b-col cols="12" md="6">
+          <p class="text-center error" v-if="!success">
+            Error registering user. Please make sure that you have given valid credentials.
+          </p>
+          <p class="text-center">
+            <span>Already have an account? </span>
+            <span class="signInLink">
+              <router-link to="/user/login">Sign in</router-link>
+            </span>
+          </p>
+        </b-col>
     </b-row>
   </div>
 </template>
@@ -58,13 +100,12 @@ export default {
     width: 100%;
     height: auto;
   }
-
+  .error{
+    color: red;
+  }
   .fontThickness{
     font-size: 140%;
     font-weight: bold;
-  }
-  .signInText{
-    margin-left: 17%;
   }
   .signInLink{
     text-decoration-line: underline;
