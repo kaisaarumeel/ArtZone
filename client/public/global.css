@@ -25,6 +25,13 @@ html,body{
     z-index: 1;
 }
 
+.pay {
+    color:#00457c
+}
+.pal{
+ color:#0079C1
+}
+
 
 .reviews .modal-header .close {
     color:#F7E6C4;

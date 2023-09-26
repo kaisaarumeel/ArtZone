@@ -22,7 +22,7 @@ router.post("/users/login", async (req, res) => {
                 const expiry=parseInt(Date.now()/1000)+3600; //1h expiry
                 try{
                     await UserSchema.findOneAndUpdate({userEmail:email},{session:{key:session_key,expires:expiry}});
-                    res.json({"key":session_key});
+                    res.json({"key":session_key,"expiry":expiry});
                 } catch(err){
                     res.sendStatus(500);
                 }

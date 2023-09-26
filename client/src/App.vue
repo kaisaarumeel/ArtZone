@@ -36,10 +36,4 @@ border-radius: 0;
 border: none;
 }
 
-p {
-  font-size: 15;
-  text-align: justify;
-  text-justify: inter-word;
-  color: #606C5D;
-}
 </style>

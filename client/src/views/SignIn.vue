@@ -25,7 +25,8 @@ export default {
         if (response.status === 200) {
           const data = {
             userEmail: request.userEmail,
-            sessionKey: response.data.key
+            sessionKey: response.data.key,
+            expiry: response.data.expiry
           }
           localStorage.setItem('userData', JSON.stringify(data))
           this.success = true

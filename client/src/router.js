@@ -18,19 +18,18 @@ export default new Router({
       component: Home
     },
     {
-      path: '/listing/:id',
+      path: '/listing',
       name: 'listing',
-      props: true,
       component: SingleListing
     },
     {
-      path: '/user/register',
+      path: '/register',
       name: 'sign up',
       props: true,
       component: SignUp
     },
     {
-      path: '/user/login',
+      path: '/login',
       name: 'sign in',
       props: true,
       component: SignIn

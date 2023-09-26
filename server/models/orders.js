@@ -7,9 +7,9 @@ const orderSchema = new mongoose.Schema({
     buyer: { type: String, required: true, immutable: true }, 
     hash: { type: String, required: true, immutable:true }, 
     listing: { type: String, required: true, immutable: true},
-    isReceived: { type: Boolean, default: false },
-    isShipped: {type: Boolean, default:false}
-
+    isReceived: { type: Boolean, default: false, required:true },
+    isShipped:{ type: Boolean, default: false,required:true },
+    paypalOrderId:{ type: Boolean, default: false,required:true }
 });
 
 const OrderModel = mongoose.model("Order", orderSchema);

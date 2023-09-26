@@ -20,7 +20,7 @@
         <b-col cols="12" lg="6" md="6" sm="12"><h1>{{ slideData.name }}</h1>
           <p>{{ slideData.author }}</p></b-col>
         <b-col class="btn-container" cols="12" lg="6" md="6" sm="12">
-          <button @click="buyNowClick" variant= "primary" class="buyButton">Buy now</button>
+          <button v-on:click="buyNowClick(index)" variant= "primary" class="buyButton">Buy now</button>
           </b-col>
         </b-row>
       </b-carousel-slide>
@@ -69,9 +69,12 @@ export default {
         console.log(error)
       }
     },
-    buyNowClick() {
+    buyNowClick(index) {
+      console.log(index)
       if (this.userLoggedIn) {
-        this.$router.push({ name: 'listing', params: { id: this.id } })
+        const listing = this.listings[index]
+        localStorage.setItem('singleListing', JSON.stringify(listing))
+        this.$router.push('listing')
       } else {
         this.$bvModal.show('loginModal')
       }

@@ -25,15 +25,15 @@
           <!-- Using 'button-content' slot -->
           <div class="login text-right" >
             <div v-if="userData !== null">
-              <router-link to="/user/profile">
+              <router-link to="/profile">
                 <img src="../../public/profile.png">
               </router-link>
             </div>
             <div class="login" v-else>
-              <router-link to="/user/login">
+              <router-link to="/login">
               <button class="sign-in-btn">Sign in</button>
               </router-link>
-              <router-link to="/user/register">
+              <router-link to="/register">
               <div class="text-center">
                 <b-button variant="primary" size="sm" class="sign-up-btn" >Sign up for free</b-button>
               </div></router-link>
