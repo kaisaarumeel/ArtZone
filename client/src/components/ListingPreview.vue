@@ -9,9 +9,7 @@
             <p>{{author}}</p>
         </b-col>
         <b-col cols="6">
-          <router-link :to="{ name: 'listing', params: { id: id } }">
-          <b-button variant="primary">{{price}} <sup>SEK</sup></b-button>
-          </router-link>
+          <b-button v-on:click="buyNowClick()" variant="primary">{{price}} <sup>SEK</sup></b-button>
         </b-col>
       </b-row>
 </div>
@@ -20,12 +18,33 @@
 <script>
 
 export default {
+  data() {
+    return {
+      listing: null
+    }
+  },
   props: {
     picture: String,
     name: String,
     author: String,
     price: Number,
     id: Number
+  },
+  methods: {
+    buyNowClick() {
+      const listing = this.listing
+      localStorage.setItem('singleListing', JSON.stringify(listing))
+      this.$router.push('listing')
+    }
+  },
+  mounted() {
+    this.listing = {
+      picture: this.picture,
+      name: this.name,
+      author: this.author,
+      price: this.price,
+      id: this.id
+    }
   }
 }
 
