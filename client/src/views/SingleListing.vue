@@ -1,6 +1,8 @@
 <script>
 import Reviews from '../components/Reviews.vue'
 import Checkout from '../components/Checkout.vue'
+import { Api } from '../Api.js'
+
 async function beautifyLongNumber(num) {
   let result = ''
   const array = num.toString().split('')
@@ -26,9 +28,7 @@ export default {
     Reviews,
     Checkout
   },
-  props: {
-    id: String
-  },
+
   data() {
     return {
       picture: null,
@@ -37,13 +37,12 @@ export default {
       seller: null,
       sellerRating: null,
       description: null,
-      size: null,
-      type: null,
-      material: null,
-      condition: null,
       price: null,
       sellerReviewsName: null,
-      success: false
+      success: false,
+      reviews: [],
+      id: '',
+      ready: false
     }
   },
   methods: {
@@ -76,25 +75,21 @@ export default {
       return await response.json() */
     },
     async getData() {
-      this.picture = 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg'
-      this.name = 'The Last Supper'
-      this.author = 'Leonardo Da Vinci'
-      this.seller = 'bobman123@gmail.com'
-      this.sellerRating = 23
-      this.description = `The Last Supper,” a masterpiece by Leonardo da Vinci, is a large
-        mural painting that covers the back wall of the dining hall at the Convent of Santa Maria delle
-        Grazie in Milan, Italy.
-        The painting depicts the dramatic scene from the final days of Jesus Christ,
-        as described in the Gospel of John, 13:21, where Jesus announces that on
-        e of his twelve apostles would betray him. The moment captured by da Vin
-        ci is filled with astonishment, disbelief, and shock, as each apostle re
-        acts differently to the news, questioning who the traitor amongst them is.`
-      this.size = '123x30 cm'
-      this.type = 'Oil'
-      this.material = 'Canvas'
-      this.condition = 'Mint'
-      this.price = await beautifyLongNumber(129000000)
+      const unparsedListing = localStorage.getItem('singleListing')
+      if (unparsedListing === null) this.$router.push('/')
+      const parsedListing = JSON.parse(unparsedListing)
+      const reviews = await Api.get('users/' + parsedListing.creator + '/reviews')
+      this.reviews = reviews.data
+      this.picture = parsedListing.picture
+      this.name = parsedListing.name
+      this.author = parsedListing.author
+      this.seller = parsedListing.creator
+      this.sellerRating = reviews.data.length
+      this.description = parsedListing.description
+      this.price = await beautifyLongNumber(parsedListing.price)
       this.sellerReviewsName = this.seller + '  ⭐' + this.sellerRating
+      this.id = parsedListing._id
+      this.ready = true
     }
   }
 }
@@ -102,11 +97,9 @@ export default {
 </script>
 <template>
 <div class="single-listing p-5">
-  <b-modal id="modal-2" modal-class="reviews w-100" hide-backdrop>
-    <Checkout :id="this.id" :success="this.success"></Checkout>
-  </b-modal>
+
   <b-modal id="modal-1" modal-class="reviews w-100" hide-backdrop>
-    <Reviews :email='seller' :seller='sellerReviewsName'></Reviews>
+    <Reviews :reviews="reviews" :email='seller' :seller='sellerReviewsName'></Reviews>
   </b-modal>
   <b-row cols="2">
     <b-col sm="12" md="12" lg="8" cols="12" >
@@ -115,24 +108,20 @@ export default {
       </div>
     </b-col>
     <b-col sm="12" md="12" lg="4" cols="12">
-      <div class="border p-3">
+      <div class="border p-3 mt-2">
       <h1 class="font-weight-bold text-left">{{name}}</h1>
-      <p class="text-left">{{author}} <br> by <span class="seller font-weight-bold" v-b-modal.modal-1>{{seller }} ⭐{{sellerRating}}</span></p>
+      <p class="text-left">{{author}} <br>Sold by <span class="seller font-weight-bold" v-b-modal.modal-1>{{seller }} ⭐{{sellerRating}}</span></p>
+      <p class="text-left mb-0"><strong>Description</strong></p>
       <p class="text-left">{{ description }}</p>
-        <b-row cols="2">
-          <b-col><span>Size: {{ size }}</span></b-col>
-          <b-col><span>Type: {{ type }}</span></b-col>
-        </b-row>
-        <b-row cols="2">
-          <b-col>Material: {{ material }}</b-col>
-          <b-col>Condition: {{ condition}}</b-col>
-        </b-row>
+
         <b-row cols="1">
-          <b-col class="listing-price text-center m-2"><span><span class="price font-weight-bold">SEK: {{ price }}</span> <sup>+ free shipping</sup></span></b-col>
+          <b-col class="listing-price text-left m-2"><span><span class="price font-weight-bold">SEK: {{ price }}</span> <sup>+ free shipping</sup></span></b-col>
         </b-row>
       </div>
-      <div class="text-center">
-        <b-button id="payment-button" ref="paymentModalTrigger" v-b-modal.modal-2 variant="primary">Buy now</b-button>
+      <div class="text-center mt-2">
+        <div id="modal-2" modal-class="w-100" hide-backdrop>
+    <Checkout v-if="ready" :email="seller" :id="id"></Checkout>
+  </div>
       </div>
     </b-col>
   </b-row>

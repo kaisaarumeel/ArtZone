@@ -1,34 +1,18 @@
 <script>
 export default {
-  mounted() {
-    this.getData()
-  },
   props: {
-    email: String,
-    seller: String
+    reviews: Array
   },
-  data() {
-    return {
-      reviews: [],
-      avg: 0,
-      starWidth: 0
-    }
-  },
-  methods: {
-    async getData() {
-      for (let i = 0; i < 10; i++) {
-        const entry = {
-          description: 'Their art curation is fantastic, and the buying experience was a breeze',
-          rating: parseInt(Math.random() * 5)
-        }
-        this.reviews.push(entry)
-      }
+  computed: {
+    avg: function () {
       let avg = 0
       for (let i = 0; i < this.reviews.length; i++) {
         avg += this.reviews[i].rating
       }
-      this.avg = (avg / this.reviews.length)
-      this.starWidth = ((this.avg / 5) * 80)
+      return (avg / this.reviews.length)
+    },
+    starWidth: function () {
+      return ((this.avg / 5) * 80)
     }
   }
 }
@@ -47,7 +31,7 @@ export default {
                     <span class="starRatingGrey">⭐⭐⭐⭐⭐</span><span :style="'width:'+this.starWidth+'px'" class="starRating">⭐⭐⭐⭐⭐</span>
                 </b-col>
                 <b-col class="text-center">
-                    <p class="font-weight-light">Member since: <span class="font-weight-bold">2022-08-01</span></p>
+                    <p class="font-weight-light">Total ratings: <span class="font-weight-bold">{{ reviews.length }}</span></p>
                 </b-col>
             </b-row>
             <hr>

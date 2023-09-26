@@ -4,6 +4,15 @@ const router = express.Router({"mergeParams": true});
 const OrderModel = require("../models/orders.js");
 const UserModel = require("../models/user.js");
 const { createHash, randomUUID } = require('crypto');
+const paypal = require('@paypal/checkout-server-sdk');
+
+const pp_client="AQAquHqyXLu-wDbXuWcL4hEKe-ay87Vco719EUZLpufXR1ouqoGkNCId9ZFAWM7Xef3H_UJ0vpZh5_hF";
+const pp_secret="EL03GoWvTdp-eVBu6l_OWEVe2ay083mqOqMvgk-dsBAQ2gA2niRvshNzDbZT9zx7m7Xj0etG0sg2a_xt";
+const env = new paypal.core.SandboxEnvironment(pp_client, pp_secret);
+const client = new paypal.core.PayPalHttpClient(env);
+
+
+
 //posting an order on the database the email in the url is the buyer
 router.post("/", async (req, res) => {
 
@@ -28,7 +37,7 @@ router.post("/", async (req, res) => {
             return;
         }
 
-        const sellerListing = seller.listings.find(listing => listing.name = req.body.listing);
+        let sellerListing = seller.listings.find(listing => listing.id = req.body.listing);
         if (!sellerListing) {
             res.status(400).json({"message": "The seller does not posses the listing you want to order"});
             return;
@@ -47,28 +56,50 @@ router.post("/", async (req, res) => {
                 res.status(403).json({"message": "You have already ordered the following listing."});
                 return;
             }
-        }        
+        } 
+        let response={
+            "result":{
+                "id":"0"
+            }
+        };
+        if(!req.body.simulate){
+            request = new paypal.orders.OrdersCaptureRequest(req.body.paypalOrderId);
+            request.requestBody({});
+            // Call API with your client and get a response for your call
+            response = await client.execute(request);
+        }
 
-
+        sellerListing.sold=true;
         let msg=Date.now().toString()+req.body.seller+req.params.email+req.body.listing+randomUUID();
         let hash=createHash('sha256').update(msg).digest('hex'); 
+        console.log(response)
+        const paypalOrderId=response.result.id;
         seller.orders.push(new OrderModel.model({
             seller: req.body.seller,
             buyer:req.params.email,
             listing: req.body.listing,
-            hash:hash
+            hash:hash,
+            isReceived:false,
+            isShipped:false,
+            paypalOrderId:paypalOrderId
         }));
         user.orders.push(new OrderModel.model({
             seller: req.body.seller,
             buyer:req.params.email,
             listing: req.body.listing,
-            hash:hash
+            hash:hash,
+            isReceived:false,
+            isShipped:false,
+            paypalOrderId:paypalOrderId
         }));
+
         seller.save();
         user.save();
 
-        res.sendStatus(201);
+        return res.status(201).json(response.result);
 
+
+        
     } catch(err) {
         res.sendStatus(500);
         console.log(err)
@@ -118,6 +149,29 @@ router.get("/", async (req, res) => {
 
 });
 
+router.delete("/:id", async (req,res)=>{
+    if(!req.auth.isAdmin) return res.sendStatus(403);
+    try{
+        const orderID = req.params.id;
+        const userEmail = req.params.email;
+        
+            try{
+                const result=await UserModel.findOneAndUpdate({userEmail:userEmail},{$pull:{orders:{_id:orderID}}});
+                if (!result) {
+                    return res.status(404).json({ message: 'Listing not found' });
+                }
+    
+            return res.sendStatus(204);
+            }catch(err){
+                console.log(err);
+                return res.sendStatus(500);
+            } 
+        } catch(error) {
+        console.log(error);
+        return res.sendStatus(500);
+        }
+})
+
 router.patch("/:id", async (req, res) => {
 
     try {
@@ -127,8 +181,6 @@ router.patch("/:id", async (req, res) => {
             res.status(404).json({"message": "User was not found."});
             return;
         }  
-
-
 
         let order = user.orders.find(order => order._id == req.params.id);
         if (!order) {

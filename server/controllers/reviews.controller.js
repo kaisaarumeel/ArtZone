@@ -34,7 +34,6 @@ router.post("/", async function(req, res){
             console.log(err);
             return res.sendStatus(500);
         } 
-        console.log(newReview._id)
         return res.status(201).json({id: newReview._id});
 
     } catch(error) {
@@ -64,7 +63,6 @@ router.get("/", async function(req, res){
 
 
     const reviews = user.reviews;
-        console.log(reviews);
     return res.status(200).json(reviews);
 
 
@@ -112,7 +110,7 @@ router.get("/:id", async function(req, res){
 //DELETE /users/:email/reviews/:id - Removes a review in the system
 
 router.delete("/:id", async function(req, res){
-    
+    if(!req.auth.isAdmin) return res.sendStatus(403);
     try{
     const reviewID= req.params.id;
     const userEmail = req.params.email;
@@ -135,7 +133,8 @@ router.delete("/:id", async function(req, res){
 })
 //DELETE /users/:email/reviews/ - Removes all reviews from a user
 router.delete("/", async function(req, res){
-    
+    if(!req.auth.isAdmin) return res.sendStatus(403);
+
     try{
     const userEmail = req.params.email;
         const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{ $set: { reviews: [] } });

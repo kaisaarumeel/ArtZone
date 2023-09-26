@@ -57,7 +57,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":false,\n    \"address\":{\n        \"country\":\"Sweden\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bobylon@gmail.com\"\n}"
+									"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":false,\n    \"address\":{\n        \"country\":\"US\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bobylon@gmail.com\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/register",
@@ -407,7 +407,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\":{\n        \"firstName\":\"replaced\",\n        \"lastName\":\"replaced\"\n    },\n    \"isAdmin\":true,\n    \"address\":{\n        \"country\":\"replaced\",\n        \"street\":\"replaced\",\n        \"zip\":\"replaced\",\n        \"city\":\"replaced\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bob@gmail.com\"\n}"
+									"raw": "{\n    \"name\":{\n        \"firstName\":\"replaced\",\n        \"lastName\":\"replaced\"\n    },\n    \"isAdmin\":true,\n    \"address\":{\n        \"country\":\"SE\",\n        \"street\":\"replaced\",\n        \"zip\":\"replaced\",\n        \"city\":\"replaced\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bob@gmail.com\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com",
@@ -438,7 +438,7 @@
 											"        var jsonData = pm.response.json();",
 											"        pm.expect(jsonData.name.firstName).to.eql(\"replaced\");",
 											"        pm.expect(jsonData.name.lastName).to.eql(\"replaced\");",
-											"        pm.expect(jsonData.address.country).to.eql(\"replaced\");",
+											"        pm.expect(jsonData.address.country).to.eql(\"SE\");",
 											"        pm.expect(jsonData.address.street).to.eql(\"replaced\");",
 											"        pm.expect(jsonData.address.zip).to.eql(\"replaced\");",
 											"        pm.expect(jsonData.address.city).to.eql(\"replaced\");",
@@ -1045,7 +1045,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Kaisa\",\n    \"author\": \"Listing Author\",\n    \"price\": 20.99,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
+									"raw": "{\n    \"name\": \"Kaisa\",\n    \"author\": \"Listing Author\",\n    \"price\": 21,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings",
@@ -1099,7 +1099,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Bob\",\n    \"author\": \"Listing Author\",\n    \"price\": 22.99,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
+									"raw": "{\n    \"name\": \"Bob\",\n    \"author\": \"Listing Author\",\n    \"price\": 23,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings",
@@ -1153,7 +1153,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Michael\",\n    \"author\": \"Listing Author\",\n    \"price\": 25.99,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
+									"raw": "{\n    \"name\": \"Michael\",\n    \"author\": \"Listing Author\",\n    \"price\": 26,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings",
@@ -1633,6 +1633,59 @@
 					"name": "Orders",
 					"item": [
 						{
+							"name": "Checkout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status check\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"var postResponse = pm.response.json();\r",
+											"\r",
+											"pm.globals.set(\"paypalOrderId\", postResponse.id)\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"bobylon@gmail.com\",\r\n    \"id\": \"{{listingToBeBoughtId}}\",\r\n    \"buyer\":\"bob@gmail.com\"\r\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/checkout",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"checkout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Post an order 1",
 							"event": [
 								{
@@ -1663,7 +1716,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"seller\": \"bobylon@gmail.com\",\r\n    \"listing\": \"{{listingToBeBoughtId}}\"\r\n}"
+									"raw": "{\r\n    \"seller\": \"bobylon@gmail.com\",\r\n    \"listing\": \"{{listingToBeBoughtId}}\",\r\n    \"paypalOrderId\":\"{{paypalOrderId}}\",\r\n    \"simulate\":true\r\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/orders",
@@ -2006,7 +2059,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"description\": \"Best seller!\",\n    \"rating\":5\n}"
+									"raw": "{\n    \"description\": \"Best seller!\",\n    \"rating\":3\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/reviews",
@@ -2040,7 +2093,7 @@
 											"pm.test(\"Received review\", function () {",
 											"        var jsonData = pm.response.json();",
 											"        pm.expect(jsonData[0].description).to.eql(\"Best seller!\");",
-											"        pm.expect(jsonData[0].rating).to.eql(5);",
+											"        pm.expect(jsonData[0].rating).to.eql(3);",
 											"});",
 											""
 										],
@@ -2101,7 +2154,7 @@
 											"pm.test(\"Received review\", function () {",
 											"        var jsonData = pm.response.json();",
 											"        pm.expect(jsonData.description).to.eql(\"Best seller!\");",
-											"        pm.expect(jsonData.rating).to.eql(5);",
+											"        pm.expect(jsonData.rating).to.eql(3);",
 											"});",
 											""
 										],
