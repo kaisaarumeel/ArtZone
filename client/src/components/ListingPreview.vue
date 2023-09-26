@@ -9,9 +9,7 @@
             <p>{{author}}</p>
         </b-col>
         <b-col cols="6">
-          <router-link :to="{ name: 'listing', params: { id: id } }">
-          <b-button variant="primary">{{price}} <sup>SEK</sup></b-button>
-          </router-link>
+          <b-button v-on:click="buyNowClick()" variant="primary">{{price}} <sup>SEK</sup></b-button>
         </b-col>
       </b-row>
 </div>
@@ -20,25 +18,32 @@
 <script>
 
 export default {
-  mounted() {
-    this.getData()
-  },
   data() {
     return {
-      picture: null,
-      name: null,
-      author: null,
-      price: null,
-      id: null
+      listing: null
     }
   },
+  props: {
+    picture: String,
+    name: String,
+    author: String,
+    price: Number,
+    id: Number
+  },
   methods: {
-    async getData() {
-      this.picture = 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg'
-      this.name = 'The Last Supper'
-      this.author = 'Leonardo Da Vinci'
-      this.price = 200000
-      this.id = 1
+    buyNowClick() {
+      const listing = this.listing
+      localStorage.setItem('singleListing', JSON.stringify(listing))
+      this.$router.push('listing')
+    }
+  },
+  mounted() {
+    this.listing = {
+      picture: this.picture,
+      name: this.name,
+      author: this.author,
+      price: this.price,
+      id: this.id
     }
   }
 }
@@ -46,6 +51,11 @@ export default {
 </script>
 <style scoped>
 
+.single-listing {
+  padding: 1rem;
+  border: 1px solid #606C5D;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
   h1{
     font-size: 16px;
     font-weight: 600;
@@ -67,7 +77,8 @@ export default {
     margin: 0;
   }
   .artwork{
-    width:100%;
+    max-height: 30vh;
+    width: auto;
   }
   .btn-primary{
     width:100%;

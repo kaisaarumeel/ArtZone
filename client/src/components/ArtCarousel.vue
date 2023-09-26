@@ -64,7 +64,6 @@ export default {
     async fetchRandomListings() {
       try {
         const response = await axios.get('http://localhost:3000/api/v1/random-listings')
-        console.log(response.data)
         this.listings = response.data
       } catch (error) {
         console.log(error)

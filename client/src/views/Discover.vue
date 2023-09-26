@@ -3,8 +3,8 @@
 
     <div class="d-flex justify-content-end align-items-center pr-5">
       <b-dropdown id="price-dropdown" right text="Sort by:">
-        <b-dropdown-item>Price: highest first</b-dropdown-item>
-        <b-dropdown-item>Price: lowest first</b-dropdown-item>
+        <b-dropdown-item @click="sortListings('descending')">Price: highest first</b-dropdown-item>
+        <b-dropdown-item @click="sortListings('ascending')">Price: lowest first</b-dropdown-item>
       </b-dropdown>
     </div>
   <div class="overflow-auto">
@@ -14,66 +14,75 @@
           v-for="(listing, index) in listings"
           :key="index"
           :picture="listing.picture"
-          :name="listing.title"
+          :name="listing.name"
           :author="listing.author"
+          :price="listing.price"
+          :id="listing.id"
         ></ListingPreviewVue>
       </div>
 
         <b-pagination
       v-model="currentPage"
-      pills :total-rows="rows"
+      pills :total-rows= "totalPages * perPage"
       :per-page="perPage"
-      aria-controls="my-table"
+      aria-controls="listings"
       size="sm"
       align="center"
+      @input="changePage"
     ></b-pagination>
   </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
 import ListingPreviewVue from '../components/ListingPreview.vue'
 
 export default {
   data() {
     return {
-      listings: [
-        { title: 'Listing 1', picture: 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg', author: 'Author 1', captionHTML: '<div class="row bottom"><div class="col"><h1>The Last Supper</h1><p>Leonardo Da Vinci</p></div><div class="col"><button class="btn btn-primary">Buy now</button></div></div>' },
-        { title: 'Listing 2', picture: 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg', author: 'Author 1', captionHTML: '<div class="row bottom"><div class="col"><h1>The Last Supper</h1><p>Leonardo Da Vinci</p></div><div class="col"><button class="btn btn-primary">Buy now</button></div></div>' },
-        { title: 'Listing 3', picture: 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg', author: 'Author 1', captionHTML: '<div class="row bottom"><div class="col"><h1>The Last Supper</h1><p>Leonardo Da Vinci</p></div><div class="col"><button class="btn btn-primary">Buy now</button></div></div>' },
-        { title: 'Listing 1', picture: 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg', author: 'Author 1', captionHTML: '<div class="row bottom"><div class="col"><h1>The Last Supper</h1><p>Leonardo Da Vinci</p></div><div class="col"><button class="btn btn-primary">Buy now</button></div></div>' },
-        { title: 'Listing 2', picture: 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg', author: 'Author 1', captionHTML: '<div class="row bottom"><div class="col"><h1>The Last Supper</h1><p>Leonardo Da Vinci</p></div><div class="col"><button class="btn btn-primary">Buy now</button></div></div>' },
-        { title: 'Listing 3', picture: 'https://www.re-thinkingthefuture.com/wp-content/uploads/2023/01/A9049-Story-behind-the-Art-The-Last-Supper-Image-1.jpg', author: 'Author 1', captionHTML: '<div class="row bottom"><div class="col"><h1>The Last Supper</h1><p>Leonardo Da Vinci</p></div><div class="col"><button class="btn btn-primary">Buy now</button></div></div>' }
-      ],
-      perPage: 1,
-      currentPage: 1
+      listings: [],
+      perPage: 6,
+      currentPage: 1,
+      totalPages: 0,
+      sort: ''
     }
   },
   components: {
     ListingPreviewVue
   },
   methods: {
-    /*
-    // Fetch listings for the current page
     async fetchListings() {
-      // Make an API request to your backend to fetch listings for the current page
-      // You can use axios or a similar library to make the request
-      const response = await axios.get(`/listings/page/${this.page}`)
-      this.listings = response.data.listings
-      this.totalPages = response.data.totalPages
-      this.hasNextPage = response.data.hasNextPage
+      try {
+        const response = await axios.get(`http://localhost:3000/api/v1/listings/page/${this.currentPage}`, {
+          params: {
+            sortBy: this.sort
+          }
+        })
+        this.listings = response.data.listings
+        this.totalPages = response.data.totalPages
+      } catch (error) {
+        console.error(error)
+      }
     },
-    */
-    // Navigate to the previous page
+    sortListings(sortOrder) {
+      // Update the sort property with the new sort order
+      this.sort = sortOrder
+      // Fetch sorted listings
+      this.fetchListings()
+    },
+    changePage(page) {
+      // Update the currentPage and fetch new listings when a page pill is clicked
+      this.currentPage = page
+      this.fetchListings(this.sort)
+    }
   },
-  /*
-  created() {
-    // Fetch listings when the component is created (initial load)
-    this.fetchListings()
-  } */
+  mounted() {
+    this.fetchListings(this.sort)
+  },
   computed: {
     rows() {
-      return this.listings.length
+      return this.totalPages
     }
   }
 }
@@ -85,7 +94,7 @@ export default {
   grid-template-columns: repeat(3, 1fr);
   gap: 3rem; /* Adjust the gap between listings */
 }
-@media screen and (max-width:992px) {
+@media screen and (max-width:1200px) {
     .listing-grid {
      grid-template-columns: repeat(2, 1fr);
     }
