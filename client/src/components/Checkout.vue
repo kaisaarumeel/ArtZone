@@ -17,6 +17,7 @@ export default {
   mounted() {
     console.log(this.id)
     console.log(this.email)
+
     this.generatePaymentIntent()
   },
   methods: {
@@ -38,16 +39,23 @@ export default {
         listing: this.id
       }
       const self = this
-      paypal.Buttons({
+
+      const buttons = paypal.Buttons({
 
         // Call your server to set up the transaction
         createOrder: function (data, actions) {
           return Api.post('checkout', payload, { headers }).then(function (res) {
             return res.data
           }).then(function (orderData) {
-            console.log(orderData)
             return orderData.id
           })
+        },
+        onError: function (data, actions) {
+          self.showError = true
+          setTimeout(() => {
+            self.showError = false
+          }, 3000)
+          return true
         },
 
         // Call your server to finalize the transaction
@@ -67,7 +75,7 @@ export default {
 
             if (errorDetail && errorDetail.issue === 'INSTRUMENT_DECLINED') {
               return actions.restart() // Recoverable state, per:
-            // https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
+              // https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
             }
 
             if (errorDetail) {
@@ -93,6 +101,7 @@ export default {
         }
 
       }).render('#paypal-button-container')
+      console.log(buttons)
     },
     pay() {
       this.$refs.paymentRef.submit()
