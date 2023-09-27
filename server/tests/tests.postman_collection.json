@@ -77,6 +77,70 @@
 							"response": []
 						},
 						{
+							"name": "Delete test user fail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"   pm.response.to.have.status(403);",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let reqBody = JSON.parse(pm.request.body);\r",
+											"pm.collectionVariables.set(\"email\", reqBody.userEmail, String);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"bobylon@gmail.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Login admin",
 							"event": [
 								{
@@ -131,6 +195,519 @@
 										"v1",
 										"users",
 										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete test user success",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"   pm.response.to.have.status(200);",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let reqBody = JSON.parse(pm.request.body);\r",
+											"pm.collectionVariables.set(\"email\", reqBody.userEmail, String);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"bobylon@gmail.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register test user again",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"   pm.response.to.have.status(201);",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let reqBody = JSON.parse(pm.request.body);\r",
+											"pm.collectionVariables.set(\"email\", reqBody.userEmail, String);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":false,\n    \"address\":{\n        \"country\":\"US\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bobylon@gmail.com\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register test user 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"   pm.response.to.have.status(201);",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let reqBody = JSON.parse(pm.request.body);\r",
+											"pm.collectionVariables.set(\"email\", reqBody.userEmail, String);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":false,\n    \"address\":{\n        \"country\":\"US\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bobylon2@gmail.com\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register test user 3",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"   pm.response.to.have.status(201);",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let reqBody = JSON.parse(pm.request.body);\r",
+											"pm.collectionVariables.set(\"email\", reqBody.userEmail, String);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":false,\n    \"address\":{\n        \"country\":\"US\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bobylon3@gmail.com\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register test user 4",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"   pm.response.to.have.status(201);",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let reqBody = JSON.parse(pm.request.body);\r",
+											"pm.collectionVariables.set(\"email\", reqBody.userEmail, String);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":false,\n    \"address\":{\n        \"country\":\"US\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bobylon4@gmail.com\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register test user 5",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"   pm.response.to.have.status(201);",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let reqBody = JSON.parse(pm.request.body);\r",
+											"pm.collectionVariables.set(\"email\", reqBody.userEmail, String);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":false,\n    \"address\":{\n        \"country\":\"US\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bobylon5@gmail.com\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register test user 6",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"   pm.response.to.have.status(201);",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let reqBody = JSON.parse(pm.request.body);\r",
+											"pm.collectionVariables.set(\"email\", reqBody.userEmail, String);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":false,\n    \"address\":{\n        \"country\":\"US\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bobylon6@gmail.com\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all users paginated",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"   pm.response.to.have.status(200);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Received users\", function () {",
+											"        var jsonData = pm.response.json();",
+											"        pm.expect(jsonData.hasNextPage).to.eql(true);",
+											"        pm.expect(jsonData.totalPages).to.eql(2);",
+											"",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"let reqBody = JSON.parse(pm.request.body);\r",
+											"pm.collectionVariables.set(\"email\", reqBody.userEmail, String);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/page/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"page",
+										"1"
 									]
 								}
 							},
@@ -1045,7 +1622,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Kaisa\",\n    \"author\": \"Listing Author\",\n    \"price\": 21,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
+									"raw": "{\n    \"name\": \"Kaisa\",\n    \n    \"author\": \"Listing Author\",\n    \"price\": 21,\n    \"picture\": \"listing.jpg\",\n    \"description\":\"nice\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/listings",
@@ -1174,23 +1751,22 @@
 							"response": []
 						},
 						{
-							"name": "Get listings by page descending",
+							"name": "Get listings by page 1",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 200\", function () {",
-											"   pm.response.to.have.status(200);",
-											"});",
-											"",
 											"pm.test(\"Received listing\", function () {",
 											"        var jsonData = pm.response.json();",
 											"        pm.expect(jsonData.listings.length).to.eql(3);",
-											"        pm.expect(jsonData.listings[0].name).to.eql(\"Michael\");",
+											"        pm.expect(jsonData.listings[0].name).to.eql(\"Kaisa\");",
 											"        pm.expect(jsonData.listings[1].name).to.eql(\"Bob\");",
 											"});",
-											""
+											"",
+											"pm.test(\"Status code is 200\", function () {",
+											"   pm.response.to.have.status(200);",
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -1213,7 +1789,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "http://localhost:3000/api/v1/listings/page/1?sortBy=descending",
+									"raw": "http://localhost:3000/api/v1/listings/page/1",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -1225,12 +1801,6 @@
 										"listings",
 										"page",
 										"1"
-									],
-									"query": [
-										{
-											"key": "sortBy",
-											"value": "descending"
-										}
 									]
 								}
 							},
@@ -1315,7 +1885,10 @@
 											"        var jsonData = pm.response.json();",
 											"        pm.expect(jsonData.listings.length).to.eql(0);",
 											"});",
-											""
+											"",
+											"pm.test(\"Status code is 200\", function () {",
+											"   pm.response.to.have.status(200);",
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -1330,11 +1903,6 @@
 									{
 										"key": "Content-Type",
 										"value": "application/json",
-										"type": "text"
-									},
-									{
-										"key": "X-Auth-Token",
-										"value": "{{xauthtoken2}}",
 										"type": "text"
 									}
 								],

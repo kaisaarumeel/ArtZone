@@ -31,7 +31,7 @@ const port = process.env.PORT || 3000;
 const checkout = require("./controllers/checkout.controller")
 const registration=require("./controllers/registration.controller")
 const randomListings = require("./controllers/randomListings.controller")
-
+const usersPage=require("./controllers/users.page.controller")
 // Create Express app
 const app = express();
 // Parse requests of content-type 'application/json'
@@ -48,6 +48,7 @@ app.use(cors());
 
 app.use('*',restricted_resource_general);
 app.use("/api/v1/",registration);
+app.use("/api/v1/users/", usersPage);
 app.use('/api/v1/users/:email/',restricted_resource_email);
 app.use('/api/v1/users/:email/',users);
 app.use("/api/v1/users/:email/listings", listings);
