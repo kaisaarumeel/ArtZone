@@ -5,6 +5,27 @@ const express = require("express");
 const router = express.Router({mergeParams:true});
 const session = require("../middleware/session")
 
+router.get("/",async (req,res)=>{
+    try{
+        const id=req.params.id;
+        try {
+            const user=await UserSchema.collection.findOne({userEmail:id});
+            if(!user) res.sendStatus(404);
+            if(!req.auth.auth) res.sendStatus(403);
+            if(req.auth.auth && req.auth.authEmail!=id && !req.auth.isAdmin) res.sendStatus(403);
+            let sanitized_user=user;
+            delete sanitized_user["session"];
+            delete sanitized_user["password"];
+            delete sanitized_user["_id"]
+            res.json(sanitized_user);
+        } catch(err){
+            res.sendStatus(400);
+        }
+    } catch(err){
+        console.log(err)
+        res.sendStatus(500);
+    }
+})
 
 router.patch("/",async (req,res)=>{
     try{
@@ -64,6 +85,22 @@ router.put("/",async (req,res)=>{
         res.sendStatus(500);
     }
 })
+router.delete("/",async (req,res)=>{
+    try{
+        try {
+            if(!req.auth.isAdmin) res.sendStatus(403);
+                await UserSchema.collection.deleteOne({userEmail:req.params.email})
+                res.sendStatus(200);
+        } catch(err){
+            console.log(err)
+            res.sendStatus(400);
+        }
+    } catch(err){
+        console.log(err)
+        res.sendStatus(500);
+    }
+})
+
 
 
 module.exports = router;
