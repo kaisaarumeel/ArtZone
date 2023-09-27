@@ -27,8 +27,10 @@ export default {
         picture: '',
         description: '',
         creator: '',
-        sold: false
-      }
+        sold: false,
+        id: ''
+      },
+      userLoggedIn: false
     }
   },
   props: {
@@ -38,24 +40,39 @@ export default {
     picture: String,
     description: String,
     creator: String,
-    sold: Boolean
+    sold: Boolean,
+    id: String
 
   },
   methods: {
     buyNowClick() {
-      const listing = {
-        name: this.name,
-        author: this.author,
-        price: this.price,
-        picture: this.picture,
-        description: this.description,
-        creator: this.creator,
-        sold: this.sold
+      if (!this.userLoggedIn) {
+        this.$emit('show-login-modal')
+      } else {
+        const listing = {
+          name: this.name,
+          author: this.author,
+          price: this.price,
+          picture: this.picture,
+          description: this.description,
+          creator: this.creator,
+          sold: this.sold,
+          _id: this.id
+        }
+        localStorage.setItem('singleListing', JSON.stringify(listing))
+        this.$router.push('listing')
+        console.log(this.listing)
       }
-      localStorage.setItem('singleListing', JSON.stringify(listing))
-      this.$router.push('listing')
-      console.log(this.listing)
+    },
+    getUserDataFromLocalStorage() {
+      const userData = localStorage.getItem('userData')
+      if (userData) {
+        this.userLoggedIn = true
+      }
     }
+  },
+  mounted() {
+    this.getUserDataFromLocalStorage()
   }
 }
 
