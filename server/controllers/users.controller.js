@@ -27,41 +27,6 @@ router.get("/",async (req,res)=>{
     }
 })
 
-
-router.get('/page/:page', async (req, res) => {
-    try {
-      const page = parseInt(req.params.page || 1); // Requested page number
-
-      const perPage = 6; // Number of users per page 
-      const skip = (page - 1) * perPage;
-  
-      // Find all users
-      const users = await User.find();
-      let sanitized_users=[]
-      for(let i=0;i<users.length;i++){
-        let sanitized_user=users[i];
-        delete sanitized_user["session"];
-        delete sanitized_user["password"];
-        sanitized_users.push(sanitized_user)
-      }
-
-      if (!users) return res.status(200).json({"message": "no users are in the system."});
-      const user_arr = users.slice(skip, skip + perPage);
-      const totalPages = Math.ceil(users.length / perPage);
-      const hasNextPage = page < totalPages;
-  
-      res.status(200).json({
-        user_arr,
-        page,
-        totalPages,
-        hasNextPage,
-      });
-    } catch (error) {
-      console.error(error);
-      res.sendStatus(500);
-    }
-  });
-
 router.patch("/",async (req,res)=>{
     try{
         const email=req.params.email;
