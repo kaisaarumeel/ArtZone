@@ -13,11 +13,13 @@
         <ListingPreviewVue
           v-for="(listing, index) in listings"
           :key="index"
-          :picture="listing.picture"
           :name="listing.name"
           :author="listing.author"
           :price="listing.price"
-          :id="listing.id"
+          :picture="listing.picture"
+          :description="listing.description"
+          :creator="listing.creator"
+          :sold="listing.sold"
         ></ListingPreviewVue>
       </div>
 

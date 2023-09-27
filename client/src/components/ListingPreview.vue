@@ -20,30 +20,41 @@
 export default {
   data() {
     return {
-      listing: null
+      listing: {
+        name: '',
+        author: '',
+        price: null,
+        picture: '',
+        description: '',
+        creator: '',
+        sold: false
+      }
     }
   },
   props: {
-    picture: String,
     name: String,
     author: String,
     price: Number,
-    id: Number
+    picture: String,
+    description: String,
+    creator: String,
+    sold: Boolean
+
   },
   methods: {
     buyNowClick() {
-      const listing = this.listing
+      const listing = {
+        name: this.name,
+        author: this.author,
+        price: this.price,
+        picture: this.picture,
+        description: this.description,
+        creator: this.creator,
+        sold: this.sold
+      }
       localStorage.setItem('singleListing', JSON.stringify(listing))
       this.$router.push('listing')
-    }
-  },
-  mounted() {
-    this.listing = {
-      picture: this.picture,
-      name: this.name,
-      author: this.author,
-      price: this.price,
-      id: this.id
+      console.log(this.listing)
     }
   }
 }
