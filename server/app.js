@@ -106,7 +106,7 @@ app.listen(port, function(err) {
                 lastName:"Bobson"
             },
             address:{
-                country:"Sweden",
+                country:"SE",
                 street:"Bob street 1",
                 zip:"12345",
                 city:"Bobtown"

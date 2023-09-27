@@ -1,5 +1,8 @@
 <template>
   <div>
+    <b-modal ref="loginModal" title="Login Required">
+      <p>You need to be logged in to buy this piece.</p>
+    </b-modal>
 
     <div class="d-flex justify-content-end align-items-center pr-5">
       <b-dropdown id="price-dropdown" right text="Sort by:">
@@ -13,11 +16,15 @@
         <ListingPreviewVue
           v-for="(listing, index) in listings"
           :key="index"
-          :picture="listing.picture"
           :name="listing.name"
           :author="listing.author"
           :price="listing.price"
-          :id="listing.id"
+          :picture="listing.picture"
+          :description="listing.description"
+          :creator="listing.creator"
+          :sold="listing.sold"
+          :id="listing._id"
+          @show-login-modal="showLoginModal"
         ></ListingPreviewVue>
       </div>
 
@@ -52,6 +59,9 @@ export default {
     ListingPreviewVue
   },
   methods: {
+    showLoginModal() {
+      this.$refs.loginModal.show()
+    },
     async fetchListings() {
       try {
         const response = await axios.get(`http://localhost:3000/api/v1/listings/page/${this.currentPage}`, {

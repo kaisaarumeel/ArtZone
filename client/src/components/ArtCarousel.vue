@@ -64,6 +64,7 @@ export default {
     async fetchRandomListings() {
       try {
         const response = await axios.get('http://localhost:3000/api/v1/random-listings')
+        console.log(response)
         this.listings = response.data
       } catch (error) {
         console.log(error)
@@ -95,7 +96,7 @@ export default {
     padding-left: 5rem;
     padding-right: 5rem;
     padding-bottom: 10rem;
-    max-height: 65vh;
+    max-height: 40vh;
     margin-left: auto;
     margin-right: auto;
 }

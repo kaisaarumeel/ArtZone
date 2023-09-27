@@ -11,19 +11,17 @@ const client = new paypal.core.PayPalHttpClient(env);
 
 
 router.post("/",async (req,res)=>{
-  if(!req.auth) res.sendStatus(403);
+  if(!req.auth.auth) return res.sendStatus(403);
 
   try{
     const buyer = await UserSchema.findOne({userEmail:req.body.buyer});
     if (!buyer) {
       return res.status(404).json({ message: 'User not found' });
     }
-    console.log(buyer)
     const user = await UserSchema.findOne({userEmail:req.body.email});
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
     }
-    console.log(user)
 
     // Get the listing with the given name
     const foundListing = user.listings.find(listing => listing.id ===  req.body.id);

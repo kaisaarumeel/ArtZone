@@ -20,31 +20,59 @@
 export default {
   data() {
     return {
-      listing: null
+      listing: {
+        name: '',
+        author: '',
+        price: null,
+        picture: '',
+        description: '',
+        creator: '',
+        sold: false,
+        id: ''
+      },
+      userLoggedIn: false
     }
   },
   props: {
-    picture: String,
     name: String,
     author: String,
     price: Number,
-    id: Number
+    picture: String,
+    description: String,
+    creator: String,
+    sold: Boolean,
+    id: String
+
   },
   methods: {
     buyNowClick() {
-      const listing = this.listing
-      localStorage.setItem('singleListing', JSON.stringify(listing))
-      this.$router.push('listing')
+      if (!this.userLoggedIn) {
+        this.$emit('show-login-modal')
+      } else {
+        const listing = {
+          name: this.name,
+          author: this.author,
+          price: this.price,
+          picture: this.picture,
+          description: this.description,
+          creator: this.creator,
+          sold: this.sold,
+          _id: this.id
+        }
+        localStorage.setItem('singleListing', JSON.stringify(listing))
+        this.$router.push('listing')
+        console.log(this.listing)
+      }
+    },
+    getUserDataFromLocalStorage() {
+      const userData = localStorage.getItem('userData')
+      if (userData) {
+        this.userLoggedIn = true
+      }
     }
   },
   mounted() {
-    this.listing = {
-      picture: this.picture,
-      name: this.name,
-      author: this.author,
-      price: this.price,
-      id: this.id
-    }
+    this.getUserDataFromLocalStorage()
   }
 }
 
