@@ -161,7 +161,7 @@ export default {
             <b-col cols="12" md="6">
                 <ProfileForm isLoggedIn="true" v-on:user-creation="updateUser($event)"> Save Changes </ProfileForm>
                 <p class="succes" v-if="changeSuccess"> {{changes}} </p>
-                <p class="error" v-if="!success"> {{updateError}} </p>¨
+                <p class="error" v-if="!success"> {{updateError}} </p>
             </b-col>
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
