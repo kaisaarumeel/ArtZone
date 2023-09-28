@@ -96,7 +96,7 @@ export default {
     padding-left: 5rem;
     padding-right: 5rem;
     padding-bottom: 10rem;
-    max-height: 40vh;
+    max-height: 45vh;
     margin-left: auto;
     margin-right: auto;
 }

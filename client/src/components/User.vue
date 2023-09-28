@@ -32,7 +32,6 @@ export default {
         const headers = {
           'X-Auth-Token': userData.sessionKey
         }
-        console.log(userData)
         const response = await axios.delete(`http://localhost:3000/api/v1/users/${this.userEmail}`, { headers })
         if (response.status === 200) {
           console.log(`User with email "${this.userEmail}" has been banned.`)

@@ -119,7 +119,7 @@ router.get("/:id", async function(req, res){
 
 
 
-//DELETE /users/:email/listings/:name - Removes a listing in the system
+//DELETE /users/:email/listings/:id - Removes a listing in the system
 
 router.delete("/:id", async function(req, res){
     
@@ -162,7 +162,7 @@ router.delete("/", async function(req, res){
     }
 })
         
-//PUT /users/:email/listings/:name - Full update on a listing in the system at the specified resource.
+//PUT /users/:email/listings/:id - Full update on a listing in the system at the specified resource.
     router.put("/:id", async function(req, res){
         try{
             const userEmail = req.params.email;
