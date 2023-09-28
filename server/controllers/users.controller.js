@@ -5,7 +5,7 @@ const express = require("express");
 const router = express.Router({mergeParams:true});
 const session = require("../middleware/session")
 
-router.get("/:id",async (req,res)=>{
+router.get("/",async (req,res)=>{
     try{
         const id=req.params.id;
         try {
