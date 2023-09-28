@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="admin-board-container">
     <div class="middle">
             <button size="sm" class="user-btn" @click="showUsers" :class="{ active: activeTab === 'users' }">Users</button>
             <button size="sm" class="listing-btn" @click="showListings" :class="{ active: activeTab === 'listings' }">Listings</button>
@@ -81,12 +81,9 @@ export default {
 }
 </script>
 <style scoped>
-.user {
-    width: 80%;
-}
-.users-container {
-    display: flex;
-    justify-content: center;
+.admin-board-container {
+    margin-left: 5rem;
+    margin-right: 5rem;
 }
 .user-btn, .listing-btn{
 color: #606C5D;
@@ -96,5 +93,12 @@ background: none;
 .active {
   color: #F1C376 !important;
   text-decoration: underline !important;
+}
+
+@media screen and (max-width:768px) {
+    .admin-board-container {
+    margin-left: 2rem;
+    margin-right: 1rem;
+}
 }
 </style>
