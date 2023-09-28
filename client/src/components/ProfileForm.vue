@@ -1,5 +1,9 @@
 <script>
+import { Api } from '../Api'
 export default {
+  props: {
+    isLoggedIn: Boolean(false)
+  },
   data() {
     return {
       user: {
@@ -264,6 +268,37 @@ export default {
         { text: 'Zimbabwe', value: 'ZW' }
       ]
     }
+  },
+  methods: {
+    async getUser() {
+      if (this.isLoggedIn) {
+        const userData = JSON.parse(localStorage.getItem('userData'))
+        try {
+          const url = `/users/${userData.userEmail}`
+          const response = await Api.get(url, {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Auth-Token': userData.sessionKey
+            }
+          })
+          if (response.status === 200) {
+            const date = new Date(response.data.dateOfBirth)
+            let dateDay = String(date.getDate())
+            if (dateDay.length < 2) dateDay = '0' + dateDay
+            let dateMonth = String(date.getMonth() + 1)
+            if (dateMonth.length < 2) dateMonth = '0' + dateMonth
+            const dateString = date.getFullYear() + '-' + dateMonth + '-' + dateDay
+            this.user = response.data
+            this.user.dateOfBirth = dateString
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    }
+  },
+  mounted() {
+    this.getUser()
   }
 }
 </script>
