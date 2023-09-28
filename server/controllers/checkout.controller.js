@@ -41,7 +41,7 @@ router.post("/",async (req,res)=>{
                     "value": (foundListing.price).toString()
                 },
                 "payee": {
-                    "email_address": "bobtheseller@person.example.com"
+                    "email_address": req.body.email
                 },
                 "shipping": {
                   "name": {

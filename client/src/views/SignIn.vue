@@ -9,13 +9,13 @@ export default {
         userEmail: '',
         password: ''
       },
-      loginRespose: '',
+      loginResponse: '',
       success: false
     }
   },
   methods: {
     async logUserIn() {
-      const request = Object.assign(this.data)
+      const request = structuredClone(this.data)
       request.password = sha256(request.password).toString(CryptoJS.enc.Hex)
       Api.post('users/login', request, {
         headers: {
@@ -34,7 +34,7 @@ export default {
         }
       }).catch((err) => {
         console.log(err)
-        this.loginRespose = 'Could not find an account with given email or password. Please try again'
+        this.loginResponse = 'Could not find an account with given email or password. Please try again'
       })
     }
   }
@@ -73,7 +73,7 @@ export default {
                 <div class="text-center">
                     <b-button v-on:click="logUserIn()" variant="primary">Log in</b-button>
                 </div>
-                <p class="error" v-if="!success"> {{loginRespose}} </p>
+                <p class="error" v-if="!success"> {{loginResponse}} </p>
             </b-col>
             <b-col cols="6">
                 <img class="pl-2 pr-5 text-center" src="../../public/SignupImage.png"

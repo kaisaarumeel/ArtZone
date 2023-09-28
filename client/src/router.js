@@ -7,6 +7,7 @@ import SignIn from './views/SignIn.vue'
 import AddListing from './views/AddListing.vue'
 import Discover from './views/Discover.vue'
 import AdminBoard from './views/AdminBoard.vue'
+import Profile from './views/Profile.vue'
 
 Vue.use(Router)
 export default new Router({
@@ -49,6 +50,11 @@ export default new Router({
       path: '/admin-board',
       name: 'adminBoard',
       component: AdminBoard
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile
     }
   ]
 })
