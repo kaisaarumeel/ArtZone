@@ -125,15 +125,6 @@ router.get("/", async (req, res) => {
         const links = new Array();
         for (let key of user.orders) {
             links.push({
-               rel: "modify",
-               method: "PATCH",
-               title: "Modify order",
-               href: `/api/v1/users/${user.userEmail}/${key._id}`
-            });
-        }
-
-        for (let key of user.orders) {
-            links.push({
                rel: "get specific order",
                method: "GET",
                href: `/api/v1/users/${user.userEmail}/${key._id}`

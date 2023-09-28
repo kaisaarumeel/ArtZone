@@ -19,6 +19,7 @@ export default {
       orderLinks: null,
       listings: null,
       isAdmin: false
+
     }
   },
   methods: {
@@ -152,7 +153,7 @@ export default {
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
                 <div class="w-100 listings mt-2 mb-2">
-                    <b-table @row-clicked="redirect()" class="profile-page-listings" :items="listings">
+                    <b-table sticky-header="true" @row-clicked="redirect()" class="profile-page-listings table-header-colour" :items="listings">
                         <template #cell(picture)="data">
                             <span v-html="data.value"></span>
                         </template>
@@ -160,7 +161,7 @@ export default {
                 </div>
                 <h4> Orders </h4>
                 <div class="w-100 orders mt-2">
-                    <b-table :items="orders"></b-table>
+                    <b-table class="profile-page-listings table-header-colour" :items="orders"></b-table>
                 </div>
             </b-col>
             <b-col cols="6" class="pt-3 text-left">
@@ -204,6 +205,10 @@ export default {
     .profile-page-listings .table-listing-picture {
         width: 150px;
         height: auto;
+    }
+    .table-header-colour thead tr{
+        background-color: #606C5D;
+        color: #F7E6C4;
     }
     .profile-page-listings td{
         vertical-align: unset !important;
