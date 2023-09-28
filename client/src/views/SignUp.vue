@@ -18,7 +18,7 @@ export default {
   methods: {
     async createUser(user) {
       let loginData = null
-      const newUser = Object.assign(user)
+      const newUser = structuredClone(user)
       newUser.password = sha256(newUser.password).toString(CryptoJS.enc.Hex)
       Api.post('users/register', newUser, {
         headers: {
@@ -40,9 +40,11 @@ export default {
           }
         }).then((loginResponse) => {
           if (loginResponse.status === 200) {
+            const expiryDate = parseInt(Date.now() / 1000) + 3600
             const data = {
               userEmail: newUser.userEmail,
-              sessionKey: loginResponse.data.key
+              sessionKey: loginResponse.data.key,
+              expiry: expiryDate
             }
             localStorage.setItem('userData', JSON.stringify(data))
             this.$router.push({ path: '/' })
@@ -74,7 +76,7 @@ export default {
     </b-row>
     <b-row>
       <b-col class="pl-5 pr-3" md="6">
-        <ProfileForm v-on:user-creation="createUser($event)">Create Account</ProfileForm>
+        <ProfileForm isLoggedIn="false" v-on:user-creation="createUser($event)">Create Account</ProfileForm>
       </b-col>
       <b-col md="6">
         <img class="pl-2 pr-5 text-center" src="../../public/SignupImage.png"
