@@ -108,6 +108,9 @@ export default {
         console.log(err)
       }
     },
+    async goToAdminPage() {
+      this.$router.push('/admin-board')
+    },
     async logOut() {
       localStorage.removeItem('userData')
       this.$router.push('/')
@@ -130,6 +133,7 @@ export default {
         })
         if (response.status === 200) {
           const user = response.data
+          console.log(response.data)
           this.isAdmin = user.isAdmin
         }
       } catch (err) {
@@ -146,6 +150,7 @@ export default {
       localStorage.removeItem('userData')
       return this.$router.push('/')
     }
+    this.getUser()
     this.getListings()
     this.getOrders()
   }

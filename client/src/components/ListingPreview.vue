@@ -122,4 +122,9 @@ export default {
     }
 
   }
+
+    .artwork{
+    max-height: 30vh;
+    width: auto;
+  }
 </style>

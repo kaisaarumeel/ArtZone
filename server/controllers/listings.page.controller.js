@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
     if (!users) return res.status(200).json({"message": "no users are in the system."});
 
     const allListings = users.flatMap((user) =>  {return user.listings});
-    console.log(allListings[0].price);
+ 
     if (!allListings || allListings.length === 0) return res.status(200).json({"message": "no listings are saved in the system."});
 
     const sortQueryParam = String(req.query.sortBy);
