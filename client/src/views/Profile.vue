@@ -19,7 +19,6 @@ export default {
       orderLinks: null,
       listings: null,
       isAdmin: false
-
     }
   },
   methods: {
@@ -92,7 +91,18 @@ export default {
           }
         })
         if (response.status === 200) {
-          this.orders = response.data
+          console.log(response.data)
+          console.log(response.data.orders)
+          console.log(response.data.links)
+          this.orders = response.data.orders
+          this.orderLinks = response.data.links
+          for (const key in this.orders) {
+            delete this.orders[key]._id
+            delete this.orders[key].hash
+            delete this.orders[key].buyer
+            delete this.orders[key].paypalOrderId
+            delete this.orders[key].listing
+          }
         }
       } catch (err) {
         console.log(err)
@@ -102,7 +112,10 @@ export default {
       localStorage.removeItem('userData')
       this.$router.push('/')
     },
-    async redirect() {
+    async goToListing() {
+      alert('bob')
+    },
+    async goToOrder() {
       alert('bob')
     },
     async getUser() {
@@ -153,7 +166,7 @@ export default {
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
                 <div class="w-100 listings mt-2 mb-2">
-                    <b-table sticky-header="true" @row-clicked="redirect()" class="profile-page-listings table-header-colour" :items="listings">
+                    <b-table @row-clicked="redirect()" class="profile-page-listings table-header-colour" :items="listings">
                         <template #cell(picture)="data">
                             <span v-html="data.value"></span>
                         </template>
@@ -209,6 +222,12 @@ export default {
     .table-header-colour thead tr{
         background-color: #606C5D;
         color: #F7E6C4;
+    }
+    .profile-page-listings thead {
+    position: sticky;
+    width: 100%;
+    top: 0;
+    z-index: 1;
     }
     .profile-page-listings td{
         vertical-align: unset !important;
