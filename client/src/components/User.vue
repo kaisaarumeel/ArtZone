@@ -5,7 +5,8 @@
             <h5 class="p-2">{{userEmail}}</h5>
         </b-col>
         <b-col cols="4"  class="btn-container">
-          <b-button v-on:click="banUser()" variant="primary">Ban user</b-button>
+         <b-button @click="banUser" variant="primary" v-if="!isBanned">Ban User</b-button>
+        <b-button variant="danger" v-else>Banned</b-button>
         </b-col>
       </b-row>
 </div>
@@ -19,13 +20,23 @@ export default {
     userEmail: String
 
   },
+  data() {
+    return {
+      isBanned: false
+    }
+  },
   methods: {
     async banUser() {
       try {
-        const headers = 'X-Auth-Token'
+        const userData = JSON.parse(localStorage.getItem('userData'))
+        const headers = {
+          'X-Auth-Token': userData.sessionKey
+        }
+        console.log(userData)
         const response = await axios.delete(`http://localhost:3000/api/v1/users/${this.userEmail}`, { headers })
         if (response.status === 200) {
           console.log(`User with email "${this.userEmail}" has been banned.`)
+          this.isBanned = true
         } else {
           console.error(`Failed to ban user with email "${this.userEmail}".`)
         }
