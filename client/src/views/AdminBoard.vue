@@ -15,7 +15,7 @@
       </div>
       <div v-else>
         <div class="w-100 listings mt-2 mb-2">
-            <b-table responsive class="admin-page-listings" :items="listings">
+            <b-table v-if="this.listings.length>0" responsive class="admin-page-listings" :items="listings">
             <template #cell(picture)="data">
                 <span v-html="data.value"></span>
             </template>
@@ -25,6 +25,7 @@
                 <button @click="deleteListing(data.item.creator, data.item._id)" class="btn btn-primary">Delete Listing</button>
             </template>
         </b-table>
+        <div v-else><p>There are no listings in the system.</p></div>
         </div>
       </div>
 
@@ -85,13 +86,15 @@ export default {
               }
             })
             console.log(response.data)
-            for (const key in response.data.listings) {
-              const image = `<img class="table-listing-picture" src="${response.data.listings[key].picture}">`
-              response.data.listings[key].picture = image
-              response.data.listings[key].deleteListing = ''
+            if (Array.isArray(response.data.listings) && response.data.listings.length > 0) {
+              for (const key in response.data.listings) {
+                const image = `<img class="table-listing-picture" src="${response.data.listings[key].picture}">`
+                response.data.listings[key].picture = image
+                response.data.listings[key].deleteListing = ''
+              }
+              this.listings.push(...response.data.listings)
+              console.log(this.listings)
             }
-            this.listings.push(...response.data.listings)
-            console.log(this.listings)
             hasNextPage = response.data.hasNextPage
 
             page++ // Move to the next page
