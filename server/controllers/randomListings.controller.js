@@ -15,12 +15,13 @@ router.get('/', async (req, res) => {
   
       // Collect all listings from all users
       const allListings = users.flatMap((user) => user.listings);
+      const unsoldListings = allListings.filter((listing) => listing.sold === false)
   
       // Shuffle the array of listings to randomize them
-      shuffleArray(allListings);
+      shuffleArray(unsoldListings);
   
       // Get the first 5 listings (or fewer if there are fewer listings)
-      const randomListings = allListings.slice(0, 5);
+      const randomListings = unsoldListings.slice(0, 5);
   
       res.status(200).json(randomListings);
     } catch (error) {

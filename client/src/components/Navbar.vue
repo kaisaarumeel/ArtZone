@@ -28,6 +28,7 @@
               <router-link to="/profile">
                 <img src="../../public/profile.png">
               </router-link>
+                <b-button class=" ml-3 pl-2 pr-2 btn-primary btn" @click="logOut()">Log out </b-button>
             </div>
             <div class="login" v-else>
               <router-link to="/login">
@@ -83,10 +84,9 @@ export default {
         })
       }
     },
-    initEventListener() {
-      window.addEventListener('loggedInEvent', (e) => {
-        this.userData = localStorage.getItem('userData')
-      })
+    async logOut() {
+      localStorage.removeItem('userData')
+      return this.$router.push('/')
     }
   }
 }
@@ -144,7 +144,7 @@ img{
 }
 
 .middle {
-  padding-left: 10rem;
+  padding-left: 12rem;
   width: 100%;
   display: flex;
   justify-content: center;
