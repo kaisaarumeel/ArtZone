@@ -18,7 +18,10 @@ export default {
       orders: null,
       orderLinks: null,
       listings: null,
-      isAdmin: false
+      isAdmin: false,
+      allListings: [],
+      listingFetched: false,
+      user: null
     }
   },
   methods: {
@@ -79,6 +82,25 @@ export default {
         console.log(err)
       }
     },
+    async fetchListings() {
+      try {
+        if (!this.usersFetched) {
+          let page = 1
+          let hasNextPage = true
+
+          while (hasNextPage) {
+            const response = await Api.get(`/listings/page/${page}`)
+            this.allListings.push(...response.data.listings)
+            hasNextPage = response.data.hasNextPage
+
+            page++ // Move to the next page
+            this.listingFetched = true
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
     async getOrders() {
       try {
         const userData = JSON.parse(localStorage.getItem('userData'))
@@ -91,17 +113,27 @@ export default {
           }
         })
         if (response.status === 200) {
-          console.log(response.data)
-          console.log(response.data.orders)
-          console.log(response.data.links)
           this.orders = response.data.orders
-          this.orderLinks = response.data.links
           for (const key in this.orders) {
             delete this.orders[key]._id
             delete this.orders[key].hash
-            delete this.orders[key].buyer
             delete this.orders[key].paypalOrderId
-            delete this.orders[key].listing
+            if (this.orders[key].seller === this.user.userEmail) {
+              delete this.orders[key].seller
+            } else {
+              delete this.orders[key].buyer
+            }
+          }
+          this.orderLinks = response.data.links
+          await this.fetchListings()
+          for (const key in this.orders) {
+            console.log(this.orders[key])
+            for (const id in this.allListings) {
+              console.log(this.allListings[id])
+              if (this.orders[key].listing === this.allListings[id]._id) {
+                this.orders[key].listing = `<img class="table-listing-picture" src="${this.allListings[id].picture}">`
+              }
+            }
           }
         }
       } catch (err) {
@@ -132,6 +164,7 @@ export default {
           }
         })
         if (response.status === 200) {
+          this.user = response.data
           const user = response.data
           console.log(response.data)
           this.isAdmin = user.isAdmin
@@ -141,7 +174,7 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     const userData = JSON.parse(localStorage.getItem('userData'))
     if (!userData) {
       return this.$router.push('/')
@@ -150,9 +183,9 @@ export default {
       localStorage.removeItem('userData')
       return this.$router.push('/')
     }
-    this.getUser()
-    this.getListings()
-    this.getOrders()
+    await this.getUser()
+    await this.getListings()
+    await this.getOrders()
   }
 }
 </script>
@@ -179,7 +212,11 @@ export default {
                 </div>
                 <h4> Orders </h4>
                 <div class="w-100 orders mt-2">
-                    <b-table class="profile-page-listings table-header-colour" :items="orders"></b-table>
+                    <b-table class="profile-page-listings table-header-colour" :items="orders">
+                        <template #cell(listing)="data">
+                            <span v-html="data.value"></span>
+                        </template>
+                    </b-table>
                 </div>
             </b-col>
             <b-col cols="6" class="pt-3 text-left">

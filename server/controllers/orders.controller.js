@@ -180,7 +180,15 @@ router.patch("/:id", async (req, res) => {
         }
 
         for(key in req.body){
-            order[key]=req.body[key]
+            if (order.seller === user.userEmail && key === 'isShipped') {
+                order[key]=req.body[key];
+            } else if (order.buyer === user.userEmail && key === 'isReceived') {
+                if (order.isShipped === true) {
+                    order[key]=req.body[key];
+                }
+            } else {
+                break;
+            }
         }
         try{
             const error = await order.validate()
