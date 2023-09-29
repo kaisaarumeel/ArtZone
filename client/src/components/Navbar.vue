@@ -24,11 +24,11 @@
         <b-navbar-nav>
           <!-- Using 'button-content' slot -->
           <div class="login text-right" >
-            <div v-if="userData !== null">
+            <div class="profile" v-if="userData !== null">
               <router-link to="/profile">
                 <img src="../../public/profile.png">
               </router-link>
-                <b-button class=" ml-3 pl-2 pr-2 btn-primary btn" @click="logOut()">Log out </b-button>
+                <b-button class="pl-2 pr-2 btn-primary btn" @click="logOut()">Log out </b-button>
             </div>
             <div class="login" v-else>
               <router-link to="/login">
@@ -96,6 +96,9 @@ export default {
 </script>
 
 <style scoped>
+.btn {
+  margin-left: 1rem;
+}
 .active {
   color: #F1C376 !important;
   text-decoration: underline !important;
@@ -182,8 +185,10 @@ background: none;
 img{
   width: 6%;
   height: auto;
-  margin-right: 2rem;
 }
+  .btn {
+    margin-right: 2rem;
+  }
 }
 
 </style>

@@ -15,11 +15,9 @@
       </div>
       <div v-else>
         <div class="w-100 listings mt-2 mb-2">
-            <b-table v-if="this.listings.length>0" responsive class="admin-page-listings" :items="listings">
+            <b-table v-if="this.listings.length>0" responsive class="admin-page-listings" :items="listings" :fields="fields">
             <template #cell(picture)="data">
                 <span v-html="data.value"></span>
-            </template>
-            <template #cell(_id)="" v-if="false">
             </template>
             <template #cell(deleteListing)="data">
                 <button @click="deleteListing(data.item.creator, data.item._id)" class="btn btn-primary">Delete Listing</button>
@@ -47,7 +45,17 @@ export default {
       usersFetched: false,
       listingsFetched: false,
       sort: '',
-      delete: ''
+      delete: '',
+      fields: [
+        { key: 'name', label: 'Name' },
+        { key: 'author', label: 'Author' },
+        { key: 'price', label: 'Price' },
+        { key: 'picture', label: 'Picture' },
+        { key: 'description', label: 'Description' },
+        { key: 'creator', label: 'Creator' },
+        { key: 'sold', label: 'Sold' },
+        { key: 'deleteListing', label: 'Delete Listing' }
+      ]
     }
   },
   components: {
