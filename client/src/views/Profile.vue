@@ -111,6 +111,7 @@ export default {
     async logOut() {
       localStorage.removeItem('userData')
       this.$router.push('/')
+      location.reload()
     },
     async goToListing() {
       alert('bob')

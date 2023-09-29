@@ -31,6 +31,7 @@ export default {
           localStorage.setItem('userData', JSON.stringify(data))
           this.success = true
           this.$router.push({ path: '/' })
+          location.reload()
         }
       }).catch((err) => {
         console.log(err)

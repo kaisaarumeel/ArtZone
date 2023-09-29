@@ -82,11 +82,6 @@ export default {
           }
         })
       }
-    },
-    initEventListener() {
-      window.addEventListener('loggedInEvent', (e) => {
-        this.userData = localStorage.getItem('userData')
-      })
     }
   }
 }
