@@ -37,7 +37,7 @@ router.post("/", async (req, res) => {
             return;
         }
 
-        let sellerListing = seller.listings.find(listing => listing.id = req.body.listing);
+        let sellerListing = seller.listings.find(listing => listing.id === req.body.listing);
         if (!sellerListing) {
             res.status(400).json({"message": "The seller does not posses the listing you want to order"});
             return;
