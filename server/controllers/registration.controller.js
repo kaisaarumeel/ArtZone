@@ -49,6 +49,7 @@ router.post("/users/register", async (req, res) => {
         listings: [],
         orders: [] 
     });
+  
     const error=await user.validate()
     if(error){
         console.log(error)
