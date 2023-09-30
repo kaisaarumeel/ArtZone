@@ -143,10 +143,6 @@ export default {
     async goToAdminPage() {
       this.$router.push('/admin-board')
     },
-    async logOut() {
-      localStorage.removeItem('userData')
-      this.$router.push('/')
-    },
     async goToListing() {
       alert('bob')
     },
@@ -218,9 +214,6 @@ export default {
                         </template>
                     </b-table>
                 </div>
-            </b-col>
-            <b-col cols="6" class="pt-3 text-left">
-                <b-button class="pl-2 pr-2 btn-primary btn" @click="logOut()">Log out </b-button>
             </b-col>
             <b-col cols="6" class="pt-3 text-right">
                 <b-button v-if="isAdmin" @click="goToAdminPage()" class="pl-2 pr-2 btn-primary btn">

@@ -69,7 +69,7 @@ export default {
             sortBy: this.sort
           }
         })
-        this.listings = response.data.listings
+        this.listings = response.data.listings.filter(listing => !listing.sold)
         this.totalPages = response.data.totalPages
       } catch (error) {
         console.error(error)

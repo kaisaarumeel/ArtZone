@@ -24,10 +24,11 @@
         <b-navbar-nav>
           <!-- Using 'button-content' slot -->
           <div class="login text-right" >
-            <div v-if="userData !== null">
+            <div class="profile" v-if="userData !== null">
               <router-link to="/profile">
                 <img src="../../public/profile.png">
               </router-link>
+                <b-button class="pl-2 pr-2 btn-primary btn" @click="logOut()">Log out </b-button>
             </div>
             <div class="login" v-else>
               <router-link to="/login">
@@ -83,10 +84,11 @@ export default {
         })
       }
     },
-    initEventListener() {
-      window.addEventListener('loggedInEvent', (e) => {
-        this.userData = localStorage.getItem('userData')
-      })
+    async logOut() {
+      localStorage.removeItem('userData')
+      if (this.currentRoute !== '/') {
+        return this.$router.push('/')
+      }
     }
   }
 }
@@ -94,6 +96,9 @@ export default {
 </script>
 
 <style scoped>
+.btn {
+  margin-left: 1rem;
+}
 .active {
   color: #F1C376 !important;
   text-decoration: underline !important;
@@ -144,7 +149,7 @@ img{
 }
 
 .middle {
-  padding-left: 10rem;
+  padding-left: 12rem;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -180,8 +185,10 @@ background: none;
 img{
   width: 6%;
   height: auto;
-  margin-right: 2rem;
 }
+  .btn {
+    margin-right: 2rem;
+  }
 }
 
 </style>
