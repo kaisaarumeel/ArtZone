@@ -113,7 +113,7 @@ export default {
     },
     async logOut() {
       localStorage.removeItem('userData')
-      this.$router.push('/')
+      window.location.replace('/')
     },
     async goToListing() {
       alert('bob')
