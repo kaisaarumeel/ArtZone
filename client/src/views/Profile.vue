@@ -119,9 +119,9 @@ export default {
             delete this.orders[key].hash
             delete this.orders[key].paypalOrderId
             if (this.orders[key].seller === this.user.userEmail) {
-              delete this.orders[key].seller
+              this.orders[key].seller = 'you'
             } else {
-              delete this.orders[key].buyer
+              this.orders[key].buyer = 'you'
             }
           }
           this.orderLinks = response.data.links
