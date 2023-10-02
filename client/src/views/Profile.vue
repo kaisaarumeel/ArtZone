@@ -26,23 +26,23 @@ export default {
   methods: {
     async updateUser(user) {
       try {
-        const allFieldsNotChanged = user.allFieldsNotChanged
-        delete user.allFieldsNotChanged
+        const totallyDifferent = user.totallyDifferent
+        delete user.totallyDifferent
         this.updatedUserData = structuredClone(user)
         this.updatedUserData.password = sha256(this.updatedUserData.password).toString(CryptoJS.enc.Hex)
         console.log(this.updatedUserData)
         const userData = JSON.parse(localStorage.getItem('userData'))
-        if (userData.expiry < Date.now()) return this.$router.push('/')
+        if (userData.expiry < parseInt(Date.now() / 1000)) { localStorage.removeItem('userData'); return this.$router.push('/login') }
         const url = `/users/${userData.userEmail}`
 
-        const response = allFieldsNotChanged
-          ? await Api.patch(url, this.updatedUserData, {
+        const response = totallyDifferent
+          ? await Api.put(url, this.updatedUserData, {
             headers: {
               'Content-Type': 'application/json',
               'X-Auth-Token': userData.sessionKey
             }
           })
-          : await Api.put(url, this.updatedUserData, {
+          : await Api.patch(url, this.updatedUserData, {
             headers: {
               'Content-Type': 'application/json',
               'X-Auth-Token': userData.sessionKey

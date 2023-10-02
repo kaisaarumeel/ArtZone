@@ -6,22 +6,8 @@ export default {
   },
   data() {
     return {
-      clone: {},
-      user: {
-        name: {
-          firstName: '',
-          lastName: ''
-        },
-        dateOfBirth: '',
-        userEmail: '',
-        password: '',
-        address: {
-          country: '',
-          street: '',
-          zip: 0,
-          city: ''
-        }
-      },
+      clone: undefined,
+      user: undefined,
       countries: [
         { text: 'Afghanistan', value: 'AF' },
         { text: 'land Islands', value: 'AX' },
@@ -271,18 +257,29 @@ export default {
     }
   },
   methods: {
-    async emitData() {
-      const userLength = Object.keys(this.user)
-      const cloneLength = Object.keys(this.clone)
-      if (userLength !== cloneLength) throw Error('User and Clone object to not have the same key length!')
-      let allFieldsNotChanged = false
-      for (const key in this.clone) {
-        if (this.clone[key] === this.user[key]) {
-          allFieldsNotChanged = true
+    async totallyDifferentObjects(obj1, obj2) {
+      for (const key in obj1) {
+        if (typeof obj1[key] === 'object') {
+          return this.totallyDifferentObjects(obj1[key], obj2[key])
+        } else {
+          if (obj1[key] === obj2[key]) {
+            console.log(obj1[key])
+            console.log(obj2[key])
+            return false
+          }
         }
       }
-      this.user.allFieldsNotChanged = allFieldsNotChanged
-      this.$emit('form-data', this.user)
+      return true
+    },
+    async emitData() {
+      const userLength = Object.keys(this.user).length
+      const cloneLength = Object.keys(this.clone).length
+
+      if (userLength !== cloneLength) throw Error('User and Clone object to not have the same key length!')
+      const totallyDifferent = await this.totallyDifferentObjects(this.user, this.clone)
+      const emittedUser = JSON.parse(JSON.stringify(this.user))
+      emittedUser.totallyDifferent = totallyDifferent
+      this.$emit('form-data', emittedUser)
     },
     async getUser() {
       if (this.isLoggedIn) {
@@ -303,6 +300,7 @@ export default {
             if (dateMonth.length < 2) dateMonth = '0' + dateMonth
             const dateString = date.getFullYear() + '-' + dateMonth + '-' + dateDay
             this.user = response.data
+            this.user.password = ''
             this.clone = JSON.parse(JSON.stringify(this.user))
             this.user.dateOfBirth = dateString
           }
@@ -319,7 +317,7 @@ export default {
 </script>
 
 <template>
-  <div class="">
+  <div v-if="user" class="">
       <b-row>
         <b-col cols="6">
           <label> First name </label>
