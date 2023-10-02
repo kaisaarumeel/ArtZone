@@ -6,6 +6,7 @@ export default {
   },
   data() {
     return {
+      clone: {},
       user: {
         name: {
           firstName: '',
@@ -270,6 +271,19 @@ export default {
     }
   },
   methods: {
+    async emitData() {
+      const userLength = Object.keys(this.user)
+      const cloneLength = Object.keys(this.clone)
+      if (userLength !== cloneLength) throw Error('User and Clone object to not have the same key length!')
+      let allFieldsNotChanged = false
+      for (const key in this.clone) {
+        if (this.clone[key] === this.user[key]) {
+          allFieldsNotChanged = true
+        }
+      }
+      this.user.allFieldsNotChanged = allFieldsNotChanged
+      this.$emit('form-data', this.user)
+    },
     async getUser() {
       if (this.isLoggedIn) {
         const userData = JSON.parse(localStorage.getItem('userData'))
@@ -289,6 +303,7 @@ export default {
             if (dateMonth.length < 2) dateMonth = '0' + dateMonth
             const dateString = date.getFullYear() + '-' + dateMonth + '-' + dateDay
             this.user = response.data
+            this.clone = JSON.parse(JSON.stringify(this.user))
             this.user.dateOfBirth = dateString
           }
         } catch (err) {
@@ -410,7 +425,7 @@ export default {
       </b-row>
       <b-row align-h="center">
         <b-col cols="12 text-center">
-          <button class="mt-4 btn btn-primary" @click="$emit('user-creation', user)"><slot>Save</slot></button>
+          <button class="mt-4 btn btn-primary" @click="emitData()"><slot>Save</slot></button>
         </b-col>
       </b-row>
   </div>

@@ -10,7 +10,7 @@ export default {
   },
   data() {
     return {
-      afterUpdateUser: null,
+      updatedUserData: null,
       updateError: '',
       changes: '',
       changeSuccess: false,
@@ -27,18 +27,29 @@ export default {
   methods: {
     async updateUser(user) {
       try {
-        this.afterUpdateUser = structuredClone(user)
-        this.afterUpdateUser.password = sha256(this.afterUpdateUser.password).toString(CryptoJS.enc.Hex)
-        console.log(this.afterUpdateUser)
+        const allFieldsNotChanged = user.allFieldsNotChanged
+        delete user.allFieldsNotChanged
+        this.updatedUserData = structuredClone(user)
+        this.updatedUserData.password = sha256(this.updatedUserData.password).toString(CryptoJS.enc.Hex)
+        console.log(this.updatedUserData)
         const userData = JSON.parse(localStorage.getItem('userData'))
-        if (userData.expiray < Date.now()) this.$router.push('/')
+        if (userData.expiry < Date.now()) return this.$router.push('/')
         const url = `/users/${userData.userEmail}`
-        const response = await Api.patch(url, this.afterUpdateUser, {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': userData.sessionKey
-          }
-        })
+
+        const response = allFieldsNotChanged
+          ? await Api.patch(url, this.updatedUserData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Auth-Token': userData.sessionKey
+            }
+          })
+          : await Api.put(url, this.updatedUserData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Auth-Token': userData.sessionKey
+            }
+          })
+
         if (response.status === 200) {
           this.changes = 'Your changes have been saved.'
           this.changeSuccess = true
@@ -47,8 +58,8 @@ export default {
             this.changeSuccess = false
             this.success = false
           }, 3000)
-          if (this.afterUpdateUser.userEmail !== userData.userEmail) {
-            userData.userEmail = this.afterUpdateUser.userEmail
+          if (this.updatedUserData.userEmail !== userData.userEmail) {
+            userData.userEmail = this.updatedUserData.userEmail
           }
         }
       } catch (err) {
@@ -193,7 +204,8 @@ export default {
                 <h4 class="fontThickness profileHeader"> My Profile </h4>
             </b-col>
             <b-col cols="12" md="6">
-                <ProfileForm isLoggedIn="true" v-on:user-creation="updateUser($event)"> Save Changes </ProfileForm>
+              <!--This component is re-used in many parts: if isLoggedIn is set to true I am accessing it under profile page-->
+                <ProfileForm isLoggedIn="true" v-on:form-data="updateUser($event)"> Save Changes </ProfileForm>
                 <p class="succes" v-if="changeSuccess"> {{changes}} </p>
                 <p class="error" v-if="!success"> {{updateError}} </p>
             </b-col>
