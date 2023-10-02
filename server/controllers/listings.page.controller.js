@@ -11,12 +11,7 @@ router.get('/', async (req, res) => {
 
     // Find all users
     const users = await User.find();
-    if (!users) return res.status(200).json({"message": "no users are in the system."});
-
     const allListings = users.flatMap((user) =>  {return user.listings});
- 
-    if (!allListings || allListings.length === 0) return res.status(200).json({"message": "no listings are saved in the system."});
-
     const sortQueryParam = String(req.query.sortBy);
 
     if (sortQueryParam === "ascending") {
@@ -35,14 +30,11 @@ router.get('/', async (req, res) => {
       });
 
     }
-    
-    
-
     const listings = allListings.slice(skip, skip + perPage);
     const totalListings = allListings.length;
     const totalPages = Math.ceil(totalListings / perPage);
     const hasNextPage = page < totalPages;
-
+    
     res.status(200).json({
       listings,
       page,

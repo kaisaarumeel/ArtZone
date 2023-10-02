@@ -20,7 +20,6 @@ export default {
       listings: null,
       isAdmin: false,
       allListings: [],
-      listingFetched: false,
       user: null
     }
   },
@@ -101,11 +100,15 @@ export default {
 
           while (hasNextPage) {
             const response = await Api.get(`/listings/page/${page}`)
-            this.allListings.push(...response.data.listings)
-            hasNextPage = response.data.hasNextPage
+            if (response.length === 0) {
+              hasNextPage = false; return
+            } else {
+              console.log(response)
+              this.allListings.push(...response.data.listings)
+              hasNextPage = response.data.hasNextPage
 
-            page++ // Move to the next page
-            this.listingFetched = true
+              page++ // Move to the next page
+            }
           }
         }
       } catch (error) {
