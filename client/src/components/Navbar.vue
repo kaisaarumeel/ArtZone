@@ -86,6 +86,7 @@ export default {
     },
     async logOut() {
       localStorage.removeItem('userData')
+      location.reload()
       if (this.currentRoute !== '/') {
         return this.$router.push('/')
       }
@@ -145,7 +146,7 @@ img{
 .login {
     display: flex;
     flex-direction: row;
-    min-width: 250px;
+    min-width: 255px;
 }
 
 .middle {
