@@ -3,8 +3,8 @@
 		"_postman_id": "01dc0833-1f40-4086-96d5-090fc8711a50",
 		"name": "Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "29406936",
-		"_collection_link": "https://dark-flare-212796.postman.co/workspace/Web-Development~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-01dc0833-1f40-4086-96d5-090fc8711a50?action=share&source=collection_link&creator=29406936"
+		"_exporter_id": "28264405",
+		"_collection_link": "https://dark-flare-212796.postman.co/workspace/Web-Development~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-01dc0833-1f40-4086-96d5-090fc8711a50?action=share&source=collection_link&creator=28264405"
 	},
 	"item": [
 		{
@@ -2304,229 +2304,7 @@
 							"response": []
 						},
 						{
-							"name": "Get all orders (seller)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status test\", () => {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Response message\", () => {\r",
-											"    const jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.orders[0].isReceived).to.eql(false);\r",
-											"    pm.collectionVariables.set(\"orderID\", jsonData.orders[0]._id);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									},
-									{
-										"key": "X-Auth-Token",
-										"value": "{{xauthtoken2}}",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/orders",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"v1",
-										"users",
-										"bobylon@gmail.com",
-										"orders"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get a specific order (seller)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status test\", () => {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Response message\", () => {\r",
-											"    const jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.isReceived).to.eql(false);\r",
-											"    pm.expect(jsonData.seller).to.eql(\"bobylon@gmail.com\")\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									},
-									{
-										"key": "X-Auth-Token",
-										"value": "{{xauthtoken2}}",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/orders/{{orderID}}",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"v1",
-										"users",
-										"bobylon@gmail.com",
-										"orders",
-										"{{orderID}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Patch order status (seller)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status check\", () => {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									},
-									{
-										"key": "X-Auth-Token",
-										"value": "{{xauthtoken2}}",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"isShipped\": true,\r\n    \"buyer\": \"bob@gmail.com\"\r\n}"
-								},
-								"url": {
-									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/orders/{{orderID}}",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"v1",
-										"users",
-										"bobylon@gmail.com",
-										"orders",
-										"{{orderID}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get the order and verify patch(seller)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status test\", () => {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Response message\", () => {\r",
-											"    const jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.isShipped).to.eql(true);\r",
-											"    pm.expect(jsonData.buyer).to.eql(\"bob@gmail.com\")\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									},
-									{
-										"key": "X-Auth-Token",
-										"value": "{{xauthtoken2}}",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "http://localhost:3000/api/v1/users/bobylon@gmail.com/orders/{{orderID}}",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"v1",
-										"users",
-										"bobylon@gmail.com",
-										"orders",
-										"{{orderID}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get all orders (buyer)",
+							"name": "Get all orders",
 							"event": [
 								{
 									"listen": "test",
@@ -2588,7 +2366,7 @@
 							"response": []
 						},
 						{
-							"name": "Get a specific order (buyer)",
+							"name": "Get a specific order",
 							"event": [
 								{
 									"listen": "test",
@@ -2642,7 +2420,7 @@
 							"response": []
 						},
 						{
-							"name": "Patch order status (buyer)",
+							"name": "Patch order status",
 							"event": [
 								{
 									"listen": "test",
@@ -2672,7 +2450,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"isReceived\": true,\r\n    \"seller\": \"bobylon@gmail.com\"\r\n}"
+									"raw": "{\r\n    \"isReceived\": true\r\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/orders/{{orderID}}",
@@ -2694,7 +2472,7 @@
 							"response": []
 						},
 						{
-							"name": "Get the order and verify patch (buyer)",
+							"name": "Get the order and verify patch",
 							"event": [
 								{
 									"listen": "test",
@@ -2707,7 +2485,6 @@
 											"pm.test(\"Response message\", () => {\r",
 											"    const jsonData = pm.response.json();\r",
 											"    pm.expect(jsonData.isReceived).to.eql(true);\r",
-											"    pm.expect(jsonData.isShipped).to.eql(true);\r",
 											"    pm.expect(jsonData.buyer).to.eql(\"bob@gmail.com\")\r",
 											"});"
 										],
@@ -2980,46 +2757,6 @@
 										"bob@gmail.com",
 										"reviews",
 										"{{reviewPostId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get all reviews in the system",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {",
-											"   pm.response.to.have.status(200);",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "http://localhost:3000/api/v1/allReviews",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"v1",
-										"allReviews"
 									]
 								}
 							},
