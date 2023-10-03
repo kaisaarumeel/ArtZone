@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { BModal } from 'bootstrap-vue'
+import { Api } from '../Api'
 export default {
   data() {
     return {
@@ -63,7 +63,7 @@ export default {
     },
     async fetchRandomListings() {
       try {
-        const response = await axios.get('http://localhost:3000/api/v1/random-listings')
+        const response = await Api.get('/random-listings')
         console.log(response)
         this.listings = response.data
       } catch (error) {

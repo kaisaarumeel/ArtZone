@@ -3,6 +3,7 @@
     <div>
             <button size="sm" class="user-btn" @click="showUsers" :class="{ active: activeTab === 'users' }">Users</button>
             <button size="sm" class="listing-btn" @click="showListings" :class="{ active: activeTab === 'listings' }">Listings</button>
+            <button size="sm" class="listing-btn" @click="showReviews" :class="{ active: activeTab === 'reviews' }">Reviews</button>
 
     </div>
   <div class="users-container">
@@ -13,9 +14,9 @@
           :userEmail="user.userEmail"
         ></UserVue>
       </div>
-      <div v-else>
+      <div v-if="activeTab === 'listings'">
         <div class="w-100 listings mt-2 mb-2">
-            <b-table v-if="this.listings.length>0" responsive class="admin-page-listings" :items="listings" :fields="fields">
+            <b-table v-if="this.listings.length>0" responsive class="admin-page-table" :items="listings" :fields="listingFields">
             <template #cell(picture)="data">
                 <span v-html="data.value"></span>
             </template>
@@ -26,27 +27,39 @@
         <div v-else><p>There are no listings in the system.</p></div>
         </div>
       </div>
+            <div v-if="activeTab === 'reviews'">
+        <div class="w-100 reviews mt-2 mb-2">
+            <b-table v-if="this.reviews.length>0" responsive class="admin-page-table" :items="reviews" :fields="reviewFields">
+            <template #cell(deleteReview)="data">
+                <button @click="deleteReview(data.item.userEmail, data.item._id)" class="btn btn-primary">Delete Review</button>
+            </template>
+        </b-table>
+        <div v-else><p>There are no reviews in the system.</p></div>
+        </div>
+      </div>
 
   </div>
 </div>
 </template>
 
 <script>
-import axios from 'axios'
 import UserVue from '../components/User.vue'
+import { Api } from '../Api'
 
 export default {
   data() {
     return {
       users: [],
       listings: [],
+      reviews: [],
       totalPages: 0,
       activeTab: 'users',
       usersFetched: false,
       listingsFetched: false,
+      reviewsFetched: false,
       sort: '',
       delete: '',
-      fields: [
+      listingFields: [
         { key: 'name', label: 'Name' },
         { key: 'author', label: 'Author' },
         { key: 'price', label: 'Price' },
@@ -55,6 +68,12 @@ export default {
         { key: 'creator', label: 'Creator' },
         { key: 'sold', label: 'Sold' },
         { key: 'deleteListing', label: 'Delete Listing' }
+      ],
+      reviewFields: [
+        { key: 'userEmail', label: 'User Email' },
+        { key: 'description', label: 'Description' },
+        { key: 'rating', label: 'Rating' },
+        { key: 'deleteReview', label: 'Delete Review' }
       ]
     }
   },
@@ -69,7 +88,7 @@ export default {
           let hasNextPage = true
 
           while (hasNextPage) {
-            const response = await axios.get(`http://localhost:3000/api/v1/users/page/${page}`)
+            const response = await Api.get(`/users/page/${page}`)
             this.users.push(...response.data.users)
             hasNextPage = response.data.hasNextPage
 
@@ -88,7 +107,7 @@ export default {
           let hasNextPage = true
 
           while (hasNextPage) {
-            const response = await axios.get(`http://localhost:3000/api/v1/listings/page/${page}`, {
+            const response = await Api.get(`/listings/page/${page}`, {
               params: {
                 sortBy: this.sort
               }
@@ -113,6 +132,22 @@ export default {
         console.error(error)
       }
     },
+    async fetchReviews() {
+      try {
+        if (!this.reviewsFetched) {
+          const response = await Api.get('/allReviews')
+          if (Array.isArray(response.data.reviews) && response.data.reviews.length > 0) {
+            for (const key in response.data.reviews) {
+              response.data.reviews[key].deleteListing = ''
+            }
+            this.reviews = response.data.reviews
+            this.reviewsFetched = true
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
     showUsers() {
       this.activeTab = 'users'
       this.fetchUsers()
@@ -121,19 +156,39 @@ export default {
       this.activeTab = 'listings'
       this.fetchListings()
     },
+    showReviews() {
+      this.activeTab = 'reviews'
+      this.fetchReviews()
+    },
     async deleteListing(userEmail, listingID) {
-      console.log(userEmail, listingID)
       const userData = JSON.parse(localStorage.getItem('userData'))
       const headers = {
         'X-Auth-Token': userData.sessionKey
       }
       try {
-        const response = await axios.delete(`http://localhost:3000/api/v1/users/${userEmail}/listings/${listingID}`, { headers })
+        const response = await Api.delete(`/users/${userEmail}/listings/${listingID}`, { headers })
         if (response.status === 204) {
         // The listing was successfully deleted, you update local data
           this.listings = this.listings.filter(listing => listing._id !== listingID)
         } else {
           console.error('Failed to delete listing')
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async deleteReview(userEmail, reviewID) {
+      const userData = JSON.parse(localStorage.getItem('userData'))
+      const headers = {
+        'X-Auth-Token': userData.sessionKey
+      }
+      try {
+        const response = await Api.delete(`/users/${userEmail}/reviews/${reviewID}`, { headers })
+        if (response.status === 204) {
+        // The listing was successfully deleted, you update local data
+          this.reviews = this.reviews.filter(review => review._id !== reviewID)
+        } else {
+          console.error('Failed to delete review')
         }
       } catch (error) {
         console.error(error)
@@ -174,26 +229,26 @@ background: none;
 }
 </style>
 <style>
-    .admin-page-listings .table-listing-picture {
+    .admin-page-table .table-listing-picture {
         width: 150px;
         height: auto;
     }
-    .admin-page-listings td{
+    .admin-page-table td{
         color: #606C5D;
         vertical-align: unset !important;
         border: none !important;
 
     }
-    .admin-page-listings th {
+    .admin-page-table th {
         border: none !important;
 
     }
-    .admin-page-listings tr{
+    .admin-page-table tr{
         transition: 0.3s;
         color: #606C5D;
         border: none;
     }
-    .admin-page-listings tr:hover {
+    .admin-page-table tr:hover {
         cursor: pointer;
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     }

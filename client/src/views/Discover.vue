@@ -42,8 +42,8 @@
 </template>
 
 <script>
-import axios from 'axios'
 import ListingPreviewVue from '../components/ListingPreview.vue'
+import { Api } from '../Api'
 
 export default {
   data() {
@@ -64,7 +64,7 @@ export default {
     },
     async fetchListings() {
       try {
-        const response = await axios.get(`http://localhost:3000/api/v1/listings/page/${this.currentPage}`, {
+        const response = await Api.get(`/listings/page/${this.currentPage}`, {
           params: {
             sortBy: this.sort
           }
