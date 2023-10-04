@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { Api } from '../Api'
 
 export default {
   props: {
@@ -32,7 +32,7 @@ export default {
         const headers = {
           'X-Auth-Token': userData.sessionKey
         }
-        const response = await axios.delete(`http://localhost:3000/api/v1/users/${this.userEmail}`, { headers })
+        const response = await Api.delete(`/users/${this.userEmail}`, { headers })
         if (response.status === 200) {
           console.log(`User with email "${this.userEmail}" has been banned.`)
           this.isBanned = true

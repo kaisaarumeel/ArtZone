@@ -110,7 +110,6 @@ export default {
   },
   methods: {
     async createListing() {
-      // Make the POST request using Axios
       for (const key in this.listing) {
         if (!this.listing[key].value && this.listing[key].required) {
           this.showError = true
