@@ -7,7 +7,9 @@ export default {
   computed: {
     passwordStrength() {
       const password = this.user.password
-      if (password.length < 8 || !/\d/.test(password)) {
+      if (!password) {
+        return 'Weak'
+      } else if (password.length < 8 || !/\d/.test(password)) {
         return 'Weak'
       } else {
         return 'Strong'
