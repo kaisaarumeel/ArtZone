@@ -61,7 +61,7 @@ export default {
                     class="input-field"
                     ></b-form-input>
                 </b-form-group>
-                <b-form-group class="label" label="password*" label-for="input-2">
+                <b-form-group class="label" label="Password*" label-for="input-2">
                     <b-form-input
                     id="input-2"
                     v-model="data.password"
