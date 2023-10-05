@@ -20,7 +20,20 @@ export default {
       listings: null,
       isAdmin: false,
       allListings: [],
-      user: null
+      user: null,
+      listingFeilds: [
+        { key: 'name', label: 'Name' },
+        { key: 'author', label: 'Author' },
+        { key: 'price', label: 'Price' },
+        { key: 'picture', label: 'Picture' }
+      ],
+      orderFeilds: [
+        { key: 'seller', label: 'Seller' },
+        { key: 'buyer', label: 'Buyer' },
+        { key: 'listing', label: 'Listing' },
+        { key: 'isReceived', label: 'Is-Received' },
+        { key: 'isShipped', label: 'Is-Shipped' }
+      ]
     }
   },
   methods: {
@@ -81,10 +94,6 @@ export default {
           for (const key in response.data) {
             const image = `<img class="table-listing-picture" src="${response.data[key].picture}">`
             response.data[key].picture = image
-            delete response.data[key].description
-            delete response.data[key].creator
-            delete response.data[key].sold
-            delete response.data[key]._id
           }
           this.listings = response.data
         }
@@ -115,6 +124,10 @@ export default {
         console.error(error)
       }
     },
+    async onRowClicked(item) {
+      const link = JSON.stringify(item.link)
+      this.$router.push({ name: 'singleOrder', params: { link } })
+    },
     async getOrders() {
       try {
         const userData = JSON.parse(localStorage.getItem('userData'))
@@ -129,14 +142,14 @@ export default {
         if (response.status === 200) {
           this.orders = response.data.orders
           for (const key in this.orders) {
-            delete this.orders[key]._id
-            delete this.orders[key].hash
-            delete this.orders[key].paypalOrderId
+            let arrayCounter = 0
             if (this.orders[key].seller === this.user.userEmail) {
               this.orders[key].seller = 'you'
             } else {
               this.orders[key].buyer = 'you'
             }
+            this.orders[key].link = response.data.links[arrayCounter]
+            arrayCounter++
           }
           this.orderLinks = response.data.links
           await this.fetchListings()
@@ -215,7 +228,7 @@ export default {
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
                 <div class="w-100 listings mt-2 mb-2">
-                    <b-table @row-clicked="redirect()" class="profile-page-listings table-header-colour" :items="listings">
+                    <b-table class="profile-page-listings table-header-colour" :items="listings" :fields="listingFeilds">
                         <template #cell(picture)="data">
                             <span v-html="data.value"></span>
                         </template>
@@ -223,7 +236,7 @@ export default {
                 </div>
                 <h4> Orders </h4>
                 <div class="w-100 orders mt-2">
-                    <b-table class="profile-page-listings table-header-colour" :items="orders">
+                    <b-table @row-clicked="onRowClicked" class="profile-page-listings table-header-colour" :items="orders" :fields="orderFeilds">
                         <template #cell(listing)="data">
                             <span v-html="data.value"></span>
                         </template>

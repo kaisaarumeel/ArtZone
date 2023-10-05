@@ -125,7 +125,7 @@ router.get("/", async (req, res) => {
             links.push({
                rel: "get specific order",
                method: "GET",
-               href: `/api/v1/users/${user.userEmail}/${key._id}`
+               href: `/users/${user.userEmail}/orders/${key._id}`
             });
         }
 
