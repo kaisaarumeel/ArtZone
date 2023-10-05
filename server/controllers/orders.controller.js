@@ -11,8 +11,6 @@ const pp_secret="EL03GoWvTdp-eVBu6l_OWEVe2ay083mqOqMvgk-dsBAQ2gA2niRvshNzDbZT9zx
 const env = new paypal.core.SandboxEnvironment(pp_client, pp_secret);
 const client = new paypal.core.PayPalHttpClient(env);
 
-
-
 //posting an order on the database the email in the url is the buyer
 router.post("/", async (req, res) => {
 
@@ -127,7 +125,7 @@ router.get("/", async (req, res) => {
             links.push({
                rel: "get specific order",
                method: "GET",
-               href: `/api/v1/users/${user.userEmail}/${key._id}`
+               href: `/users/${user.userEmail}/orders/${key._id}`
             });
         }
 
@@ -180,12 +178,70 @@ router.patch("/:id", async (req, res) => {
         }
 
         for(key in req.body){
-            order[key]=req.body[key]
-        }
-        try{
-            const error = await order.validate()
-        } catch(err){
-            return res.status(400).json({"message": "Order validation failed"})
+            if (order.seller === user.userEmail && key === 'isShipped') {
+
+                if (order.isReceived === true) {
+                    return res.status(403).json({"message": "You cannot change the shipping status of an order that is received by the buyer"});
+
+                } else {
+
+                    const buyer = await UserModel.findOne({ userEmail: req.body.buyer });
+                    if (!buyer) {
+                        res.status(404).json({"message": "Buyer was not found."});
+                        return;
+                    }
+
+                    order[key] = req.body[key];
+                    try{
+                        const error = await order.validate()
+                    } catch(err){
+                        return res.status(400).json({"message": "Order validation failed"});
+                    }
+
+                    let buyerOrder = buyer.orders.find(buyerOder => buyerOder.hash === order.hash);
+                    if (!buyerOrder) {
+                        res.status(404).json({"message": "Buyer order was not found."});
+                        return;
+                    }
+                    buyerOrder[key] = req.body[key]
+
+                    await user.save();
+                    await  buyer.save();
+
+                }
+            } else if (order.buyer === user.userEmail && key === 'isReceived') {
+
+                if (order.isShipped === true) {
+                    
+                    const seller = await UserModel.findOne({ userEmail: req.body.seller });
+                    if (!seller) {
+                        res.status(404).json({"message": "Seller was not found."});
+                        return;
+                    }
+
+                    order[key] = req.body[key];
+                    try{
+                        const error = await order.validate()
+                    } catch(err){
+                        return res.status(400).json({"message": "Order validation failed"});
+                    }
+
+                    let sellerOrder = seller.orders.find(sellerOrder => sellerOrder.hash === order.hash);
+                    if (!sellerOrder) {
+                        res.status(404).json({"message": "Seller order was not found."});
+                        return;
+                    }
+                    sellerOrder[key] = req.body[key]
+
+                    await user.save();
+                    await  seller.save();
+
+                } else {
+                    return res.status(403).json({"message": "You need to wait for your order to be shipped"});
+                }
+            } else {
+                continue;
+            }
         }
         
         user.save();
@@ -264,8 +320,5 @@ router.get("/:id/seller", async (req, res) => {
     }
 
 });
-
-
-
 
 module.exports = router;

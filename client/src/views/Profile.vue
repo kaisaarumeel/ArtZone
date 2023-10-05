@@ -10,7 +10,7 @@ export default {
   },
   data() {
     return {
-      afterUpdateUser: null,
+      updatedUserData: null,
       updateError: '',
       changes: '',
       changeSuccess: false,
@@ -18,24 +18,50 @@ export default {
       orders: null,
       orderLinks: null,
       listings: null,
-      isAdmin: false
+      isAdmin: false,
+      allListings: [],
+      user: null,
+      listingFields: [
+        { key: 'name', label: 'Name' },
+        { key: 'author', label: 'Author' },
+        { key: 'price', label: 'Price' },
+        { key: 'picture', label: 'Picture' }
+      ],
+      orderFields: [
+        { key: 'seller', label: 'Seller' },
+        { key: 'buyer', label: 'Buyer' },
+        { key: 'listing', label: 'Listing' },
+        { key: 'isReceived', label: 'Is-Received' },
+        { key: 'isShipped', label: 'Is-Shipped' }
+      ]
     }
   },
   methods: {
     async updateUser(user) {
       try {
-        this.afterUpdateUser = structuredClone(user)
-        this.afterUpdateUser.password = sha256(this.afterUpdateUser.password).toString(CryptoJS.enc.Hex)
-        console.log(this.afterUpdateUser)
+        const totallyDifferent = user.totallyDifferent
+        delete user.totallyDifferent
+        this.updatedUserData = structuredClone(user)
+        this.updatedUserData.password = sha256(this.updatedUserData.password).toString(CryptoJS.enc.Hex)
+        console.log(this.updatedUserData)
         const userData = JSON.parse(localStorage.getItem('userData'))
-        if (userData.expiray < Date.now()) this.$router.push('/')
+        if (userData.expiry < parseInt(Date.now() / 1000)) { localStorage.removeItem('userData'); return this.$router.push('/login') }
         const url = `/users/${userData.userEmail}`
-        const response = await Api.patch(url, this.afterUpdateUser, {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': userData.sessionKey
-          }
-        })
+
+        const response = totallyDifferent
+          ? await Api.put(url, this.updatedUserData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Auth-Token': userData.sessionKey
+            }
+          })
+          : await Api.patch(url, this.updatedUserData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Auth-Token': userData.sessionKey
+            }
+          })
+
         if (response.status === 200) {
           this.changes = 'Your changes have been saved.'
           this.changeSuccess = true
@@ -44,8 +70,8 @@ export default {
             this.changeSuccess = false
             this.success = false
           }, 3000)
-          if (this.afterUpdateUser.userEmail !== userData.userEmail) {
-            userData.userEmail = this.afterUpdateUser.userEmail
+          if (this.updatedUserData.userEmail !== userData.userEmail) {
+            userData.userEmail = this.updatedUserData.userEmail
           }
         }
       } catch (err) {
@@ -68,16 +94,40 @@ export default {
           for (const key in response.data) {
             const image = `<img class="table-listing-picture" src="${response.data[key].picture}">`
             response.data[key].picture = image
-            delete response.data[key].description
-            delete response.data[key].creator
-            delete response.data[key].sold
-            delete response.data[key]._id
           }
           this.listings = response.data
         }
       } catch (err) {
         console.log(err)
       }
+    },
+    async fetchListings() {
+      try {
+        if (!this.usersFetched) {
+          let page = 1
+          let hasNextPage = true
+
+          while (hasNextPage) {
+            const response = await Api.get(`/listings/page/${page}`)
+            if (response.length === 0) {
+              hasNextPage = false; return
+            } else {
+              console.log(response)
+              this.allListings.push(...response.data.listings)
+              hasNextPage = response.data.hasNextPage
+
+              page++ // Move to the next page
+            }
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async onRowClicked(item) {
+      console.log(item)
+      const link = JSON.stringify(item.link)
+      this.$router.push({ name: 'singleOrder', params: { link } })
     },
     async getOrders() {
       try {
@@ -91,17 +141,27 @@ export default {
           }
         })
         if (response.status === 200) {
-          console.log(response.data)
-          console.log(response.data.orders)
-          console.log(response.data.links)
           this.orders = response.data.orders
           this.orderLinks = response.data.links
+
+          for (let i = 0; i < this.orders.length; i++) {
+            this.orders[i].link = this.orderLinks[i]
+            if (this.orders[i].seller === this.user.userEmail) {
+              this.orders[i].seller = 'you'
+            } else {
+              this.orders[i].buyer = 'you'
+            }
+          }
+
+          await this.fetchListings()
           for (const key in this.orders) {
-            delete this.orders[key]._id
-            delete this.orders[key].hash
-            delete this.orders[key].buyer
-            delete this.orders[key].paypalOrderId
-            delete this.orders[key].listing
+            console.log(this.orders[key])
+            for (const id in this.allListings) {
+              console.log(this.allListings[id])
+              if (this.orders[key].listing === this.allListings[id]._id) {
+                this.orders[key].listing = `<img class="table-listing-picture" src="${this.allListings[id].picture}">`
+              }
+            }
           }
         }
       } catch (err) {
@@ -128,6 +188,7 @@ export default {
           }
         })
         if (response.status === 200) {
+          this.user = response.data
           const user = response.data
           console.log(response.data)
           this.isAdmin = user.isAdmin
@@ -137,7 +198,7 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     const userData = JSON.parse(localStorage.getItem('userData'))
     if (!userData) {
       return this.$router.push('/')
@@ -146,9 +207,9 @@ export default {
       localStorage.removeItem('userData')
       return this.$router.push('/')
     }
-    this.getUser()
-    this.getListings()
-    this.getOrders()
+    await this.getUser()
+    await this.getListings()
+    await this.getOrders()
   }
 }
 </script>
@@ -160,14 +221,15 @@ export default {
                 <h4 class="fontThickness profileHeader"> My Profile </h4>
             </b-col>
             <b-col cols="12" md="6">
-                <ProfileForm isLoggedIn="true" v-on:user-creation="updateUser($event)"> Save Changes </ProfileForm>
+              <!--This component is re-used in many parts: if isLoggedIn is set to true I am accessing it under profile page-->
+                <ProfileForm isLoggedIn="true" v-on:form-data="updateUser($event)"> Save Changes </ProfileForm>
                 <p class="succes" v-if="changeSuccess"> {{changes}} </p>
                 <p class="error" v-if="!success"> {{updateError}} </p>
             </b-col>
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
                 <div class="w-100 listings mt-2 mb-2">
-                    <b-table @row-clicked="redirect()" class="profile-page-listings table-header-colour" :items="listings">
+                    <b-table class="profile-page-listings table-header-colour" :items="listings" :fields="listingFields">
                         <template #cell(picture)="data">
                             <span v-html="data.value"></span>
                         </template>
@@ -175,7 +237,11 @@ export default {
                 </div>
                 <h4> Orders </h4>
                 <div class="w-100 orders mt-2">
-                    <b-table class="profile-page-listings table-header-colour" :items="orders"></b-table>
+                    <b-table @row-clicked="onRowClicked" class="profile-page-listings table-header-colour" :items="orders" :fields="orderFields">
+                        <template #cell(listing)="data">
+                            <span v-html="data.value"></span>
+                        </template>
+                    </b-table>
                 </div>
             </b-col>
             <b-col cols="6" class="pt-3 text-right">

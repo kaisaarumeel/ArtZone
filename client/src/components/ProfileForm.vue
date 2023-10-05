@@ -18,19 +18,34 @@ export default {
   },
   data() {
     return {
+      clone: {
+        name: {
+          firstName: '',
+          lastName: ''
+        },
+        dateOfBirth: null,
+        userEmail: null,
+        password: null,
+        address: {
+          street: null,
+          city: null,
+          zip: null,
+          country: null
+        }
+      },
       user: {
         name: {
           firstName: '',
           lastName: ''
         },
-        dateOfBirth: '',
-        userEmail: '',
-        password: '',
+        dateOfBirth: null,
+        userEmail: null,
+        password: null,
         address: {
-          country: '',
-          street: '',
-          zip: 0,
-          city: ''
+          street: null,
+          city: null,
+          zip: null,
+          country: null
         }
       },
       countries: [
@@ -282,6 +297,30 @@ export default {
     }
   },
   methods: {
+    async totallyDifferentObjects(obj1, obj2) {
+      for (const key in obj1) {
+        if (typeof obj1[key] === 'object') {
+          return this.totallyDifferentObjects(obj1[key], obj2[key])
+        } else {
+          if (obj1[key] === obj2[key]) {
+            console.log(obj1[key])
+            console.log(obj2[key])
+            return false
+          }
+        }
+      }
+      return true
+    },
+    async emitData() {
+      const userLength = Object.keys(this.user).length
+      const cloneLength = Object.keys(this.clone).length
+
+      if (userLength !== cloneLength) throw Error('User and Clone object to not have the same key length!')
+      const totallyDifferent = await this.totallyDifferentObjects(this.user, this.clone)
+      const emittedUser = JSON.parse(JSON.stringify(this.user))
+      emittedUser.totallyDifferent = totallyDifferent
+      this.$emit('form-data', emittedUser)
+    },
     async getUser() {
       if (this.isLoggedIn) {
         const userData = JSON.parse(localStorage.getItem('userData'))
@@ -301,6 +340,8 @@ export default {
             if (dateMonth.length < 2) dateMonth = '0' + dateMonth
             const dateString = date.getFullYear() + '-' + dateMonth + '-' + dateDay
             this.user = response.data
+            this.user.password = ''
+            this.clone = JSON.parse(JSON.stringify(this.user))
             this.user.dateOfBirth = dateString
           }
         } catch (err) {
@@ -326,7 +367,7 @@ export default {
 </script>
 
 <template>
-  <div class="">
+  <div v-if="user" class="">
       <b-row>
         <b-col cols="6">
           <label> First name </label>
@@ -435,7 +476,7 @@ export default {
       </b-row>
       <b-row align-h="center">
         <b-col cols="12 text-center">
-          <button class="mt-4 btn btn-primary" :disabled="passwordStrength === 'Weak'" @click="$emit('user-creation', user)"><slot>Save</slot></button>
+          <button class="mt-4 btn btn-primary" :disabled="passwordStrength === 'Weak'" @click="emitData()"><slot>Save</slot></button>
         </b-col>
       </b-row>
   </div>
