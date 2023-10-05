@@ -32,6 +32,7 @@ const checkout = require("./controllers/checkout.controller")
 const registration=require("./controllers/registration.controller")
 const randomListings = require("./controllers/randomListings.controller")
 const usersPage=require("./controllers/users.page.controller")
+const allReviews = require("./controllers/allReviews.controller")
 // Create Express app
 const app = express();
 // Parse requests of content-type 'application/json'
@@ -57,6 +58,7 @@ app.use("/api/v1/users/:email/orders", orders);
 app.use("/api/v1/checkout", checkout);
 app.use("/api/v1/users/:email/reviews", reviews);
 app.use("/api/v1/random-listings", randomListings)
+app.use("/api/v1/allReviews", allReviews)
 app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });

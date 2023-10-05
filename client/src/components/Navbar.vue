@@ -146,7 +146,7 @@ img{
 .login {
     display: flex;
     flex-direction: row;
-    min-width: 250px;
+    min-width: 255px;
 }
 
 .middle {

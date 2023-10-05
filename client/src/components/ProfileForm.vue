@@ -4,6 +4,18 @@ export default {
   props: {
     isLoggedIn: Boolean(false)
   },
+  computed: {
+    passwordStrength() {
+      const password = this.user.password
+      if (!password) {
+        return 'Weak'
+      } else if (password.length < 8 || !/\d/.test(password)) {
+        return 'Weak'
+      } else {
+        return 'Strong'
+      }
+    }
+  },
   data() {
     return {
       clone: {
@@ -336,6 +348,16 @@ export default {
           console.log(err)
         }
       }
+    },
+    getMaxDateOfBirth() {
+      const currentDate = new Date()
+      currentDate.setFullYear(currentDate.getFullYear() - 16) // Minimum age is 16
+      return currentDate.toISOString().split('T')[0]
+    },
+    getMinDateOfBirth() {
+      const currentDate = new Date()
+      currentDate.setFullYear(currentDate.getFullYear() - 100) // Maximum age is 100
+      return currentDate.toISOString().split('T')[0]
     }
   },
   mounted() {
@@ -378,6 +400,8 @@ export default {
           type="date"
           placeholder="Enter your birth date"
           required
+          :min="getMinDateOfBirth()"
+          :max="getMaxDateOfBirth()"
           ></b-form-input>
         </b-col>
       </b-row>
@@ -405,6 +429,7 @@ export default {
           placeholder="Enter your password"
           required
           ></b-form-input>
+          <p v-if="passwordStrength === 'Weak'" class="text-danger">Password must be at least 8 characters long and contain at least one number.</p>
         </b-col>
       </b-row>
       <b-row>
@@ -451,7 +476,7 @@ export default {
       </b-row>
       <b-row align-h="center">
         <b-col cols="12 text-center">
-          <button class="mt-4 btn btn-primary" @click="emitData()"><slot>Save</slot></button>
+          <button class="mt-4 btn btn-primary" :disabled="passwordStrength === 'Weak'" @click="emitData()"><slot>Save</slot></button>
         </b-col>
       </b-row>
   </div>
@@ -473,5 +498,12 @@ export default {
     text-decoration-color: #606C5D;
     background-color: #F7E6C4;
     border:1px solid #606C5D !important;
+  }
+  button:disabled{
+    text-decoration: underline;
+    text-decoration-color: #606C5D;
+    background-color: #F7E6C4;
+    border:1px solid #606C5D !important;
+    color: #606C5D;
   }
 </style>
