@@ -216,6 +216,11 @@ export default {
 
 <template>
     <div>
+          <b-col cols="12" class="pt-3 text-right">
+                <b-button v-if="isAdmin" @click="goToAdminPage()" class="mr-5 pl-2 pr-2 btn-primary btn">
+                    Admin page
+                </b-button>
+          </b-col>
         <b-row class="mb-5 ml-5 mr-5">
             <b-col cols="12">
                 <h4 class="fontThickness profileHeader"> My Profile </h4>
@@ -243,11 +248,6 @@ export default {
                         </template>
                     </b-table>
                 </div>
-            </b-col>
-            <b-col cols="6" class="pt-3 text-right">
-                <b-button v-if="isAdmin" @click="goToAdminPage()" class="pl-2 pr-2 btn-primary btn">
-                    Admin page
-                </b-button>
             </b-col>
         </b-row>
     </div>

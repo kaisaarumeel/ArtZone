@@ -7,7 +7,7 @@ export default {
   computed: {
     passwordStrength() {
       const password = this.user.password
-      if (!password) {
+      if ((typeof password === 'undefined' || password === null)) {
         return 'Weak'
       } else if (password.length < 8 || !/\d/.test(password)) {
         return 'Weak'
@@ -429,7 +429,7 @@ export default {
           placeholder="Enter your password"
           required
           ></b-form-input>
-          <p v-if="passwordStrength === 'Weak'" class="text-danger">Password must be at least 8 characters long and contain at least one number.</p>
+          <p v-if="passwordStrength === 'Weak'">Password must be at least 8 characters long and contain at least one number.</p>
         </b-col>
       </b-row>
       <b-row>

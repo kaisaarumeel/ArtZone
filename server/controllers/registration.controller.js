@@ -50,6 +50,10 @@ router.post("/users/register", async (req, res) => {
         orders: [] 
     });
   
+    if (!/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(user.userEmail)) {
+        console.log('Invalid email format');
+        return res.sendStatus(400);
+    }
     const error=await user.validate()
     if(error){
         console.log(error)
