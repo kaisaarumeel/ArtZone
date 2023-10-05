@@ -7,9 +7,16 @@ export default {
     return {
       isReceived: false,
       isShipped: false,
-      listing: null,
+      listing: {
+        name: '',
+        picture: '',
+        price: '',
+        description: '',
+        creator: '',
+        author: ''
+      },
       listings: [],
-      order: null,
+      order: { seller: '' },
       successMsg: '',
       failureMsg: '',
       sellerReviews: null,
@@ -140,18 +147,21 @@ export default {
     <div>
       <b-row class="pl-5">
         <b-col cols="12">
-      ¨   <h1 class="pl-5 font-weight-bold"> {{listing.name}} </h1>
         </b-col>
         <b-col cols="12">
-          <h5 class="pl-5"> By {{listing.author}} <br>Sold by <span class="seller font-weight-bold" v-b-modal.modal-1>{{order.seller}} ⭐{{sellerRating}}</span></h5>
         </b-col>
       </b-row>
       <b-row class="align-items-center pb-3 pl-5 pr-5">
-        <b-col class="" cols="12" md="8">
+        <b-col class="text-center" cols="12" md="8">
+
           <img class="pl-5 pr-5 text-center" :src="listing.picture">
         </b-col>
         <b-col cols="12" md="4" class="p-5 mt-2">
-        <div class="border p-3 mt-2">
+        <div class="border p-3">
+                   <h1 class="font-weight-bold"> {{listing.name}} </h1>
+
+                              <p class=""> By {{listing.author}} <br>Sold by <span class="seller font-weight-bold" v-b-modal.modal-1>{{order.seller}} ⭐{{sellerRating}}</span></p>
+
           <p class="text-left mb-0"><strong>Description</strong></p>
           <p class="text-left">{{ listing.description }}</p>
           <b-row cols="1">
@@ -174,7 +184,7 @@ export default {
 
 <style scoped>
   img{
-    width: 100%;
+    width: 80%;
     height: auto;
   }
   h1{

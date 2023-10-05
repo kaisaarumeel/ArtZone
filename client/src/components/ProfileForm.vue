@@ -6,8 +6,36 @@ export default {
   },
   data() {
     return {
-      clone: undefined,
-      user: undefined,
+      clone: {
+        name: {
+          firstName: '',
+          lastName: ''
+        },
+        dateOfBirth: null,
+        userEmail: null,
+        password: null,
+        address: {
+          street: null,
+          city: null,
+          zip: null,
+          country: null
+        }
+      },
+      user: {
+        name: {
+          firstName: '',
+          lastName: ''
+        },
+        dateOfBirth: null,
+        userEmail: null,
+        password: null,
+        address: {
+          street: null,
+          city: null,
+          zip: null,
+          country: null
+        }
+      },
       countries: [
         { text: 'Afghanistan', value: 'AF' },
         { text: 'land Islands', value: 'AX' },

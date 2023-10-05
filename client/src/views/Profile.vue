@@ -21,13 +21,13 @@ export default {
       isAdmin: false,
       allListings: [],
       user: null,
-      listingFeilds: [
+      listingFields: [
         { key: 'name', label: 'Name' },
         { key: 'author', label: 'Author' },
         { key: 'price', label: 'Price' },
         { key: 'picture', label: 'Picture' }
       ],
-      orderFeilds: [
+      orderFields: [
         { key: 'seller', label: 'Seller' },
         { key: 'buyer', label: 'Buyer' },
         { key: 'listing', label: 'Listing' },
@@ -125,6 +125,7 @@ export default {
       }
     },
     async onRowClicked(item) {
+      console.log(item)
       const link = JSON.stringify(item.link)
       this.$router.push({ name: 'singleOrder', params: { link } })
     },
@@ -141,17 +142,17 @@ export default {
         })
         if (response.status === 200) {
           this.orders = response.data.orders
-          for (const key in this.orders) {
-            let arrayCounter = 0
-            if (this.orders[key].seller === this.user.userEmail) {
-              this.orders[key].seller = 'you'
-            } else {
-              this.orders[key].buyer = 'you'
-            }
-            this.orders[key].link = response.data.links[arrayCounter]
-            arrayCounter++
-          }
           this.orderLinks = response.data.links
+
+          for (let i = 0; i < this.orders.length; i++) {
+            this.orders[i].link = this.orderLinks[i]
+            if (this.orders[i].seller === this.user.userEmail) {
+              this.orders[i].seller = 'you'
+            } else {
+              this.orders[i].buyer = 'you'
+            }
+          }
+
           await this.fetchListings()
           for (const key in this.orders) {
             console.log(this.orders[key])
@@ -228,7 +229,7 @@ export default {
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
                 <div class="w-100 listings mt-2 mb-2">
-                    <b-table class="profile-page-listings table-header-colour" :items="listings" :fields="listingFeilds">
+                    <b-table class="profile-page-listings table-header-colour" :items="listings" :fields="listingFields">
                         <template #cell(picture)="data">
                             <span v-html="data.value"></span>
                         </template>
@@ -236,7 +237,7 @@ export default {
                 </div>
                 <h4> Orders </h4>
                 <div class="w-100 orders mt-2">
-                    <b-table @row-clicked="onRowClicked" class="profile-page-listings table-header-colour" :items="orders" :fields="orderFeilds">
+                    <b-table @row-clicked="onRowClicked" class="profile-page-listings table-header-colour" :items="orders" :fields="orderFields">
                         <template #cell(listing)="data">
                             <span v-html="data.value"></span>
                         </template>
