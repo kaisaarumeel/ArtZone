@@ -5,15 +5,8 @@ export default {
     isLoggedIn: Boolean(false)
   },
   computed: {
-    passwordStrength() {
-      const password = this.user.password
-      if (!password) {
-        return 'Weak'
-      } else if (password.length < 8 || !/\d/.test(password)) {
-        return 'Weak'
-      } else {
-        return 'Strong'
-      }
+    passwordStrength: function () {
+      return ((this.user.password.length < 8 || !/\d/.test(this.user.password) || undefined) ? 'Weak' : 'Strong')
     }
   },
   data() {
@@ -23,14 +16,14 @@ export default {
           firstName: '',
           lastName: ''
         },
-        dateOfBirth: null,
-        userEmail: null,
-        password: null,
+        dateOfBirth: '',
+        userEmail: '',
+        password: '',
         address: {
-          street: null,
-          city: null,
-          zip: null,
-          country: null
+          street: '',
+          city: '',
+          zip: '',
+          country: ''
         }
       },
       user: {
@@ -38,14 +31,14 @@ export default {
           firstName: '',
           lastName: ''
         },
-        dateOfBirth: null,
-        userEmail: null,
-        password: null,
+        dateOfBirth: '',
+        userEmail: '',
+        password: '',
         address: {
-          street: null,
-          city: null,
-          zip: null,
-          country: null
+          street: '',
+          city: '',
+          zip: '',
+          country: ''
         }
       },
       countries: [
@@ -339,8 +332,8 @@ export default {
             let dateMonth = String(date.getMonth() + 1)
             if (dateMonth.length < 2) dateMonth = '0' + dateMonth
             const dateString = date.getFullYear() + '-' + dateMonth + '-' + dateDay
+            response.data.password = ''
             this.user = response.data
-            this.user.password = ''
             this.clone = JSON.parse(JSON.stringify(this.user))
             this.user.dateOfBirth = dateString
           }

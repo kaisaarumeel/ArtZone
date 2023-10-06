@@ -142,6 +142,7 @@ export default {
         })
         if (response.status === 200) {
           this.orders = response.data.orders
+          if (this.orders === undefined) return
           this.orderLinks = response.data.links
 
           for (let i = 0; i < this.orders.length; i++) {
@@ -222,7 +223,7 @@ export default {
             </b-col>
             <b-col cols="12" md="6">
               <!--This component is re-used in many parts: if isLoggedIn is set to true I am accessing it under profile page-->
-                <ProfileForm isLoggedIn="true" v-on:form-data="updateUser($event)"> Save Changes </ProfileForm>
+                <ProfileForm :isLoggedIn="true" v-on:form-data="updateUser($event)"> Save Changes </ProfileForm>
                 <p class="succes" v-if="changeSuccess"> {{changes}} </p>
                 <p class="error" v-if="!success"> {{updateError}} </p>
             </b-col>
