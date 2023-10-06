@@ -189,9 +189,7 @@ p {
 }
 
 .input-field {
-    background: #FFF4F4;
-    color: #606C5D;
-    mix-blend-mode: multiply;
+    background: #50604c21;
     border-radius: 0;
 }
 
@@ -202,10 +200,9 @@ p {
 }
 ::placeholder {
     opacity: 0.6 !important;
-    color: #606C5D;
 }
-:focus {
-    background-color: #FFF4F4 !important; /* Set the background color while focused */
+.input-field:focus {
+    background-color: #50604c21 !important; /* Set the background color while focused */
     color: #606C5D !important; /* Set the text color while focused */
   }
 
@@ -215,7 +212,7 @@ p {
 }
 
 .custom-file-label::after {
-    background: #606C5D;
+    background: #50604c21;
     color: #F7E6C4;
     border-radius: 0;
 }
@@ -229,17 +226,17 @@ p {
 </style>
 <style>
 .create-listing-file-input input ,.create-listing-file-input label{
-    background: #FFF4F4;
+    background: #50604c21;
     color: #606C5D;
-    mix-blend-mode: multiply;
+
     border-radius: 0;
 
 }
 .create-listing-file-input .custom-file-label::after {
     background: transparent;
-    color: #606C5D;
+    color:  #606C5D;
     border-radius: 0;
-    mix-blend-mode: normal;
+    opacity: 0.6;
 }
 
 .create-listing-file-input .custom-file-label span {

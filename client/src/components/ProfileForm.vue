@@ -484,12 +484,15 @@ export default {
 
 <style scoped>
   .input{
-    background-color: #FFF4F4;
-    border-color: #FFF4F4;
-    mix-blend-mode: multiply;
-    border-color: #FFF4F4;
+    background-color: #50604c21;
+    border: none;
     border-radius: 0px;
   }
+  .input:focus {
+    background-color: #50604c21;
+    color: #606C5D;
+  }
+
   button{
     border:1px solid #F7E6C4;
   }
