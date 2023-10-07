@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router({mergeParams:true});
 const User = require('../models/user.js'); 
+const Review = require('../models/reviews.js').model
 
 // GET /reviews - Gets all reviews from all users
 router.get('/', async (req, res) => {
@@ -22,6 +23,19 @@ router.get('/', async (req, res) => {
     res.status(200).json({
       reviews
     });
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+});
+
+router.delete('/', async (req, res) => {
+  if(!req.auth.isAdmin) return res.sendStatus(403);
+  try {
+    // Delete all reviews from the database
+    const result = await User.updateMany({}, { $set: { reviews: [] } });
+
+    res.status(204).send(); // 204 No Content indicates successful deletion
   } catch (error) {
     console.error(error);
     res.sendStatus(500);

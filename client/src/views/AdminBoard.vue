@@ -28,6 +28,9 @@
         </div>
       </div>
             <div v-if="activeTab === 'reviews'">
+              <div class="w-100 mt-4 mb-4 d-flex justify-content-center justify-content-md-end">
+                 <button @click="confirmDeleteAllReviews" class="btn btn-primary">Delete all reviews</button>
+              </div>
         <div class="w-100 reviews mt-2 mb-2">
             <b-table v-if="this.reviews.length>0" responsive class="admin-page-table" :items="reviews" :fields="reviewFields">
             <template #cell(deleteReview)="data">
@@ -189,6 +192,31 @@ export default {
           this.reviews = this.reviews.filter(review => review._id !== reviewID)
         } else {
           console.error('Failed to delete review')
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async confirmDeleteAllReviews() {
+      const confirmed = window.confirm('Are you sure you want to delete all reviews in the system?')
+
+      if (confirmed) {
+        // If user confirms, proceed with deletion
+        await this.deleteAllReviews()
+      }
+    },
+    async deleteAllReviews() {
+      const userData = JSON.parse(localStorage.getItem('userData'))
+      const headers = {
+        'X-Auth-Token': userData.sessionKey
+      }
+      try {
+        const response = await Api.delete('/allReviews', { headers })
+        if (response.status === 204) {
+        // The listing was successfully deleted, you update local data
+          this.reviews = []
+        } else {
+          console.error('Failed to delete reviews')
         }
       } catch (error) {
         console.error(error)
