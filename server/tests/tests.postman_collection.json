@@ -3,8 +3,8 @@
 		"_postman_id": "01dc0833-1f40-4086-96d5-090fc8711a50",
 		"name": "Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "28868794",
-		"_collection_link": "https://dark-flare-212796.postman.co/workspace/Web-Development~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-01dc0833-1f40-4086-96d5-090fc8711a50?action=share&source=collection_link&creator=28868794"
+		"_exporter_id": "28264405",
+		"_collection_link": "https://dark-flare-212796.postman.co/workspace/Web-Development~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-01dc0833-1f40-4086-96d5-090fc8711a50?action=share&source=collection_link&creator=28264405"
 	},
 	"item": [
 		{
@@ -57,7 +57,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":false,\n    \"address\":{\n        \"country\":\"Sweden\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bobylon@gmail.com\"\n}"
+									"raw": "{\n    \"name\":{\n        \"firstName\":\"{{$randomFirstName}}\",\n        \"lastName\":\"{{$randomLastName}}\"\n    },\n    \"isAdmin\":false,\n    \"address\":{\n        \"country\":\"US\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"bobylon@gmail.com\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/register",
@@ -2709,6 +2709,8 @@
 											"    pm.expect(jsonData.isReceived).to.eql(true);\r",
 											"    pm.expect(jsonData.isShipped).to.eql(true);\r",
 											"    pm.expect(jsonData.buyer).to.eql(\"bob@gmail.com\")\r",
+											"    \r",
+											"    pm.globals.set(\"orderHash\", jsonData.hash);\r",
 											"});"
 										],
 										"type": "text/javascript"
@@ -2821,9 +2823,6 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"var Respone = pm.response.json();",
-											"",
-											"pm.globals.set(\"reviewPostId\", Respone.id)",
 											"",
 											"pm.test(\"Status code is 201\", function () {",
 											"   pm.response.to.have.status(201);",
@@ -2849,7 +2848,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"description\": \"Best seller!\",\n    \"rating\":3\n}"
+									"raw": "{\n    \"description\": \"Best seller!\",\n    \"rating\":3,\n    \"order\":\"{{orderHash}}\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/reviews",
@@ -2884,6 +2883,9 @@
 											"        var jsonData = pm.response.json();",
 											"        pm.expect(jsonData[0].description).to.eql(\"Best seller!\");",
 											"        pm.expect(jsonData[0].rating).to.eql(3);",
+											"",
+											"pm.globals.set(\"reviewPostId\", jsonData[0]._id)",
+											"",
 											"});",
 											""
 										],
@@ -2980,6 +2982,46 @@
 										"bob@gmail.com",
 										"reviews",
 										"{{reviewPostId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all reviews in the system",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"   pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/v1/allReviews",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"allReviews"
 									]
 								}
 							},
