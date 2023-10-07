@@ -10,7 +10,7 @@ const orderSchema = new mongoose.Schema({
     isReceived: { type: Boolean, default: false, required:true },
     isShipped:{ type: Boolean, default: false,required:true },
     paypalOrderId:{ type: Boolean, default: false,required:true },
-    reviewId:{type:String,required:true}});
+});
 
 const OrderModel = mongoose.model("Order", orderSchema);
 module.exports = {
