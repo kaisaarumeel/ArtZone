@@ -1,7 +1,8 @@
 <script>
 export default {
   props: {
-    reviews: Array
+    reviews: Array,
+    seller: String
   },
   computed: {
     avg: function () {
