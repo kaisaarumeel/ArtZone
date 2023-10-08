@@ -3232,6 +3232,256 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Add new review Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var Respone = pm.response.json();",
+											"",
+											"pm.globals.set(\"reviewPostId\", Respone.id)",
+											"",
+											"pm.test(\"Status code is 201\", function () {",
+											"   pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"Best seller!\",\n    \"rating\":3\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/reviews",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"bob@gmail.com",
+										"reviews"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add new review Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var Respone = pm.response.json();",
+											"",
+											"pm.globals.set(\"reviewPostId\", Respone.id)",
+											"",
+											"pm.test(\"Status code is 201\", function () {",
+											"   pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"Best seller!\",\n    \"rating\":3\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/reviews",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"bob@gmail.com",
+										"reviews"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add new review Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var Respone = pm.response.json();",
+											"",
+											"pm.globals.set(\"reviewPostId\", Respone.id)",
+											"",
+											"pm.test(\"Status code is 201\", function () {",
+											"   pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"Best seller!\",\n    \"rating\":3\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/reviews",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"bob@gmail.com",
+										"reviews"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete all reviews in the system",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"   pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/v1/allReviews",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"allReviews"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify deletion",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"   pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/v1/allReviews",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"allReviews"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				}
