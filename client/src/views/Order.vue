@@ -66,42 +66,51 @@ export default {
         this.order = order.data
         if (this.order.seller === userData.userEmail) {
           this.orderUpdateText = 'Shipped'
-          this.isSeller = true
+          this.isShipped = this.order.isShipped
         } else {
           this.orderUpdateText = 'Received'
+          this.isReceived = this.order.isReceived
           this.isSeller = false
         }
+        this.isShipped = this.order.isShipped
+        this.isReceived = this.order.isReceived
       } catch (err) {
         console.log(err)
       }
     },
     async updateOrder() {
-      const oldOrder = structuredClone(this.order)
+      // const oldOrder = structuredClone(this.order)
       try {
-        this.order.isReceived = this.isReceived
-        this.order.isShipped = this.isShipped
+        // this.order.isReceived = this.isReceived
+        // this.order.isShipped = this.isShipped
         // eslint-disable-next-line eqeqeq
-        if (oldOrder == this.order) {
-          // eslint-disable-next-line no-useless-return
-          return
-        }
+        // if (oldOrder == this.order) {
+        // eslint-disable-next-line no-useless-return
+        // return
+        // }
         const userData = JSON.parse(localStorage.getItem('userData'))
-        const url = `/users/${userData.userEmail}/orders/${this.id}`
+        const url = `/users/${userData.userEmail}/orders/${this.order._id}`
         let payload
         if (this.order.seller === userData.userEmail) {
           payload = {
-            isShipped: this.order.isShipped,
+            isShipped: true,
             buyer: this.order.buyer
           }
         } else {
           payload = {
-            isReceived: this.order.isReceived,
+            isReceived: true,
             seller: this.order.seller
           }
         }
-        const response = await Api.patch(url, payload)
+        const response = await Api.patch(url, payload, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Auth-Token': userData.sessionKey
+          }
+        })
         if (response.status === 200) {
           this.successMsg = 'Changes saved successfully'
+          this.getOrder()
         }
       } catch (err) {
         const userData = JSON.parse(localStorage.getItem('userData'))
@@ -111,7 +120,7 @@ export default {
           } else {
             this.failureMsg = 'You need to wait for your order to be shipped'
           }
-          this.order = structuredClone(oldOrder)
+          // this.order = structuredClone(oldOrder)
         }
         console.log(err)
       }
@@ -139,6 +148,7 @@ export default {
     await this.fetchListings()
     await this.getOrder()
     await this.getSellerReviews()
+    console.log(this.isShipped)
   }
 }
 </script>
@@ -158,10 +168,8 @@ export default {
         </b-col>
         <b-col cols="12" md="4" class="p-5 mt-2">
         <div class="border p-3">
-                   <h1 class="font-weight-bold"> {{listing.name}} </h1>
-
-                              <p class=""> By {{listing.author}} <br>Sold by <span class="seller font-weight-bold" v-b-modal.modal-1>{{order.seller}} ⭐{{sellerRating}}</span></p>
-
+            <h1 class="font-weight-bold"> {{listing.name}} </h1>
+            <p class=""> By {{listing.author}} <br>Sold by <span class="seller font-weight-bold" >{{order.seller}} ⭐{{sellerRating}}</span></p>
           <p class="text-left mb-0"><strong>Description</strong></p>
           <p class="text-left">{{ listing.description }}</p>
           <b-row cols="1">
@@ -209,5 +217,6 @@ export default {
   }
   .seller{
     text-decoration: underline;
+    overflow-wrap: break-word;
   }
 </style>

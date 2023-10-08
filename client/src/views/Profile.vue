@@ -126,8 +126,14 @@ export default {
     },
     async onRowClicked(item) {
       console.log(item)
-      const link = JSON.stringify(item.link)
-      this.$router.push({ name: 'singleOrder', params: { link } })
+      if (item.creator) {
+        const userData = JSON.parse(localStorage.getItem('userData'))
+        // eslint-disable-next-line quotes
+        this.$router.push({ name: 'singleListing', params: { link: `/users/${userData.userEmail}/listings/${item._id}` } })
+      } else {
+        const link = JSON.stringify(item.link)
+        this.$router.push({ name: 'singleOrder', params: { link } })
+      }
     },
     async getOrders() {
       try {
@@ -171,12 +177,6 @@ export default {
     },
     async goToAdminPage() {
       this.$router.push('/admin-board')
-    },
-    async goToListing() {
-      alert('bob')
-    },
-    async goToOrder() {
-      alert('bob')
     },
     async getUser() {
       const userData = JSON.parse(localStorage.getItem('userData'))
@@ -235,7 +235,7 @@ export default {
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
                 <div class="w-100 listings mt-2 mb-2">
-                    <b-table class="profile-page-listings table-header-colour" :items="listings" :fields="listingFields">
+                    <b-table @row-clicked="onRowClicked" class="profile-page-listings table-header-colour" :items="listings" :fields="listingFields">
                         <template #cell(picture)="data">
                             <span v-html="data.value"></span>
                         </template>

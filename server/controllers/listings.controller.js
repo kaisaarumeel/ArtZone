@@ -69,7 +69,6 @@ router.get("/", async function(req, res){
             return res.status(500).send(err);;
         } 
 
-
     const listings = user.listings;
     
     return res.status(200).json(listings);

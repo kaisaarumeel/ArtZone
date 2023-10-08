@@ -9,6 +9,7 @@ import Discover from './views/Discover.vue'
 import AdminBoard from './views/AdminBoard.vue'
 import Profile from './views/Profile.vue'
 import Order from './views/Order.vue'
+import UserListing from './views/UserListing.vue'
 
 Vue.use(Router)
 export default new Router({
@@ -61,6 +62,12 @@ export default new Router({
       path: '/order/:link',
       name: 'singleOrder',
       component: Order,
+      props: true
+    },
+    {
+      path: '/listing/:link',
+      name: 'singleListing',
+      component: UserListing,
       props: true
     }
   ]

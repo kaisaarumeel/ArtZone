@@ -96,8 +96,6 @@ router.post("/", async (req, res) => {
 
         return res.status(201).json(response.result);
 
-
-        
     } catch(err) {
         res.sendStatus(500);
         console.log(err)
@@ -207,6 +205,8 @@ router.patch("/:id", async (req, res) => {
 
                     await user.save();
                     await  buyer.save();
+                    res.sendStatus(200);
+                    return
 
                 }
             } else if (order.buyer === user.userEmail && key === 'isReceived') {
@@ -218,6 +218,8 @@ router.patch("/:id", async (req, res) => {
                         res.status(404).json({"message": "Seller was not found."});
                         return;
                     }
+
+                    let sellerListing = seller.listings.find(listing => listing.id === order.listing);
 
                     order[key] = req.body[key];
                     try{
@@ -233,8 +235,18 @@ router.patch("/:id", async (req, res) => {
                     }
                     sellerOrder[key] = req.body[key]
 
+                    //remobing the listing from the seller's listings and adding it to the buyer's listings
+                    let sellerListingIndex = seller.listings.indexOf(sellerListing);
+                    console.log(sellerListingIndex);
+                    seller.listings.splice(sellerListingIndex, 1);
+                    user.listings.push(sellerListing);
+                    sellerListing.sold = false
+
                     await user.save();
                     await  seller.save();
+
+                    res.sendStatus(200);
+                    return
 
                 } else {
                     return res.status(403).json({"message": "You need to wait for your order to be shipped"});
@@ -243,9 +255,6 @@ router.patch("/:id", async (req, res) => {
                 continue;
             }
         }
-        
-        user.save();
-        res.sendStatus(200);
 
     } catch(err) {
         res.sendStatus(500);
