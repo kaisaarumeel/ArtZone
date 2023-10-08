@@ -58,7 +58,7 @@ app.use("/api/v1/users/:email/orders", orders);
 app.use("/api/v1/checkout", checkout);
 app.use("/api/v1/users/:email/reviews", reviews);
 app.use("/api/v1/random-listings", randomListings)
-app.use("/api/v1/allReviews", allReviews)
+app.use("/api/v1/reviews", allReviews)
 app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });

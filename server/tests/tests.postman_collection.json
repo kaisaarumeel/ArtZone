@@ -3012,7 +3012,7 @@
 									}
 								],
 								"url": {
-									"raw": "http://localhost:3000/api/v1/allReviews",
+									"raw": "http://localhost:3000/api/v1/reviews",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -3021,7 +3021,7 @@
 									"path": [
 										"api",
 										"v1",
-										"allReviews"
+										"reviews"
 									]
 								}
 							},
