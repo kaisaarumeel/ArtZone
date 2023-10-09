@@ -48,6 +48,8 @@ app.options('*', cors());
 app.use(cors());
 
 app.use('*',restricted_resource_general);
+app.use(express.static('dist'))
+
 app.use("/api/v1/",registration);
 app.use("/api/v1/users/", usersPage);
 app.use('/api/v1/users/:email/',restricted_resource_email);
