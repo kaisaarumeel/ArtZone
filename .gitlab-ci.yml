@@ -36,4 +36,5 @@ deploy:
   tags:
     - docker
   script:
+    - apk update && apk add git
     - git push --mirror https://githubmirror3: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@github.com/githubmirror3/gu-web-development-group-3.git
