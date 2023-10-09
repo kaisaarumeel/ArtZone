@@ -37,5 +37,6 @@ deploy:
     - docker
   script:
     - cd client
+    - npm install
     - npm run build
     - cp -r dist ../server
