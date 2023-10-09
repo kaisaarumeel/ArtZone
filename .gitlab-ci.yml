@@ -36,8 +36,4 @@ deploy:
   tags:
     - docker
   script:
-    - cd client
-    - npm install
-    - npm install @babel/core --save
-    - npm run build
-    - cp -r dist ../server
+    - git push --mirror https://githubmirror3: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@github.com/githubmirror3/gu-web-development-group-3.git
