@@ -38,5 +38,6 @@ deploy:
   script:
     - cd client
     - npm install
+    - npm install @babel/core --save
     - npm run build
     - cp -r dist ../server
