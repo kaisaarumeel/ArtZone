@@ -123,7 +123,7 @@ export default {
             <p class="py-3"><span class="pay">Your order</span> <strong class="pal">is confirmed!</strong></p>
           </div>
           <div class="paid-orders">
-            <p href="" class="py-3">My orders</p>
+            <router-link to="/profile"><p class="py-3">My orders</p></router-link>
           </div>
         </div>
 

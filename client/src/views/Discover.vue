@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal ref="loginModal" title="Login Required">
+    <b-modal ok-only ref="loginModal" title="Login Required">
       <p>You need to be logged in to buy this piece.</p>
     </b-modal>
 

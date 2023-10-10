@@ -1,9 +1,10 @@
 <template>
+
 <div class="nav-bar">
   <b-navbar toggleable="lg">
     <router-link to="/">
     <b-navbar-nav class="logo">
-      Artzone
+      <img class="logo" src="logo.png">
       </b-navbar-nav>
       </router-link>
     <b-navbar-toggle target="nav-collapse" class="pages"></b-navbar-toggle>
@@ -97,6 +98,14 @@ export default {
 </script>
 
 <style scoped>
+nav {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.logo {
+  width: 100px;
+  height: auto;
+}
 .btn {
   margin-left: 1rem;
 }
@@ -105,7 +114,7 @@ export default {
   text-decoration: underline !important;
 }
 .nav-bar {
-  padding: 2rem;
+  margin-top:1rem;
 }
 img{
   width: 8%;
@@ -124,7 +133,6 @@ img{
     text-decoration-color: #606C5D;
     font-size: 24;
     color: #606C5D;
-    padding-left: 1rem;
     font-weight: bold;
 }
 
@@ -150,10 +158,9 @@ img{
 }
 
 .middle {
-  padding-left: 12rem;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 
 }
 

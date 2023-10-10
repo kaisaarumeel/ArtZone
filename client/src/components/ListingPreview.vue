@@ -1,5 +1,5 @@
 <template>
-<div class="single-listing">
+<div v-on:click="buyNowClick()" class="single-listing">
       <div class="text-center">
       <img class="artwork" :src="picture">
       </div>
@@ -9,7 +9,7 @@
             <p>{{author}}</p>
         </b-col>
         <b-col cols="6">
-          <b-button v-on:click="buyNowClick()" variant="primary">{{price}} <sup>SEK</sup></b-button>
+          <b-button  variant="primary">{{price}} <sup>SEK</sup></b-button>
         </b-col>
       </b-row>
 </div>
@@ -78,7 +78,9 @@ export default {
 
 </script>
 <style scoped>
-
+.single-listing:hover {
+  cursor: pointer;
+}
 .single-listing {
   padding: 1rem;
   border: 1px solid #606C5D;
@@ -117,6 +119,10 @@ export default {
 
   @media screen and (max-width:576px){
 
+  .artwork{
+    max-width: 80vw;
+    height: auto;
+  }
     h1 {
         font-size: 16px;
     }

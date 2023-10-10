@@ -26,7 +26,7 @@
       </b-carousel-slide>
     </b-carousel>
 
-<b-modal id="loginModal" title="Login Required">
+<b-modal ok-only id="loginModal" title="Login Required">
     <p>You need to be logged in to buy this piece.</p>
   </b-modal>
   </div>

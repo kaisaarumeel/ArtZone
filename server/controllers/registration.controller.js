@@ -54,9 +54,9 @@ router.post("/users/register", async (req, res) => {
         console.log('Invalid email format');
         return res.sendStatus(400);
     }
-    const error=await user.validate()
-    if(error){
-        console.log(error)
+    try {
+        await user.validate()
+    } catch(err) {
         return res.sendStatus(400);
     }
     if(req.body.isAdmin){
