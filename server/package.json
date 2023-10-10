@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
-    "deploy": "nodemon ./app.js 80",
+    "deploy": "cd ../client/ && npm run build && cp -r dist ../server/ && cd ../server/ && nodemon ./app.js 80",
     "lint": "eslint .",
     "test": "cross-env-shell MONGODB_URI=mongodb://127.0.0.1:27017/serverTestDB \"npm run newman-server\"",
     "ci-test": "npm run newman-server",
