@@ -25,7 +25,8 @@ export default {
         { key: 'name', label: 'Name' },
         { key: 'author', label: 'Author' },
         { key: 'price', label: 'Price' },
-        { key: 'picture', label: 'Picture' }
+        { key: 'picture', label: 'Picture' },
+        { key: 'deleteListing', label: 'Delete Listing' }
       ],
       orderFields: [
         { key: 'seller', label: 'Seller' },
@@ -126,14 +127,8 @@ export default {
     },
     async onRowClicked(item) {
       console.log(item)
-      if (item.creator) {
-        const userData = JSON.parse(localStorage.getItem('userData'))
-        // eslint-disable-next-line quotes
-        this.$router.push({ name: 'singleListing', params: { link: `/users/${userData.userEmail}/listings/${item._id}` } })
-      } else {
-        const link = JSON.stringify(item.link)
-        this.$router.push({ name: 'singleOrder', params: { link } })
-      }
+      const link = JSON.stringify(item.link)
+      this.$router.push({ name: 'singleOrder', params: { link } })
     },
     async getOrders() {
       try {
@@ -197,6 +192,23 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+    async deleteListing(id, sold) {
+      try {
+        const userData = JSON.parse(localStorage.getItem('userData'))
+        if (sold === true) return alert('There is an order on your listing. You cannot delete it. Your listing will be deleted when it is received by the buyer.')
+        const response = await Api.delete('/users/' + userData.userEmail + '/listings/' + id, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Auth-Token': userData.sessionKey
+          }
+        })
+        if (response.status === 204) {
+          alert('Listing deleted successfully.')
+        }
+      } catch (err) {
+
+      }
     }
   },
   async mounted() {
@@ -235,9 +247,12 @@ export default {
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
                 <div class="w-100 listings mt-2 mb-2">
-                    <b-table @row-clicked="onRowClicked" class="profile-page-listings table-header-colour" :items="listings" :fields="listingFields">
+                    <b-table class="profile-page-listings table-header-colour" :items="listings" :fields="listingFields">
                         <template #cell(picture)="data">
                             <span v-html="data.value"></span>
+                        </template>
+                        <template #cell(deleteListing)="data">
+                            <button @click="deleteListing(data.item._id, data.item.sold)" class="btn btn-primary">Delete Listing</button>
                         </template>
                     </b-table>
                 </div>

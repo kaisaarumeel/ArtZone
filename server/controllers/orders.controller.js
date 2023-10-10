@@ -5,6 +5,7 @@ const OrderModel = require("../models/orders.js");
 const UserModel = require("../models/user.js");
 const { createHash, randomUUID } = require('crypto');
 const paypal = require('@paypal/checkout-server-sdk');
+const { Console } = require("console");
 
 const pp_client="AQAquHqyXLu-wDbXuWcL4hEKe-ay87Vco719EUZLpufXR1ouqoGkNCId9ZFAWM7Xef3H_UJ0vpZh5_hF";
 const pp_secret="EL03GoWvTdp-eVBu6l_OWEVe2ay083mqOqMvgk-dsBAQ2gA2niRvshNzDbZT9zx7m7Xj0etG0sg2a_xt";
@@ -161,7 +162,7 @@ router.delete("/:id", async (req,res)=>{
 
 router.patch("/:id", async (req, res) => {
 
-    try {
+   try {
 
         const user = await UserModel.findOne({ userEmail: req.params.email });
         if (!user) {
@@ -175,7 +176,7 @@ router.patch("/:id", async (req, res) => {
             return;
         }
 
-        for(key in req.body){
+        for(let key in req.body){
             if (order.seller === user.userEmail && key === 'isShipped') {
 
                 if (order.isReceived === true) {
@@ -219,7 +220,11 @@ router.patch("/:id", async (req, res) => {
                         return;
                     }
 
-                    let sellerListing = seller.listings.find(listing => listing.id === order.listing);
+                    let sellerListing = seller.listings.find(listing => listing.id == order.listing);
+                    if (!sellerListing) {
+                        res.status(404).json({"message": "Seller Listing was not found."});
+                        return;
+                    } 
 
                     order[key] = req.body[key];
                     try{
@@ -235,30 +240,28 @@ router.patch("/:id", async (req, res) => {
                     }
                     sellerOrder[key] = req.body[key]
 
-                    //remobing the listing from the seller's listings and adding it to the buyer's listings
-                    let sellerListingIndex = seller.listings.indexOf(sellerListing);
-                    console.log(sellerListingIndex);
-                    seller.listings.splice(sellerListingIndex, 1);
-                    user.listings.push(sellerListing);
-                    sellerListing.sold = false
+                    //removing the listing from the seller's listings and adding it to the buyer's listings
+                    const result=await UserModel.findOneAndUpdate({userEmail:req.params.email},{$push:{listings:sellerListing}},{new:true});
+                    seller.listings = seller.listings.filter(listing => listing._id !== sellerListing._id);
+
 
                     await user.save();
-                    await  seller.save();
+                    await seller.save();
 
-                    res.sendStatus(200);
-                    return
+                    return res.sendStatus(200);
+                    
 
                 } else {
                     return res.status(403).json({"message": "You need to wait for your order to be shipped"});
                 }
             } else {
-                continue;
+                break;
             }
         }
 
     } catch(err) {
-        res.sendStatus(500);
         console.log(err);
+       return res.sendStatus(500);
     }
 
 });
