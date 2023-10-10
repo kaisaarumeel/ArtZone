@@ -31,15 +31,17 @@ test:
   script:
     - cd server
     - npm run ci-test
+
 deploy:
   stage: deploy
   tags:
     - docker
   script:
     - apk update && apk add git
-    - git clone https://github.com/githubmirror3/gu-web-development-group-3.git
-    - cd gu-web-development-group-3
+    - mkdir repo && cd repo
+    - git clone --mirror $CI_REPOSITORY_URL .
     - git remote add mirror https://githubmirror3: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@github.com/githubmirror3/gu-web-development-group-3.git
-    - git push -u mirror --all
+    - git push --mirror mirror
   only:
     - master
+
