@@ -31,17 +31,7 @@ test:
   script:
     - cd server
     - npm run ci-test
-deploy:
-  stage: deploy
-  tags:
-    - docker
-  script:
-    - apk update && apk add git
-    deploy:
-  stage: deploy
-  tags:
-    - docker
-  script:
+
 deploy:
   stage: deploy
   tags:
