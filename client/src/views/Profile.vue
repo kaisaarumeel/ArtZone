@@ -204,10 +204,26 @@ export default {
           }
         })
         if (response.status === 204) {
-          alert('Listing deleted successfully.')
+          await this.getListings().then(result => alert('Listing deleted successfully.'))
         }
       } catch (err) {
-
+        console.log(err)
+      }
+    },
+    async deleteAllListings() {
+      try {
+        const userData = JSON.parse(localStorage.getItem('userData'))
+        const response = await Api.delete('/users/' + userData.userEmail + '/listings', {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Auth-Token': userData.sessionKey
+          }
+        })
+        if (response.status === 204) {
+          await this.getListings().then(result => alert('Listings deleted successfully.'))
+        }
+      } catch (err) {
+        console.log(err)
       }
     }
   },
@@ -246,6 +262,7 @@ export default {
             </b-col>
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
+                <button @click="deleteAllListings()" class="btn btn-primary">Delete Listings</button>
                 <div class="w-100 listings mt-2 mb-2">
                     <b-table class="profile-page-listings table-header-colour" :items="listings" :fields="listingFields">
                         <template #cell(picture)="data">

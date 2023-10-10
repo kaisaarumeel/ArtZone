@@ -27,7 +27,7 @@ const reviews = require("./controllers/reviews.controller.js")
 const users=require("./controllers/users.controller");
 const { restricted_resource_email,restricted_resource_general } = require('./middleware/session');
 const orders = require("./controllers/orders.controller");
-const port = process.env.PORT || 3000;
+const port = process.argv[2] || 3000;
 const checkout = require("./controllers/checkout.controller")
 const registration=require("./controllers/registration.controller")
 const randomListings = require("./controllers/randomListings.controller")
@@ -48,6 +48,8 @@ app.options('*', cors());
 app.use(cors());
 
 app.use('*',restricted_resource_general);
+app.use(express.static('dist'))
+
 app.use("/api/v1/",registration);
 app.use("/api/v1/users/", usersPage);
 app.use('/api/v1/users/:email/',restricted_resource_email);
@@ -58,7 +60,7 @@ app.use("/api/v1/users/:email/orders", orders);
 app.use("/api/v1/checkout", checkout);
 app.use("/api/v1/users/:email/reviews", reviews);
 app.use("/api/v1/random-listings", randomListings)
-app.use("/api/v1/allReviews", allReviews)
+app.use("/api/v1/reviews", allReviews)
 app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });

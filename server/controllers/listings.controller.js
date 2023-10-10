@@ -126,13 +126,13 @@ router.delete("/:id", async function(req, res){
         const listingID = req.params.id;
         const userEmail = req.params.email;
 
-        const user = await UserModel.findOne({ userEmail: req.params.email });
+        const user = await UserSchema.findOne({ userEmail: req.params.email });
         if (!user) {
             res.status(404).json({"message": "User was not found."});
             return;
         } 
 
-        let listing = seller.listings.find(listing => listing.id == order.listing);
+        let listing = user.listings.find(listing => listing.id == req.params.id);
         if (!listing) {
             res.status(404).json({"message": "Seller Listing was not found."});
             return;
@@ -162,11 +162,22 @@ router.delete("/:id", async function(req, res){
 router.delete("/", async function(req, res){
     
     try{
-    const userEmail = req.params.email;
-        const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{ $set: { listings: [] } });
-        if (!result) {
-            return res.sendStatus(404);
+        const userEmail = req.params.email;
+        const user = await UserSchema.findOne({ userEmail: req.params.email });
+        if (!user) {
+            res.status(404).json({"message": "User was not found."});
+            return;
+        } 
+        for (let i = 0; i < user.listings.length; i++) {
+            if (user.listings[i].sold !== true) {
+                user.listings.splice(i, 1)
+            }
         }
+        //const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{ $set: { listings: [] } });
+        //if (!result) {
+        //    return res.sendStatus(404);
+        //}
+        user.save()
         return res.sendStatus(204);
 
     } catch(error) {
@@ -174,7 +185,7 @@ router.delete("/", async function(req, res){
     return res.sendStatus(500);
     }
 })
-        
+         
 //PUT /users/:email/listings/:id - Full update on a listing in the system at the specified resource.
     router.put("/:id", async function(req, res){
         try{
