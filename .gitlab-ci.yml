@@ -31,22 +31,15 @@ test:
   script:
     - cd server
     - npm run ci-test
-
 deploy:
   stage: deploy
   tags:
     - docker
-  image: ruby:alpine
   script:
-    - apk update && apk add git curl
-    - gem install dpl
-    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
-  environment:
-    name: production
-    url: https://$HEROKU_APP_NAME.herokuapp.com/
+    - apk update && apk add git
+    - git clone https://github.com/githubmirror3/gu-web-development-group-3.git
+    - cd gu-web-development-group-3
+    - git remote add mirror https://githubmirror3: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@github.com/githubmirror3/gu-web-development-group-3.git
+    - git push -u mirror --all
   only:
-    refs:
-      - master
-    variables:
-      - $HEROKU_APP_NAME
-      - $HEROKU_API_KEY
+    - master

@@ -161,7 +161,7 @@ router.delete("/", async function(req, res){
     return res.sendStatus(500);
     }
 })
-        
+         
 //PUT /users/:email/listings/:id - Full update on a listing in the system at the specified resource.
     router.put("/:id", async function(req, res){
         try{
