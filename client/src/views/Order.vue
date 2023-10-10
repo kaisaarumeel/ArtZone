@@ -159,7 +159,7 @@ export default {
         })
         if (response.status === 200) {
           this.successMsg = 'Changes saved successfully'
-          this.getOrder()
+          await this.getOrder()
         }
       } catch (err) {
         const userData = JSON.parse(localStorage.getItem('userData'))
@@ -249,7 +249,7 @@ export default {
           <p class="text-left mb-0"><strong>Delivery Status</strong></p>
 
           <p class="text-left">
-              <a v-if="!isShipped" class="updateDelivery" @click="updateOrder()"> Mark as {{ orderUpdateText }}
+              <a v-if="!isShipped || !isReceived" class="updateDelivery" @click="updateOrder()"> Mark as {{ orderUpdateText }}
               </a>
           </p>
 

@@ -240,13 +240,14 @@ router.patch("/:id", async (req, res) => {
                     }
                     sellerOrder[key] = req.body[key]
 
-                    //removing the listing from the seller's listings and adding it to the buyer's listings
-                    const result=await UserModel.findOneAndUpdate({userEmail:req.params.email},{$push:{listings:sellerListing}},{new:true});
                     seller.listings = seller.listings.filter(listing => listing._id !== sellerListing._id);
+                    await seller.save();
+
+                    //removing the listing from the seller's listings and adding it to the buyer's listings
+                    await UserModel.findOneAndUpdate({userEmail:req.params.email},{$push:{listings:sellerListing}},{new:true});
 
 
                     await user.save();
-                    await seller.save();
 
                     return res.sendStatus(200);
                     

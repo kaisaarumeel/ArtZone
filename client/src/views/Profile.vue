@@ -21,6 +21,7 @@ export default {
       isAdmin: false,
       allListings: [],
       user: null,
+      deleteMessage: '',
       listingFields: [
         { key: 'name', label: 'Name' },
         { key: 'author', label: 'Author' },
@@ -196,7 +197,10 @@ export default {
     async deleteListing(id, sold) {
       try {
         const userData = JSON.parse(localStorage.getItem('userData'))
-        if (sold === true) return alert('There is an order on your listing. You cannot delete it. Your listing will be deleted when it is received by the buyer.')
+        if (sold === true) {
+          this.deleteMessage = 'There is an order on your listing. You cannot delete it. Your listing will be deleted when it is received by the buyer.'
+          return
+        }
         const response = await Api.delete('/users/' + userData.userEmail + '/listings/' + id, {
           headers: {
             'Content-Type': 'application/json',
@@ -204,7 +208,7 @@ export default {
           }
         })
         if (response.status === 204) {
-          await this.getListings().then(result => alert('Listing deleted successfully.'))
+          await this.getListings().then(result => { this.deleteMessage = 'Listing deleted successfully.' })
         }
       } catch (err) {
         console.log(err)
@@ -220,7 +224,7 @@ export default {
           }
         })
         if (response.status === 204) {
-          await this.getListings().then(result => alert('Listings deleted successfully.'))
+          await this.getListings().then(result => { this.deleteMessage = 'Listings deleted successfully. The listings with an order cannot be deleted.' })
         }
       } catch (err) {
         console.log(err)
@@ -262,7 +266,10 @@ export default {
             </b-col>
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
-                <button @click="deleteAllListings()" class="btn btn-primary">Delete Listings</button>
+                <button primary @click="deleteAllListings()" class="float-left mb-2">Delete Listings</button>
+                <label class="float-left pl-2">
+                  {{deleteMessage}}
+                </label>
                 <div class="w-100 listings mt-2 mb-2">
                     <b-table class="profile-page-listings table-header-colour" :items="listings" :fields="listingFields">
                         <template #cell(picture)="data">
@@ -290,9 +297,6 @@ export default {
   .listings, .orders{
     max-height: 35vh;
     overflow-y: scroll;
-    background-color: #FFF4F4;
-    border-color: #FFF4F4;
-    mix-blend-mode: multiply;
   }
   .success{
     color: #21450e;
@@ -315,6 +319,9 @@ export default {
     .profile-page-listings .table-listing-picture {
         width: 150px;
         height: auto;
+    }
+    .orders table{
+      background-color: transparent;
     }
     .table-header-colour thead tr{
         background-color: #606C5D;
