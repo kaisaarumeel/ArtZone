@@ -171,6 +171,7 @@ router.delete("/", async function(req, res){
         for (let i = 0; i < user.listings.length; i++) {
             if (user.listings[i].sold !== true) {
                 user.listings.splice(i, 1)
+                i--;
             }
         }
         //const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{ $set: { listings: [] } });
