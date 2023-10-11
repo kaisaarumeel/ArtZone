@@ -53,6 +53,7 @@ export default {
   data() {
     return {
       users: [],
+      isAdmin: false,
       listings: [],
       reviews: [],
       totalPages: 0,
@@ -84,6 +85,26 @@ export default {
     UserVue
   },
   methods: {
+    async getUser() {
+      const userData = JSON.parse(localStorage.getItem('userData'))
+      try {
+        const url = `/users/${userData.userEmail}`
+        const response = await Api.get(url, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Auth-Token': userData.sessionKey
+          }
+        })
+        if (response.status === 200) {
+          this.user = response.data
+          const user = response.data
+          console.log(response.data)
+          this.isAdmin = user.isAdmin
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
     async fetchUsers() {
       try {
         if (!this.usersFetched) {
@@ -138,7 +159,7 @@ export default {
     async fetchReviews() {
       try {
         if (!this.reviewsFetched) {
-          const response = await Api.get('/allReviews')
+          const response = await Api.get('/reviews')
           if (Array.isArray(response.data.reviews) && response.data.reviews.length > 0) {
             for (const key in response.data.reviews) {
               response.data.reviews[key].deleteListing = ''
@@ -211,7 +232,7 @@ export default {
         'X-Auth-Token': userData.sessionKey
       }
       try {
-        const response = await Api.delete('/allReviews', { headers })
+        const response = await Api.delete('/reviews', { headers })
         if (response.status === 204) {
         // The listing was successfully deleted, you update local data
           this.reviews = []
@@ -223,9 +244,14 @@ export default {
       }
     }
   },
-  mounted() {
-    this.fetchUsers()
-    this.fetchListings()
+  async mounted() {
+    await this.getUser()
+    if (!this.isAdmin) {
+      window.location.replace('/')
+    } else {
+      this.fetchUsers()
+      this.fetchListings()
+    }
   },
   computed: {
     rows() {
