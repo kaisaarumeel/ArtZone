@@ -10,7 +10,6 @@ export default {
     return {
       isReceived: false,
       isShipped: false,
-      starWidth: 0,
       reviewErrorMessage: '',
       addReviewError: false,
       usersRating: 0,
@@ -72,10 +71,7 @@ export default {
     },
     async updateStar(stars) {
       if (this.disallowReview) return
-      const starShare = 80 / 5
-      this.starWidth = starShare * stars
       this.usersRating = stars
-      this.postReview()
     },
     async fetchListings() {
       try {
@@ -158,7 +154,9 @@ export default {
           }
         })
         if (response.status === 200) {
+          if (this.isShipped === true) this.isReceived = true
           this.successMsg = 'Changes saved successfully'
+          if (this.isShipped && this.isReceived) return this.$router.push('/profile')
           await this.getOrder()
         }
       } catch (err) {
@@ -184,7 +182,7 @@ export default {
           if (this.order.hash === this.reviews[i].orderHash) {
             this.disallowReview = true
             this.reviewDescription = this.reviews[i].description
-            this.starWidth = this.reviews[i].rating * (80 / 5)
+            this.usersRating = this.reviews[i].rating
           } else {
             console.log(this.order.hash)
             console.log(this.reviews[i].orderHash)
@@ -193,6 +191,10 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+    showReceivedModal() {
+      if (this.isShipped === false) return this.updateOrder()
+      this.$refs.receivedModal.show()
     }
   },
   async mounted() {
@@ -217,7 +219,10 @@ export default {
   <div>
     <b-modal id="modal-1" modal-class="reviews w-100 p-5" hide-backdrop>
     <Reviews :reviews="reviews" :seller="order.seller"></Reviews>
-  </b-modal>
+    </b-modal>
+    <b-modal @ok="updateOrder()" ok-only ref="receivedModal" title="Information!">
+      <p>Note that when you mark an order as received, it will be deleted from the database as you ensure us that you have received it</p>
+    </b-modal>
     <b-row class="pl-5">
       <b-col cols="12">
       </b-col>
@@ -232,7 +237,7 @@ export default {
       <b-col cols="12" md="4" class="p-5 mt-2">
         <div class="border p-3">
             <h1 class="font-weight-bold"> {{listing.name}} </h1>
-            <p class=""> By {{listing.author}} <br>Sold by <span class="seller font-weight-bold" >{{order.seller}} ⭐{{sellerRating}}</span></p>
+            <p class=""> By {{listing.author}} <br>Sold by <span class="seller font-weight-bold" >{{order.seller}} ⭐{{rating}}</span></p>
           <p class="text-left mb-0"><strong>Description</strong></p>
           <p class="text-left">{{ listing.description }}</p>
 
@@ -242,14 +247,14 @@ export default {
           <p class="text-left mb-0"><strong>Status</strong></p>
           <p class="text-left">
             <span v-if="isShipped && isReceived"> Shipped and received </span>
-              <span v-if="isShipped"> Shipped </span>
+              <span v-if="isShipped && !isReceived"> Shipped </span>
               <span v-if="!isShipped"> Not Shipped yet </span>
 
           </p>
           <p class="text-left mb-0"><strong>Delivery Status</strong></p>
 
           <p class="text-left">
-              <a v-if="!isShipped || !isReceived" class="updateDelivery" @click="updateOrder()"> Mark as {{ orderUpdateText }}
+              <a v-if="!isShipped || !isReceived" class="updateDelivery" @click="showReceivedModal()"> Mark as {{ orderUpdateText }}
               </a>
           </p>
 
@@ -261,21 +266,13 @@ export default {
           <span class="text-left">
             <textarea :disabled="disallowReview" v-model="reviewDescription"></textarea>
             <div class="star-rating">
-                <span class="starRatingGrey">
-                  <span v-for="(index) in 5" :key="index" @click="updateStar(index)">⭐</span>
-                </span><span :style="'width:' + this.starWidth + 'px'" class="starRating">
-                  <span v-for="(index) in 5" :key="index" @click="updateStar(index)">⭐</span>
-                </span>
+              <span :class="usersRating>=index? 'fa fa-star checked' : 'fa fa-star' " v-for="(index) in 5" :key="index" @click="updateStar(index)"></span>
               </div>
               <p class="red" v-if="addReviewError">{{reviewErrorMessage}}</p>
+              <button @click="postReview()" class="btn mt-2 w-100 reviewBtn btn-primary">Submit Review</button>
             </span>
         </div>
 
-          <b-row cols="1">
-            <b-col class="pb-5 text-center">
-
-            </b-col>
-          </b-row>
         </div>
       </b-col>
     </b-row>
@@ -283,8 +280,21 @@ export default {
 </template>
 
 <style scoped>
+.reviewBtn {
+
+}
 textarea {
   max-height: 80px;
+    background-color: #50604c21;
+    border: none;
+    border-radius: 0px;
+  width:100%;
+}
+.fa:hover {
+  cursor: pointer;
+}
+.checked {
+  color:orange;
 }
 
 .red {

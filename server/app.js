@@ -1,3 +1,4 @@
+require('dotenv').config({path: __dirname + '/../.env'});
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -7,8 +8,6 @@ const mongoose = require("mongoose");
 const { randomUUID } = require("crypto");
 const methodOverride = require('method-override')
 
-//instances of the schema. Pay attention that the methods that are used to query and save instances
-//work asynchronously.
 const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/art-exchange';
 const UserModel =require("./models/user")
 // Connect to MongoDB
@@ -27,7 +26,7 @@ const reviews = require("./controllers/reviews.controller.js")
 const users=require("./controllers/users.controller");
 const { restricted_resource_email,restricted_resource_general } = require('./middleware/session');
 const orders = require("./controllers/orders.controller");
-const port = process.argv[2] || 3000;
+const port = process.env.PORT || 3000;
 const checkout = require("./controllers/checkout.controller")
 const registration=require("./controllers/registration.controller")
 const randomListings = require("./controllers/randomListings.controller")
@@ -48,7 +47,7 @@ app.options('*', cors());
 app.use(cors());
 
 app.use('*',restricted_resource_general);
-app.use(express.static('dist'))
+app.use(express.static('../client/dist'))
 
 app.use("/api/v1/",registration);
 app.use("/api/v1/users/", usersPage);

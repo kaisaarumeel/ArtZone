@@ -1,17 +1,17 @@
 const express = require('express');
-const router = express.Router({mergeParams:true});
-const User = require('../models/user.js'); 
+const router = express.Router({ mergeParams: true });
+const User = require('../models/user.js');
 
 // GET /listings/page/:page - Gets all listings from all users paginated
 router.get('/', async (req, res) => {
   try {
     const page = parseInt(req.params.page); // Requested page number
     const perPage = 6; // Number of listings per page 
-    const skip = (page - 1) * perPage;
+    const startIndex = (page - 1) * perPage; //Starting index that we use for array slicing.
 
     // Find all users
     const users = await User.find();
-    const allListings = users.flatMap((user) =>  {return user.listings});
+    const allListings = users.flatMap((user) => { return user.listings }); //Takes all listings in the entire system
     const sortQueryParam = String(req.query.sortBy);
 
     if (sortQueryParam === "ascending") {
@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
       });
     }
 
-    if (sortQueryParam === "descending"){
+    if (sortQueryParam === "descending") {
       allListings.sort((a, b) => {
         if (a.price < b.price) return 1;
         if (a.price === b.price) return 0;
@@ -30,11 +30,15 @@ router.get('/', async (req, res) => {
       });
 
     }
-    const listings = allListings.slice(skip, skip + perPage);
+    //Listings that we show in this page
+    const listings = allListings.slice(startIndex, startIndex + perPage);
+    //Total number of listings
     const totalListings = allListings.length;
+    //All pages
     const totalPages = Math.ceil(totalListings / perPage);
+    //If it has another page or not.
     const hasNextPage = page < totalPages;
-    
+
     res.status(200).json({
       listings,
       page,

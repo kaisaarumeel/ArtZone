@@ -33,8 +33,8 @@ export default {
         { key: 'seller', label: 'Seller' },
         { key: 'buyer', label: 'Buyer' },
         { key: 'listing', label: 'Listing' },
-        { key: 'isReceived', label: 'Is-Received' },
-        { key: 'isShipped', label: 'Is-Shipped' }
+        { key: 'isReceived', label: 'Received' },
+        { key: 'isShipped', label: 'Shipped' }
       ]
     }
   },
@@ -266,7 +266,7 @@ export default {
             </b-col>
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
-                <button primary @click="deleteAllListings()" class="float-left mb-2">Delete Listings</button>
+                <button primary @click="deleteAllListings()" class="btn btn-primary float-left mb-2">Delete Listings</button>
                 <label class="float-left pl-2">
                   {{deleteMessage}}
                 </label>
@@ -343,5 +343,9 @@ export default {
     .profile-page-listings tr:hover {
         cursor: pointer;
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    .table-header-colour thead tr:hover{
+cursor: initial;
+box-shadow: unset;
     }
 </style>
