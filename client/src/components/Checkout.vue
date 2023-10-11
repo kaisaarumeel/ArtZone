@@ -64,13 +64,6 @@ export default {
           return Api.post('users/' + parsedData.userEmail + '/orders', orderPayload, { headers }).then(function (res) {
             return res.data
           }).then((orderData) => {
-            // Three cases to handle:
-            //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-            //   (2) Other non-recoverable errors -> Show a failure message
-            //   (3) Successful transaction -> Show confirmation or thank you
-
-            // This example reads a v2/checkout/orders capture response, propagated from the server
-            // You could use a different API or structure for your 'orderData'
             const errorDetail = Array.isArray(orderData.details) && orderData.details[0]
 
             if (errorDetail && errorDetail.issue === 'INSTRUMENT_DECLINED') {
@@ -83,15 +76,10 @@ export default {
               return
             }
 
-            // Successful capture! For demo purposes:
+            // Successful capture!
             const transaction = orderData.purchase_units[0].payments.captures[0]
             self.success = true
             self.transaction = transaction.id
-            // Replace the above to show a success message within this page, e.g.
-            // const element = document.getElementById('paypal-button-container');
-            // element.innerHTML = '';
-            // element.innerHTML = '<h3>Thank you for your payment!</h3>';
-            // Or go to another URL:  actions.redirect('thank_you.html');
           }).catch(() => {
             self.showError = true
             setTimeout(() => {
@@ -122,8 +110,8 @@ export default {
             <div class="paid">
             <p class="py-3"><span class="pay">Your order</span> <strong class="pal">is confirmed!</strong></p>
           </div>
-          <div class="paid-orders">
-            <router-link to="/profile"><p class="py-3">My orders</p></router-link>
+          <div class="paid-orders p-3">
+            <router-link to="/profile"><strong>My orders</strong></router-link>
           </div>
         </div>
 
@@ -140,9 +128,7 @@ export default {
     background-size: contain;
     background-blend-mode: multiply;
   }
-  button,a{
-    border:1px solid #F7E6C4;
-  }
+
 .paid{
   background: #ffc439;
   border-radius: 4px;
@@ -150,9 +136,12 @@ export default {
 }
 
 .paid-orders{
-  border-radius: 4px;
   background-color: #2C2E2F;
   color:#fff;
+  border-radius: 2px;
+}
+.paid-orders a {
+  color:#fff !important;
 }
 .pay {
     color:#00457c;

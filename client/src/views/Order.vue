@@ -75,7 +75,7 @@ export default {
       const starShare = 80 / 5
       this.starWidth = starShare * stars
       this.usersRating = stars
-      this.postReview()
+      // this.postReview()
     },
     async fetchListings() {
       try {
@@ -232,7 +232,7 @@ export default {
       <b-col cols="12" md="4" class="p-5 mt-2">
         <div class="border p-3">
             <h1 class="font-weight-bold"> {{listing.name}} </h1>
-            <p class=""> By {{listing.author}} <br>Sold by <span class="seller font-weight-bold" >{{order.seller}} ⭐{{sellerRating}}</span></p>
+            <p class=""> By {{listing.author}} <br>Sold by <span class="seller font-weight-bold" >{{order.seller}} ⭐{{rating}}</span></p>
           <p class="text-left mb-0"><strong>Description</strong></p>
           <p class="text-left">{{ listing.description }}</p>
 
@@ -261,11 +261,8 @@ export default {
           <span class="text-left">
             <textarea :disabled="disallowReview" v-model="reviewDescription"></textarea>
             <div class="star-rating">
-                <span class="starRatingGrey">
-                  <span v-for="(index) in 5" :key="index" @click="updateStar(index)">⭐</span>
-                </span><span :style="'width:' + this.starWidth + 'px'" class="starRating">
-                  <span v-for="(index) in 5" :key="index" @click="updateStar(index)">⭐</span>
-                </span>
+              <span :class="usersRating>=index? 'fa fa-star checked' : 'fa fa-star' " v-for="(index) in 5" :key="index" @click="updateStar(index)"></span>
+
               </div>
               <p class="red" v-if="addReviewError">{{reviewErrorMessage}}</p>
             </span>
@@ -285,6 +282,16 @@ export default {
 <style scoped>
 textarea {
   max-height: 80px;
+    background-color: #50604c21;
+    border: none;
+    border-radius: 0px;
+  width:100%;
+}
+.fa:hover {
+  cursor: pointer;
+}
+.checked {
+  color:orange;
 }
 
 .red {

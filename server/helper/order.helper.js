@@ -35,7 +35,7 @@ async function findSellerListing(req,res,seller){
 
 
 
-async function capturePayment(req,response){
+async function capturePayment(req,response,client){
     if (!req.body.simulate) {
         request = new paypal.orders.OrdersCaptureRequest(req.body.paypalOrderId);
         request.requestBody({});

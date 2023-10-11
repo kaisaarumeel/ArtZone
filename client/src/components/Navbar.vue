@@ -15,10 +15,11 @@
             <router-link to="/discover">
             <button size="sm" class="discover-btn" :class="{ 'active': currentRoute === '/discover' }">Discover</button>
             </router-link>
-            <button size="sm" class="about-us-btn" @click="navigateToAboutUs()" >About us</button>
             <router-link to="/add-listing">
             <button size="sm" class="sell-btn" :class="{ 'active': currentRoute === '/add-listing' }" >Sell your artwork</button>
             </router-link>
+            <button size="sm" class="about-us-btn" @click="navigateToAboutUs()" >About us</button>
+
     </div>
   <b-navbar-nav class="ml-auto">
 

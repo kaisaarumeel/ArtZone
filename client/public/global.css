@@ -1,4 +1,5 @@
-html,body{
+html,
+body {
 
     font-family: 'Inter', sans-serif;
     background-color: #F7E6C4;
@@ -6,73 +7,91 @@ html,body{
     background-repeat: repeat;
     background-size: contain;
     background-blend-mode: multiply;
-    color:#606C5D;
+    color: #606C5D;
 }
-.reviews .modal-footer { display: none; }
+
+.reviews .modal-footer {
+    display: none;
+}
+
 .reviews .modal-content {
     background-color: #606C5D;
     border-radius: 0px;
     border-width: 0px;
-    color:#F7E6C4;
+    color: #F7E6C4;
 }
-.reviews .modal-header{
+
+.reviews .modal-header {
     background-color: transparent;
     border-radius: 0px;
     border-width: 0px;
-    color:#F7E6C4;
-    position:absolute;
-    width:100%;
+    color: #F7E6C4;
+    position: absolute;
+    width: 100%;
     z-index: 1;
 }
 
 .pay {
-    color:#00457c
+    color: #00457c
 }
-.pal{
- color:#0079C1
+
+.pal {
+    color: #0079C1
 }
 
 
 .reviews .modal-header .close {
-    color:#F7E6C4;
+    color: #F7E6C4;
     margin-left: 90%;
     font-size: 1.5rem;
     font-weight: 100;
     line-height: 1;
     text-shadow: unset;
-    opacity: 1; 
+    opacity: 1;
 }
 
-.btn-primary{
+.btn-primary {
     background-color: #606C5D;
     border-radius: 0px;
-    border-width:1px;
-    border-color:#606C5D;
-    color:#F7E6C4;
+    border-width: 1px;
+    border-color: #606C5D;
+    color: #F7E6C4;
     font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+
 }
-.btn-primary:hover{
-    border:1px solid #606C5D;
+
+.btn-primary:hover {
+    border: 1px solid #606C5D;
     background-color: transparent;
-    color:#606C5D;
+    color: #606C5D;
 }
-.btn-primary:focus, .btn-primary.focus {
-    border:1px solid #606C5D;
+
+.btn-primary:focus,
+.btn-primary.focus {
+    border: 1px solid #606C5D;
     background-color: transparent;
-    color:#606C5D;
+    color: #606C5D;
     box-shadow: unset;
 }
+
 .btn-primary:focus-visible {
     outline: unset;
 }
-.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show>.btn-primary.dropdown-toggle {
     background-color: #606C5D;
     border-radius: 0px;
-    border-width:1px;
-    border-color:#606C5D;
-    color:#F7E6C4;
+    border-width: 1px;
+    border-color: #606C5D;
+    color: #F7E6C4;
     font-weight: 600;
 }
-.btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus, .show > .btn-primary.dropdown-toggle:focus {
+
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.btn-primary:not(:disabled):not(.disabled).active:focus,
+.show>.btn-primary.dropdown-toggle:focus {
     box-shadow: unset;
 }

@@ -8,8 +8,6 @@ const mongoose = require("mongoose");
 const { randomUUID } = require("crypto");
 const methodOverride = require('method-override')
 
-//instances of the schema. Pay attention that the methods that are used to query and save instances
-//work asynchronously.
 const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/art-exchange';
 const UserModel =require("./models/user")
 // Connect to MongoDB

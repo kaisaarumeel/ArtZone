@@ -49,10 +49,11 @@ router.post("/users/register", async (req, res) => {
 
     try {
         await user.validate()
+        await saveNewUser(req,res,user)
+
     } catch (err) {
         return res.sendStatus(400);
     }
-    await saveNewUser(req,res,user)
 });
 
 router.get("/users/:id", async (req, res) => {

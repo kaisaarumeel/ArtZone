@@ -296,8 +296,6 @@ export default {
           return this.totallyDifferentObjects(obj1[key], obj2[key])
         } else {
           if (obj1[key] === obj2[key]) {
-            console.log(obj1[key])
-            console.log(obj2[key])
             return false
           }
         }

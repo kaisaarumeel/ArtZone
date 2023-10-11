@@ -266,7 +266,7 @@ export default {
             </b-col>
             <b-col class="mt-2" cols="12" md="6">
                 <h4> Listings </h4>
-                <button primary @click="deleteAllListings()" class="float-left mb-2">Delete Listings</button>
+                <button primary @click="deleteAllListings()" class="btn btn-primary float-left mb-2">Delete Listings</button>
                 <label class="float-left pl-2">
                   {{deleteMessage}}
                 </label>

@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
             }
         };
         //Capture paypal payment
-        response=await capturePayment(req,response);
+        response=await capturePayment(req,response,client);
         
         //Mark listing as sold
         sellerListing.sold = true;
