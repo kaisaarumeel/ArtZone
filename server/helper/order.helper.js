@@ -127,16 +127,11 @@ async function markOrderAsReceived(order,req,res,key,user) {
         sellerOrder[key] = req.body[key]
 
         seller.listings = seller.listings.filter(listing => listing._id !== sellerListing._id);
+        seller.orders = seller.orders.filter(order => order._id !== sellerOrder._id);
+        user.orders = user.orders.filter(userOrder => userOrder._id !== order._id);
         await seller.save();
-
-        //removing the listing from the seller's listings and adding it to the buyer's listings
-        await UserModel.findOneAndUpdate({ userEmail: req.params.email }, { $push: { listings: sellerListing } }, { new: true });
-
-
         await user.save();
-
         return res.sendStatus(200);
-
 
     } else {
         return res.status(403).json({ "message": "You need to wait for your order to be shipped" });

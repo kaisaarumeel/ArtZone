@@ -158,7 +158,9 @@ export default {
           }
         })
         if (response.status === 200) {
+          if (this.isShipped === true) this.isReceived = true
           this.successMsg = 'Changes saved successfully'
+          if (this.isShipped && this.isReceived) return this.$router.push('/profile')
           await this.getOrder()
         }
       } catch (err) {
@@ -193,6 +195,10 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+    showReceivedModal() {
+      if (this.isShipped === false) return this.updateOrder()
+      this.$refs.receivedModal.show()
     }
   },
   async mounted() {
@@ -217,7 +223,10 @@ export default {
   <div>
     <b-modal id="modal-1" modal-class="reviews w-100 p-5" hide-backdrop>
     <Reviews :reviews="reviews" :seller="order.seller"></Reviews>
-  </b-modal>
+    </b-modal>
+    <b-modal @ok="updateOrder()" ok-only ref="receivedModal" title="Information!">
+      <p>Note that when you mark an order as received, it will be deleted from the database as you ensure us that you have received it</p>
+    </b-modal>
     <b-row class="pl-5">
       <b-col cols="12">
       </b-col>
@@ -242,14 +251,14 @@ export default {
           <p class="text-left mb-0"><strong>Status</strong></p>
           <p class="text-left">
             <span v-if="isShipped && isReceived"> Shipped and received </span>
-              <span v-if="isShipped"> Shipped </span>
+              <span v-if="isShipped && !isReceived"> Shipped </span>
               <span v-if="!isShipped"> Not Shipped yet </span>
 
           </p>
           <p class="text-left mb-0"><strong>Delivery Status</strong></p>
 
           <p class="text-left">
-              <a v-if="!isShipped || !isReceived" class="updateDelivery" @click="updateOrder()"> Mark as {{ orderUpdateText }}
+              <a v-if="!isShipped || !isReceived" class="updateDelivery" @click="showReceivedModal()"> Mark as {{ orderUpdateText }}
               </a>
           </p>
 
