@@ -253,6 +253,7 @@ export default {
               </a>
           </p>
 
+        <div v-if="!this.isSeller" >
           <p class="text-left mb-0">
             <strong v-if="!disallowReview">Add Review</strong>
             <strong v-else>Review</strong>
@@ -268,6 +269,7 @@ export default {
               </div>
               <p class="red" v-if="addReviewError">{{reviewErrorMessage}}</p>
             </span>
+        </div>
 
           <b-row cols="1">
             <b-col class="pb-5 text-center">
