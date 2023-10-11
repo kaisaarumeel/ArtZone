@@ -1,119 +1,75 @@
 const mongoose = require("mongoose");
 const express = require("express");
-const router = express.Router({"mergeParams": true});
+const router = express.Router({ "mergeParams": true });
 const OrderModel = require("../models/orders.js");
 const UserModel = require("../models/user.js");
 const { createHash, randomUUID } = require('crypto');
 const paypal = require('@paypal/checkout-server-sdk');
 const { Console } = require("console");
 
-const pp_client="AQAquHqyXLu-wDbXuWcL4hEKe-ay87Vco719EUZLpufXR1ouqoGkNCId9ZFAWM7Xef3H_UJ0vpZh5_hF";
-const pp_secret="EL03GoWvTdp-eVBu6l_OWEVe2ay083mqOqMvgk-dsBAQ2gA2niRvshNzDbZT9zx7m7Xj0etG0sg2a_xt";
+const pp_client = "AQAquHqyXLu-wDbXuWcL4hEKe-ay87Vco719EUZLpufXR1ouqoGkNCId9ZFAWM7Xef3H_UJ0vpZh5_hF";
+const pp_secret = "EL03GoWvTdp-eVBu6l_OWEVe2ay083mqOqMvgk-dsBAQ2gA2niRvshNzDbZT9zx7m7Xj0etG0sg2a_xt";
 const env = new paypal.core.SandboxEnvironment(pp_client, pp_secret);
 const client = new paypal.core.PayPalHttpClient(env);
 
-//posting an order on the database the email in the url is the buyer
+const { validateSellerEmail,
+        getUser,
+        getBuyerOrders,
+        simulatePaypalCaptureRequest,
+        makeHash,addOrder, 
+        markOrderAsShipped, 
+        markOrderAsReceived,
+    findSellerListing } = require("../helper/order.helper.js")
+
+
 router.post("/", async (req, res) => {
 
     try {
 
-        const user = await UserModel.findOne({ userEmail: req.params.email });
-        if (!user) {
-           res.status(404).json({"message": "User was not found."});
-           return;
-        }
-
-        const sellerEmail = String(req.body.seller);
-        //we use regx here to confirm that the email is of the right format.
-        if (!sellerEmail.match(/.*@.*/)){
-            res.status(400).json({ "message": "The provided seller information is not an email. you need to provide the seller's email"});
-            return;
-        }
-
-        const seller = await UserModel.findOne({ userEmail: sellerEmail });
+        //Finding user (buyer)
+        const buyer = await getUser(req,res)
+        const sellerEmail = await validateSellerEmail(req,res)
+        //Finding seller
+        if (sellerEmail === buyer.userEmail) return res.status(400).json({ "message": "You cannot buy your own art." })
+        const seller = await UserModel.findOne({ userEmail: req.body.seller });
         if (!seller) {
-            res.status(404).json({"message": "The given seller does not exist."});
+            res.status(404).json({ "message": "User was not found." });
             return;
         }
 
-        let sellerListing = seller.listings.find(listing => listing.id === req.body.listing);
-        if (!sellerListing) {
-            res.status(400).json({"message": "The seller does not posses the listing you want to order"});
-            return;
-        }
+        //Finding the listing of the seller
+        const sellerListing=await findSellerListing(req,res,seller)
+        const buyerOrders=await getBuyerOrders(req,res,buyer)
+        
 
-        if (seller.userEmail === user.userEmail) {
-            res.status(400).json({"message": "You cannot buy your own art."})
-            return;
-        }
-
-        const userOrders = user.orders;
-        if (userOrders) {
-            //user cannot the same listing from the seller.
-            const sameOrder = userOrders.find(order =>  order.listing === req.body.listing && order.seller === req.body.seller);
-            if (sameOrder) {
-                res.status(403).json({"message": "You have already ordered the following listing."});
-                return;
-            }
-        } 
-        let response={
-            "result":{
-                "id":"0"
+        let response = {
+            "result": {
+                "id": "0"
             }
         };
-        if(!req.body.simulate){
-            request = new paypal.orders.OrdersCaptureRequest(req.body.paypalOrderId);
-            request.requestBody({});
-            // Call API with your client and get a response for your call
-            response = await client.execute(request);
-        }
+        await simulatePaypalCaptureRequest(req);
+        
 
-        sellerListing.sold=true;
-        let msg=Date.now().toString()+req.body.seller+req.params.email+req.body.listing+randomUUID();
-        let hash=createHash('sha256').update(msg).digest('hex'); 
-        console.log(response)
-        const paypalOrderId=response.result.id;
-        seller.orders.push(new OrderModel.model({
-            seller: req.body.seller,
-            buyer:req.params.email,
-            listing: req.body.listing,
-            hash:hash,
-            isReceived:false,
-            isShipped:false,
-            paypalOrderId:paypalOrderId
-        }));
-        user.orders.push(new OrderModel.model({
-            seller: req.body.seller,
-            buyer:req.params.email,
-            listing: req.body.listing,
-            hash:hash,
-            isReceived:false,
-            isShipped:false,
-            paypalOrderId:paypalOrderId
-        }));
-
+        sellerListing.sold = true;
+        let hash=await makeHash(req);
+        const paypalOrderId = response.result.id;
+        await addOrder(seller,req,hash,paypalOrderId)
+        await addOrder(buyer,req,hash,paypalOrderId)
         seller.save();
-        user.save();
+        buyer.save();
 
         return res.status(201).json(response.result);
 
-    } catch(err) {
+    } catch (err) {
         res.sendStatus(500);
         console.log(err)
     }
-    
+
 });
 
 router.get("/", async (req, res) => {
-
-    try{
-
-        const user = await UserModel.findOne({userEmail: req.params.email});
-        if (!user) {
-            res.status(404).json({"message": "User was not found."});
-            return;
-        }
-
+    try {
+        const user = await getUser(req,res)
         if (!user.orders || user.orders.length == 0) {
             res.status(200).json({ "message": "You have no orders on your orders list" });
             return;
@@ -122,216 +78,99 @@ router.get("/", async (req, res) => {
         const links = new Array();
         for (let key of user.orders) {
             links.push({
-               rel: "get specific order",
-               method: "GET",
-               href: `/users/${user.userEmail}/orders/${key._id}`
+                rel: "get specific order",
+                method: "GET",
+                href: `/users/${user.userEmail}/orders/${key._id}`
             });
         }
 
-        res.status(200).json({orders: user.orders, links: links});
-
-    } catch(err) {
-        res.sendStatus(500)
+        return res.status(200).json({ orders: user.orders, links: links });
+    } catch (err) {
+        return res.sendStatus(500)
         console.log(err);
     }
-
 });
 
-router.delete("/:id", async (req,res)=>{
-    if(!req.auth.isAdmin) return res.sendStatus(403);
-    try{
+router.delete("/:id", async (req, res) => {
+    if (!req.auth.isAdmin) return res.sendStatus(403);
+    try {
         const orderID = req.params.id;
         const userEmail = req.params.email;
-        
-            try{
-                const result=await UserModel.findOneAndUpdate({userEmail:userEmail},{$pull:{orders:{_id:orderID}}});
-                if (!result) {
-                    return res.status(404).json({ message: 'Listing not found' });
-                }
-    
+        try {
+            const result = await UserModel.findOneAndUpdate({ userEmail: userEmail }, { $pull: { orders: { _id: orderID } } });
+            if (!result) {
+                return res.status(404).json({ message: 'Listing not found' });
+            }
             return res.sendStatus(204);
-            }catch(err){
-                console.log(err);
-                return res.sendStatus(500);
-            } 
-        } catch(error) {
+        } catch (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+    } catch (error) {
         console.log(error);
         return res.sendStatus(500);
-        }
+    }
 })
 
 router.patch("/:id", async (req, res) => {
-
-   try {
-
-        const user = await UserModel.findOne({ userEmail: req.params.email });
-        if (!user) {
-            res.status(404).json({"message": "User was not found."});
-            return;
-        }  
-
+    try {
+        const user = await getUser(req,res)
         let order = user.orders.find(order => order._id == req.params.id);
         if (!order) {
-            res.status(404).json({"message": "Order was not found."});
+            res.status(404).json({ "message": "Order was not found." });
             return;
         }
-
-        for(let key in req.body){
-            if (order.seller === user.userEmail && key === 'isShipped') {
-
-                if (order.isReceived === true) {
-                    return res.status(403).json({"message": "You cannot change the shipping status of an order that is received by the buyer"});
-
-                } else {
-
-                    const buyer = await UserModel.findOne({ userEmail: req.body.buyer });
-                    if (!buyer) {
-                        res.status(404).json({"message": "Buyer was not found."});
-                        return;
-                    }
-
-                    order[key] = req.body[key];
-                    try{
-                        const error = await order.validate()
-                    } catch(err){
-                        return res.status(400).json({"message": "Order validation failed"});
-                    }
-
-                    let buyerOrder = buyer.orders.find(buyerOder => buyerOder.hash === order.hash);
-                    if (!buyerOrder) {
-                        res.status(404).json({"message": "Buyer order was not found."});
-                        return;
-                    }
-                    buyerOrder[key] = req.body[key]
-
-                    await user.save();
-                    await  buyer.save();
-                    res.sendStatus(200);
-                    return
-
-                }
-            } else if (order.buyer === user.userEmail && key === 'isReceived') {
-
-                if (order.isShipped === true) {
-                    
-                    const seller = await UserModel.findOne({ userEmail: req.body.seller });
-                    if (!seller) {
-                        res.status(404).json({"message": "Seller was not found."});
-                        return;
-                    }
-
-                    let sellerListing = seller.listings.find(listing => listing.id == order.listing);
-                    if (!sellerListing) {
-                        res.status(404).json({"message": "Seller Listing was not found."});
-                        return;
-                    } 
-
-                    order[key] = req.body[key];
-                    try{
-                        const error = await order.validate()
-                    } catch(err){
-                        return res.status(400).json({"message": "Order validation failed"});
-                    }
-
-                    let sellerOrder = seller.orders.find(sellerOrder => sellerOrder.hash === order.hash);
-                    if (!sellerOrder) {
-                        res.status(404).json({"message": "Seller order was not found."});
-                        return;
-                    }
-                    sellerOrder[key] = req.body[key]
-
-                    seller.listings = seller.listings.filter(listing => listing._id !== sellerListing._id);
-                    await seller.save();
-
-                    //removing the listing from the seller's listings and adding it to the buyer's listings
-                    await UserModel.findOneAndUpdate({userEmail:req.params.email},{$push:{listings:sellerListing}},{new:true});
-
-
-                    await user.save();
-
-                    return res.sendStatus(200);
-                    
-
-                } else {
-                    return res.status(403).json({"message": "You need to wait for your order to be shipped"});
-                }
+        for (let key in req.body) {
+            if (order.seller === user.userEmail && key === 'isShipped') { //If user is attempting to ship an order
+                await markOrderAsShipped(order,req,res,key,user)
+            } else if (order.buyer === user.userEmail && key === 'isReceived') { //If user is attempting to mark order as received
+                await markOrderAsReceived(order,req,res,key,user)
             } else {
                 break;
             }
         }
-
-    } catch(err) {
+    } catch (err) {
         console.log(err);
-       return res.sendStatus(500);
+        return res.sendStatus(500);
     }
-
 });
 
 router.get("/:id", async (req, res) => {
-
     try {
-
-        const user = await UserModel.findOne({ userEmail: req.params.email });
-        if (!user) {
-            res.status(404).json({"message": "User was not found."});
-            return;
-        }
+        const user = await getUser(req,res)
+        if (!user.orders 
+            || user.orders.length == 0) return res.status(200).json({ "message": "You have no orders on your orders list" });
         
-        if (!user.orders || user.orders.length == 0) {
-            res.status(200).json({ "message": "You have no orders on your orders list" });
-            return;
-        }
+            const order = user.orders.find(order => order._id == req.params.id);
+        if (!order) return res.status(404).json({ "message": "Order was not found." }); 
 
-        const order = user.orders.find(order => order._id == req.params.id);
-        if (!order) {
-            res.status(404).json({"message": "Order was not found."});
-            return;
-        }
-        
-        res.status(200).json(order);
+        return res.status(200).json(order);
 
-    } catch(err) {
-        res.sendStatus(404);
+    } catch (err) {
+        return res.sendStatus(404);
         console.log(err);
     }
 
 });
 
 router.get("/:id/seller", async (req, res) => {
-    
     try {
-
-        const user = await UserModel.findOne({ userEmail: req.params.email });
-        if (!user) {
-            res.status(404).json({"message": "User was not found."});
-            return;
-        }
-        
-        if (!user.orders || user.orders.length == 0) {
-            res.status(200).json({ "message": "You have no orders on your orders list" });
-            return;
-        }
+        const user = await getUser(req,res)
+        if (!user.orders || user.orders.length == 0) return res.status(200).json({ "message": "You have no orders on your orders list" });
 
         const order = user.orders.find(order => order._id == req.params.id);
-        if (!order) {
-            res.status(404).json({"message": "Order was not found."});
-            return;
-        }
+        if (!order) return res.status(404).json({ "message": "Order was not found." });
 
         const sellerEmail = order.seller;
         const seller = await UserModel.findOne({ userEmail: sellerEmail }).select({ name: 1, listings: 1, userEmail: 1, _id: 0 });
-        if (!seller) {
-            res.status(404).json({"message": "the given seller does not exist."});
-            return;
-        }
+        if (!seller) return res.status(404).json({ "message": "the given seller does not exist." });
 
-        res.status(200).json(seller);
+        return res.status(200).json(seller);
 
-    } catch(err) {
-        res.sendStatus(500);
-        console.log(err.message);
+    } catch (err) {
+        console.log(err);
+        return res.sendStatus(500);
     }
-
 });
 
 module.exports = router;
