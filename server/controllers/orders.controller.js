@@ -19,23 +19,20 @@ const { validateSellerEmail,
         makeHash,addOrder, 
         markOrderAsShipped, 
         markOrderAsReceived,
-    findSellerListing } = require("../helper/order.helper.js")
-
+    findSellerListing,
+    getUserByEmail} = require("../helper/order.helper.js")
 
 router.post("/", async (req, res) => {
 
     try {
 
         //Finding user (buyer)
-        const buyer = await getUser(req,res)
+        const buyer = await getUserByEmail(req.params.email,res)
+
         const sellerEmail = await validateSellerEmail(req,res)
         //Finding seller
         if (sellerEmail === buyer.userEmail) return res.status(400).json({ "message": "You cannot buy your own art." })
-        const seller = await UserModel.findOne({ userEmail: req.body.seller });
-        if (!seller) {
-            res.status(404).json({ "message": "User was not found." });
-            return;
-        }
+        const seller = await getUserByEmail(req.body.seller,res)
 
         //Finding the listing of the seller
         const sellerListing=await findSellerListing(req,res,seller)
@@ -69,7 +66,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        const user = await getUser(req,res)
+        const user =await getUserByEmail(req.params.email,res)
         if (!user.orders || user.orders.length == 0) {
             res.status(200).json({ "message": "You have no orders on your orders list" });
             return;
@@ -114,7 +111,7 @@ router.delete("/:id", async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
     try {
-        const user = await getUser(req,res)
+        const user = await getUserByEmail(req.params.email,res)
         let order = user.orders.find(order => order._id == req.params.id);
         if (!order) {
             res.status(404).json({ "message": "Order was not found." });
@@ -137,7 +134,7 @@ router.patch("/:id", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     try {
-        const user = await getUser(req,res)
+        const user = await getUserByEmail(req.params.email,res)
         if (!user.orders 
             || user.orders.length == 0) return res.status(200).json({ "message": "You have no orders on your orders list" });
         
@@ -155,14 +152,14 @@ router.get("/:id", async (req, res) => {
 
 router.get("/:id/seller", async (req, res) => {
     try {
-        const user = await getUser(req,res)
+        const user = await getUserByEmail(req.params.email,res)
         if (!user.orders || user.orders.length == 0) return res.status(200).json({ "message": "You have no orders on your orders list" });
 
         const order = user.orders.find(order => order._id == req.params.id);
         if (!order) return res.status(404).json({ "message": "Order was not found." });
 
         const sellerEmail = order.seller;
-        const seller = await UserModel.findOne({ userEmail: sellerEmail }).select({ name: 1, listings: 1, userEmail: 1, _id: 0 });
+        const seller = await getUserByEmail(sellerEmail,res).select({ name: 1, listings: 1, userEmail: 1, _id: 0 });
         if (!seller) return res.status(404).json({ "message": "the given seller does not exist." });
 
         return res.status(200).json(seller);

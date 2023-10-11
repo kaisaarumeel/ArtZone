@@ -5,7 +5,14 @@ const paypal = require('@paypal/checkout-server-sdk');
 
 
 
-
+async function getUserByEmail(email,res){
+    const user = await UserModel.findOne({ userEmail: email });
+    if (!user) {
+        res.status(404).json({ "message": "User was not found." });
+        return;
+    }
+    return user;
+}
 
 async function getUser(req,res){
     const user = await UserModel.findOne({ userEmail: req.params.email });
@@ -156,4 +163,4 @@ async function markOrderAsReceived(order,req,res,key,user) {
     }
 }
 
-module.exports={findSellerListing, markOrderAsReceived,markOrderAsShipped, getUser, validateSellerEmail,getBuyerOrders,simulatePaypalCaptureRequest,makeHash,addOrder}
+module.exports={getUserByEmail,findSellerListing, markOrderAsReceived,markOrderAsShipped, getUser, validateSellerEmail,getBuyerOrders,simulatePaypalCaptureRequest,makeHash,addOrder}
