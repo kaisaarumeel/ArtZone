@@ -23,16 +23,6 @@ async function getUser(req,res){
     return user;
 }
 
-async function validateSellerEmail(req,res){
-    const sellerEmail = String(req.body.seller);
-    //we use regx here to confirm that the email is of the right format.
-    if (!sellerEmail.match(/.*@.*/)) {
-        res.status(400).json({ "message": "The provided seller information is not an email. You need to provide the seller's email" });
-        return;
-    }
-    return sellerEmail;
-}
-
 
 async function findSellerListing(req,res,seller){
     let sellerListing = seller.listings.find(listing => listing.id === req.body.listing);
@@ -43,25 +33,15 @@ async function findSellerListing(req,res,seller){
     return sellerListing;
 }
 
-async function getBuyerOrders(req,res,buyer){
-    const buyerOrders = buyer.orders;
-    if (buyerOrders) {
-        //user cannot the same listing from the seller.
-        const sameOrder = buyerOrders.find(order => order.listing === req.body.listing && order.seller === req.body.seller);
-        if (sameOrder) {
-            res.status(403).json({ "message": "You have already ordered the following listing." });
-            return;
-        }
-    }
-    return buyerOrders
-}
 
-async function simulatePaypalCaptureRequest(req){
+
+async function capturePayment(req,response){
     if (!req.body.simulate) {
         request = new paypal.orders.OrdersCaptureRequest(req.body.paypalOrderId);
         request.requestBody({});
         response = await client.execute(request);
     }
+    return response
 }
 
 async function addOrder(user,req,hash,paypalOrderId){
@@ -163,4 +143,4 @@ async function markOrderAsReceived(order,req,res,key,user) {
     }
 }
 
-module.exports={getUserByEmail,findSellerListing, markOrderAsReceived,markOrderAsShipped, getUser, validateSellerEmail,getBuyerOrders,simulatePaypalCaptureRequest,makeHash,addOrder}
+module.exports={getUserByEmail,findSellerListing, markOrderAsReceived,markOrderAsShipped, getUser,capturePayment,makeHash,addOrder}

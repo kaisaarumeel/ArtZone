@@ -3,14 +3,14 @@ const UserSchema = require("../models/user"); //this is the schema class. Use th
 const { randomUUID } = require("crypto");
 const express = require("express");
 const router = express.Router({ mergeParams: true });
-const session = require("../middleware/session")
+const session = require("../middleware/session");
+const { getUserByEmail } = require("../helper/general.helper");
 
 router.get("/", async (req, res) => {
     try {
         const id = req.params.id;
         try {
-            const user = await UserSchema.collection.findOne({ userEmail: id });
-            if (!user) return res.sendStatus(404);
+            const user = await getUserByEmail(id,res)
             if (!req.auth.auth) return res.sendStatus(403);
             if (req.auth.auth && req.auth.authEmail != id && !req.auth.isAdmin) return res.sendStatus(403);
             let sanitized_user = user;
@@ -54,7 +54,7 @@ router.put("/", async (req, res) => {
         try {
             if (!req.auth.auth) res.sendStatus(403);
             if (req.auth.auth && req.auth.authEmail != email && !req.auth.isAdmin) res.sendStatus(403);
-            let oldUser = await UserSchema.collection.findOne({ userEmail: email });
+            let oldUser = await getUserByEmail(email,res)
 
             const new_user = new UserSchema({
                 name: req.body.name,
@@ -67,6 +67,7 @@ router.put("/", async (req, res) => {
                 listings: oldUser.listings,
                 orders: oldUser.orders
             }, { _id: false });
+
             const error = await new_user.validate()
             if (error) {
                 console.log(error)

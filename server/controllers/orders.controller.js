@@ -12,15 +12,15 @@ const pp_secret = "EL03GoWvTdp-eVBu6l_OWEVe2ay083mqOqMvgk-dsBAQ2gA2niRvshNzDbZT9
 const env = new paypal.core.SandboxEnvironment(pp_client, pp_secret);
 const client = new paypal.core.PayPalHttpClient(env);
 
-const { validateSellerEmail,
+const {
         getUser,
-        getBuyerOrders,
-        simulatePaypalCaptureRequest,
+        capturePayment,
         makeHash,addOrder, 
         markOrderAsShipped, 
         markOrderAsReceived,
     findSellerListing,
-    getUserByEmail} = require("../helper/order.helper.js")
+    getUserByEmail} = require("../helper/order.helper.js");
+const { validateEmail } = require("../helper/general.helper.js");
 
 router.post("/", async (req, res) => {
 
@@ -28,35 +28,40 @@ router.post("/", async (req, res) => {
 
         //Finding user (buyer)
         const buyer = await getUserByEmail(req.params.email,res)
-
-        const sellerEmail = await validateSellerEmail(req,res)
+        const sellerEmail=req.body.seller;
+        //Ensure seller email is a valid email
+        await validateEmail(sellerEmail,res)
         //Finding seller
         if (sellerEmail === buyer.userEmail) return res.status(400).json({ "message": "You cannot buy your own art." })
         const seller = await getUserByEmail(req.body.seller,res)
 
         //Finding the listing of the seller
         const sellerListing=await findSellerListing(req,res,seller)
-        const buyerOrders=await getBuyerOrders(req,res,buyer)
-        
-
+        //Validating order
+        const sameOrder = buyer.orders.find(order => order.listing === req.body.listing && order.seller === req.body.seller);
+        if (sameOrder) return res.status(403).json({ "message": "You have already ordered the following listing." });
         let response = {
             "result": {
                 "id": "0"
             }
         };
-        await simulatePaypalCaptureRequest(req);
+        //Capture paypal payment
+        response=await capturePayment(req,response);
         
-
+        //Mark listing as sold
         sellerListing.sold = true;
+        //Generate a unique hash for this order
         let hash=await makeHash(req);
+
         const paypalOrderId = response.result.id;
+        
+        //Add the order to both the seller and buyer profile
         await addOrder(seller,req,hash,paypalOrderId)
         await addOrder(buyer,req,hash,paypalOrderId)
         seller.save();
         buyer.save();
 
         return res.status(201).json(response.result);
-
     } catch (err) {
         res.sendStatus(500);
         console.log(err)
@@ -66,12 +71,13 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        const user =await getUserByEmail(req.params.email,res)
+        const user = await getUserByEmail(req.params.email,res)
         if (!user.orders || user.orders.length == 0) {
             res.status(200).json({ "message": "You have no orders on your orders list" });
             return;
         }
 
+        //HATEOAS
         const links = new Array();
         for (let key of user.orders) {
             links.push({
@@ -83,8 +89,8 @@ router.get("/", async (req, res) => {
 
         return res.status(200).json({ orders: user.orders, links: links });
     } catch (err) {
-        return res.sendStatus(500)
         console.log(err);
+        return res.sendStatus(500)
     }
 });
 
@@ -159,7 +165,7 @@ router.get("/:id/seller", async (req, res) => {
         if (!order) return res.status(404).json({ "message": "Order was not found." });
 
         const sellerEmail = order.seller;
-        const seller = await getUserByEmail(sellerEmail,res).select({ name: 1, listings: 1, userEmail: 1, _id: 0 });
+        const seller = await UserModel.findOne({ userEmail: sellerEmail }).select({ name: 1, listings: 1, userEmail: 1, _id: 0 });
         if (!seller) return res.status(404).json({ "message": "the given seller does not exist." });
 
         return res.status(200).json(seller);

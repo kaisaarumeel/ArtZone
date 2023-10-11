@@ -6,6 +6,8 @@ const { Mongoose, default: mongoose } = require("mongoose");
 const Reviews = require("../models/reviews.js");
 const UserSchema = require("../models/user.js");
 const reviews = require("../models/reviews.js");
+const { getUserByEmail } = require("../helper/general.helper.js");
+const { validateReview } = require("../helper/reviews.helper.js");
 
 
 //POST /users/:email/reviews/ - Adds review to user profile
@@ -29,23 +31,8 @@ router.post("/", async function (req, res) {
         }
 
 
-        const result = await UserSchema.findOne({ userEmail: userEmail });
-        //,{$push:{reviews:newReview}
-        if (!result) return res.sendStatus(404);
-        let orderMatched = false;
-        for (let i = 0; i < result.orders.length; i++) {
-            if (result.orders[i].hash === order) {
-                orderMatched = true;
-            }
-        }
-        if (!orderMatched) return res.sendStatus(404);
-        let reviewExists = false;
-        for (let i = 0; i < result.reviews.length; i++) {
-            if (result.reviews[i].orderHash === order) {
-                reviewExists = true;
-            }
-        }
-        if (reviewExists) return res.sendStatus(403);
+        const result = await getUserByEmail(userEmail,res);
+        await validateReview(res,result,order)
         result.reviews.push(newReview)
         result.save();
         return res.sendStatus(201);
@@ -67,20 +54,12 @@ router.get("/", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await UserSchema.findOne({ userEmail: userEmail });
-
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-
+            user = await getUserByEmail(userEmail,res)
         } catch (error) {
             return res.status(500).send(err);;
         }
-
-
         const reviews = user.reviews;
         return res.status(200).json(reviews);
-
 
     } catch (error) {
         console.log(error);
@@ -97,7 +76,7 @@ router.get("/:id", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await UserSchema.findOne({ userEmail: userEmail });
+            user = await getUserByEmail(userEmail,res)
 
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });

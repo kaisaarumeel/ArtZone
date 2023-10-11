@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 const User = require('../models/user.js');
+const { shuffleArray } = require('../helper/randomListings.helper.js');
 
 // GET /random-listings - Gets 5 random listings from the database
 
@@ -19,7 +20,6 @@ router.get('/', async (req, res) => {
 
     // Shuffle the array of listings to randomize them
     shuffleArray(unsoldListings);
-
     // Get the first 5 listings (or fewer if there are fewer listings)
     const randomListings = unsoldListings.slice(0, 5);
 
@@ -30,11 +30,4 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Function to shuffle an array in-place (Fisher-Yates shuffle)
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
 module.exports = router;

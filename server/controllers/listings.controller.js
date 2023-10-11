@@ -5,6 +5,7 @@ const { Mongoose, default: mongoose } = require("mongoose");
 
 const Listings = require("../models/listings.js");
 const UserSchema = require("../models/user.js");
+const { getUserByEmail } = require("../helper/general.helper.js");
 
 
 
@@ -12,7 +13,6 @@ const UserSchema = require("../models/user.js");
 router.post("/", async function (req, res) {
 
     try {
-        console.log(req.auth)
         const userEmail = req.params.email;
         const listingName = req.body.name;
         const listingAuthor = req.body.author;
@@ -51,7 +51,6 @@ router.post("/", async function (req, res) {
 });
 
 //GET /users/:email/listings - Get my listings
-
 router.get("/", async function (req, res) {
 
     try {
@@ -59,21 +58,13 @@ router.get("/", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await UserSchema.findOne({ userEmail: userEmail });
-
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-
+            user  = await getUserByEmail(userEmail,res)
         } catch (error) {
             return res.status(500).send(err);;
         }
 
         const listings = user.listings;
-
         return res.status(200).json(listings);
-
-
     } catch (error) {
         console.log(error);
         return res.sendStatus(500);
@@ -89,12 +80,7 @@ router.get("/:id", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await UserSchema.findOne({ userEmail: userEmail });
-
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-
+            user  = await getUserByEmail(userEmail,res)
         } catch (error) {
             return res.status(500).send(err);;
         }
@@ -126,11 +112,8 @@ router.delete("/:id", async function (req, res) {
         const listingID = req.params.id;
         const userEmail = req.params.email;
 
-        const user = await UserSchema.findOne({ userEmail: req.params.email });
-        if (!user) {
-            res.status(404).json({ "message": "User was not found." });
-            return;
-        }
+        const user = await getUserByEmail(userEmail,res)
+
 
         let listing = user.listings.find(listing => listing.id == req.params.id);
         if (!listing) {
@@ -163,11 +146,8 @@ router.delete("/", async function (req, res) {
 
     try {
         const userEmail = req.params.email;
-        const user = await UserSchema.findOne({ userEmail: req.params.email });
-        if (!user) {
-            res.status(404).json({ "message": "User was not found." });
-            return;
-        }
+        const user = await getUserByEmail(userEmail,res)
+
         for (let i = 0; i < user.listings.length; i++) {
             if (user.listings[i].sold !== true) {
                 user.listings.splice(i, 1)
@@ -189,11 +169,19 @@ router.put("/:id", async function (req, res) {
         const userEmail = req.params.email;
         const listingID = req.params.id;
         try {
-
-            let put_data = {}
-            for (let key in req.body) {
-                put_data["listings.$." + key] = req.body[key];
+            let put_data = {
+                "listings.$.name":req.body.name,
+                "listings.$.author":req.body.author,
+                "listings.$.price":req.body.price,
+                "listings.$.picture":req.body.picture,
+                "listings.$.description":req.body.description,
             }
+            for (let key in put_data) {
+                if (put_data[key] === undefined) {
+                    return res.sendStatus(400);
+                }
+            }
+    
             let result = await UserSchema.findOneAndUpdate(
                 {
                     userEmail: userEmail,

@@ -2,7 +2,9 @@ const UserSchema = require("../models/user"); //this is the schema class. Use th
 const { randomUUID } = require("crypto");
 const express = require("express");
 const router = express.Router();
-const session = require("../middleware/session")
+const session = require("../middleware/session");
+const { getUserByEmail, validateEmail } = require("../helper/general.helper");
+const { generateSessionKey, saveNewUser } = require("../helper/registration.helper");
 
 
 
@@ -12,20 +14,12 @@ router.post("/users/login", async (req, res) => {
     const email = req.body.userEmail;
     const password = req.body.password;
     try {
-        const result = await UserSchema.findOne({ userEmail: email })
+        const result = await getUserByEmail(email,res)
         if (!result) {
             return res.sendStatus(404);
         } else {
             if (password == result.password) {
-                req.success = true;
-                const session_key = randomUUID(); //Generating new key
-                const expiry = parseInt(Date.now() / 1000) + 3600; //1h expiry
-                try {
-                    await UserSchema.findOneAndUpdate({ userEmail: email }, { session: { key: session_key, expires: expiry } });
-                    res.json({ "key": session_key, "expiry": expiry });
-                } catch (err) {
-                    return res.sendStatus(500);
-                }
+                await generateSessionKey(req,email,res);
             } else {
                 return res.sendStatus(400);
             }
@@ -38,6 +32,8 @@ router.post("/users/login", async (req, res) => {
 
 
 router.post("/users/register", async (req, res) => {
+    await validateEmail(req.body.userEmail,res)
+    if(req.body.address.country.length>2) return res.status(400).json({message:"Invalid country code"})
     const user = new UserSchema({
         name: req.body.name,
         dateOfBirth: req.body.dateOfBirth,
@@ -50,53 +46,20 @@ router.post("/users/register", async (req, res) => {
         orders: []
     });
 
-    if (!/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(user.userEmail)) {
-        console.log('Invalid email format');
-        return res.sendStatus(400);
-    }
+
     try {
         await user.validate()
     } catch (err) {
         return res.sendStatus(400);
     }
-
-    if (req.body.isAdmin) {
-        if (req.auth.isAdmin) {
-            try {
-                await user.save()
-                return res.sendStatus(201);
-            } catch (err) {
-                if (err.code == 11000) {
-                    return res.sendStatus(400);
-                } else {
-                    console.error(err)
-                    return res.sendStatus(500);
-                }
-            }
-        } else {
-            return res.sendStatus(403);
-        }
-    } else {
-        try {
-            await user.save()
-            return res.sendStatus(201);
-        } catch (err) {
-            if (err.code == 11000) {
-                return res.sendStatus(400);
-            } else {
-                console.error(err)
-                return res.sendStatus(500);
-            }
-        }
-    }
-
+    await saveNewUser(req,res,user)
 });
 
 router.get("/users/:id", async (req, res) => {
     try {
         const id = req.params.id;
         try {
-            const user = await UserSchema.collection.findOne({ userEmail: id });
+            const user = await getUserByEmail(id,res)
             let sanitized_user = user;
             delete sanitized_user["session"];
             delete sanitized_user["password"];

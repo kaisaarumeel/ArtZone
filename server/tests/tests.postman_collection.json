@@ -816,7 +816,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\":{\n        \"firstName\":\"Admin\",\n        \"lastName\":\"Admin\"\n    },\n    \"isAdmin\":true,\n    \"address\":{\n        \"country\":\"Sweden\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"boby@gmail.com\"\n}"
+									"raw": "{\n    \"name\":{\n        \"firstName\":\"Admin\",\n        \"lastName\":\"Admin\"\n    },\n    \"isAdmin\":true,\n    \"address\":{\n        \"country\":\"SE\",\n        \"street\":\"Bob street 1\",\n        \"zip\":\"12345\",\n        \"city\":\"Bobtown\"\n    },\n    \"dateOfBirth\":\"2022-08-31\",\n    \"password\":\"81b637d8fcd2c6da6359e6963113a1170de795e4b725b84d1e0b4cfd9ec58ce9\",\n    \"userEmail\":\"boby@gmail.com\"\n}"
 								},
 								"url": {
 									"raw": "http://localhost:3000/api/v1/users/register",
@@ -3008,6 +3008,11 @@
 									{
 										"key": "Content-Type",
 										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
 										"type": "text"
 									}
 								],
