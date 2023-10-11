@@ -2318,6 +2318,8 @@
 											"    const jsonData = pm.response.json();\r",
 											"    pm.expect(jsonData.orders[0].isReceived).to.eql(false);\r",
 											"    pm.collectionVariables.set(\"orderID\", jsonData.orders[0]._id);\r",
+											"        pm.collectionVariables.set(\"orderHash\", jsonData.orders[0].hash);\r",
+											"\r",
 											"});"
 										],
 										"type": "text/javascript"
@@ -2636,176 +2638,6 @@
 										"bob@gmail.com",
 										"orders",
 										"{{orderID}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Patch order status (buyer)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status check\", () => {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									},
-									{
-										"key": "X-Auth-Token",
-										"value": "{{xauthtoken}}",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"isReceived\": true,\r\n    \"seller\": \"bobylon@gmail.com\"\r\n}"
-								},
-								"url": {
-									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/orders/{{orderID}}",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"v1",
-										"users",
-										"bob@gmail.com",
-										"orders",
-										"{{orderID}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get the order and verify patch (buyer)",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status test\", () => {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Response message\", () => {\r",
-											"    const jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.isReceived).to.eql(true);\r",
-											"    pm.expect(jsonData.isShipped).to.eql(true);\r",
-											"    pm.expect(jsonData.buyer).to.eql(\"bob@gmail.com\")\r",
-											"    \r",
-											"    pm.globals.set(\"orderHash\", jsonData.hash);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									},
-									{
-										"key": "X-Auth-Token",
-										"value": "{{xauthtoken}}",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/orders/{{orderID}}",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"v1",
-										"users",
-										"bob@gmail.com",
-										"orders",
-										"{{orderID}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get an order's seller profile",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status test\", () => {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Seller profile test\", () => {\r",
-											"    const jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.userEmail).to.eql(\"bobylon@gmail.com\");\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									},
-									{
-										"key": "X-Auth-Token",
-										"value": "{{xauthtoken}}",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/orders/{{orderID}}/seller",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"v1",
-										"users",
-										"bob@gmail.com",
-										"orders",
-										"{{orderID}}",
-										"seller"
 									]
 								}
 							},
@@ -3239,6 +3071,168 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Mark order as finished",
+					"item": [
+						{
+							"name": "Patch order status (buyer)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status check\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"isReceived\": true,\r\n    \"seller\": \"bobylon@gmail.com\"\r\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/orders/{{orderID}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"bob@gmail.com",
+										"orders",
+										"{{orderID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get the order and verify patch (buyer)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status test\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/orders/{{orderID}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"bob@gmail.com",
+										"orders",
+										"{{orderID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get an order's seller profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status test\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{xauthtoken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/users/bob@gmail.com/orders/{{orderID}}/seller",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"bob@gmail.com",
+										"orders",
+										"{{orderID}}",
+										"seller"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
@@ -3280,6 +3274,10 @@
 		},
 		{
 			"key": "xauthtoken2",
+			"value": ""
+		},
+		{
+			"key": "orderHash",
 			"value": ""
 		}
 	]
