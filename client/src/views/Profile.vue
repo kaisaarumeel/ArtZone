@@ -258,8 +258,8 @@ export default {
   .listings, .orders{
     max-height: 35vh;
     overflow-y: scroll;
-    background-color: #FFF4F4;
-    border-color: #FFF4F4;
+    background-color: #50604c21;
+    border-color: #50604c21;
     mix-blend-mode: multiply;
   }
   .success{

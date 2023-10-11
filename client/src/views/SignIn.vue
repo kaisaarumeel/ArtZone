@@ -43,7 +43,7 @@ export default {
 </script>
 
 <template>
-    <div class="pl-5 pr-5 pb-5">
+    <div class="pl-5 pb-5">
         <b-row>
             <b-col cols="12" md="6">
                 <h4 class="text-center">
@@ -93,10 +93,13 @@ export default {
     color: red;
   }
   .input-field {
-    background: #FFF4F4;
+    background: #50604c21;
     color: #606C5D;
-    mix-blend-mode: multiply;
     border-radius: 0;
+  }
+  .input-field:focus {
+    background: #50604c21;
+    color: #606C5D;
   }
   .label {
       color: #606C5D;
