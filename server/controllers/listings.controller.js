@@ -69,7 +69,6 @@ router.get("/", async function(req, res){
             return res.status(500).send(err);;
         } 
 
-
     const listings = user.listings;
     
     return res.status(200).json(listings);
@@ -124,8 +123,22 @@ router.get("/:id", async function(req, res){
 router.delete("/:id", async function(req, res){
     
     try{
-    const listingID = req.params.id;
-    const userEmail = req.params.email;
+        const listingID = req.params.id;
+        const userEmail = req.params.email;
+
+        const user = await UserSchema.findOne({ userEmail: req.params.email });
+        if (!user) {
+            res.status(404).json({"message": "User was not found."});
+            return;
+        } 
+
+        let listing = user.listings.find(listing => listing.id == req.params.id);
+        if (!listing) {
+            res.status(404).json({"message": "Seller Listing was not found."});
+            return;
+        } 
+
+        if (listing.sold === true) return res.status(403).json({"message": "You cannot delete a listing that has been ordered."});
     
         try{
             const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{$pull:{listings:{_id:listingID}}});
@@ -149,11 +162,23 @@ router.delete("/:id", async function(req, res){
 router.delete("/", async function(req, res){
     
     try{
-    const userEmail = req.params.email;
-        const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{ $set: { listings: [] } });
-        if (!result) {
-            return res.sendStatus(404);
+        const userEmail = req.params.email;
+        const user = await UserSchema.findOne({ userEmail: req.params.email });
+        if (!user) {
+            res.status(404).json({"message": "User was not found."});
+            return;
+        } 
+        for (let i = 0; i < user.listings.length; i++) {
+            if (user.listings[i].sold !== true) {
+                user.listings.splice(i, 1)
+                i--;
+            }
         }
+        //const result=await UserSchema.findOneAndUpdate({userEmail:userEmail},{ $set: { listings: [] } });
+        //if (!result) {
+        //    return res.sendStatus(404);
+        //}
+        user.save()
         return res.sendStatus(204);
 
     } catch(error) {
