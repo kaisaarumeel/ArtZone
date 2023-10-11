@@ -1,11 +1,9 @@
 let express = require("express");
 //We use merge params to preserve req.params from the parent router.
 const router = express.Router({ mergeParams: true });
-const { Mongoose, default: mongoose } = require("mongoose");
 
 const Reviews = require("../models/reviews.js");
 const UserSchema = require("../models/user.js");
-const reviews = require("../models/reviews.js");
 const { getUserByEmail } = require("../helper/general.helper.js");
 const { validateReview } = require("../helper/reviews.helper.js");
 
@@ -30,13 +28,20 @@ router.post("/", async function (req, res) {
             return res.sendStatus(400);
         }
 
-
-        const result = await getUserByEmail(userEmail,res);
-        await validateReview(res,result,order)
-        result.reviews.push(newReview)
-        result.save();
-        return res.sendStatus(201);
-
+        let result;
+        try {
+            result = await getUserByEmail(userEmail, res);
+        } catch (err) {
+            return res.sendStatus(404)
+        }
+        try {
+            await validateReview(res, result, order)
+            result.reviews.push(newReview)
+            result.save();
+            return res.sendStatus(201);
+        } catch (err) {
+            return res.sendStatus(403);
+        }
 
 
     } catch (error) {
@@ -54,9 +59,9 @@ router.get("/", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await getUserByEmail(userEmail,res)
+            user = await getUserByEmail(userEmail, res)
         } catch (error) {
-            return res.status(500).send(err);;
+            return res.status(404).send(err);
         }
         const reviews = user.reviews;
         return res.status(200).json(reviews);
@@ -76,10 +81,10 @@ router.get("/:id", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await getUserByEmail(userEmail,res)
-
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
+            try {
+                user = await getUserByEmail(userEmail, res)
+            } catch (err) {
+                return res.sendStatus(404)
             }
 
         } catch (error) {

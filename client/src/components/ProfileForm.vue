@@ -290,6 +290,9 @@ export default {
     }
   },
   methods: {
+    /*
+    A method used to check if two objects are totally different. We do this recursively.
+    */
     async totallyDifferentObjects(obj1, obj2) {
       for (const key in obj1) {
         if (typeof obj1[key] === 'object') {
@@ -359,145 +362,104 @@ export default {
 
 <template>
   <div v-if="user" class="">
-      <b-row>
-        <b-col cols="6">
-          <label> First name </label>
-          <b-form-input
-          class="input"
-          id="firstName-input"
-          v-model="user.name.firstName"
-          type="text"
-          placeholder="Enter your first name"
-          ></b-form-input>
-        </b-col>
-        <b-col cols="6">
-          <label> Last name </label>
-          <b-form-input
-          class="input"
-          id="lastName-input"
-          v-model="user.name.lastName"
-          type="text"
-          placeholder="Enter your last name"
-          ></b-form-input>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="12">
-          <label> Date of birth </label>
-          <b-form-input
-          class="input"
-          id="birthDate-input"
-          v-model="user.dateOfBirth"
-          type="date"
-          placeholder="Enter your birth date"
-          required
-          :min="getMinDateOfBirth()"
-          :max="getMaxDateOfBirth()"
-          ></b-form-input>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="12">
-          <label> Email </label>
-          <b-form-input
-          class="input"
-          id="email-input"
-          v-model="user.userEmail"
-          type="email"
-          placeholder="bob@gmail.com"
-          required
-          ></b-form-input>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="12">
-          <label> Password </label>
-          <b-form-input
-          class="input"
-          id="password-input"
-          v-model="user.password"
-          type="password"
-          placeholder="Enter your password"
-          required
-          ></b-form-input>
-          <p v-if="passwordStrength === 'Weak'">Password must be at least 8 characters long and contain at least one number.</p>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="6">
-          <label> Street </label>
-          <b-form-input
-          class="input"
-          id="street-input"
-          v-model="user.address.street"
-          type="text"
-          placeholder="Enter your street name"
-          required
-          ></b-form-input>
-        </b-col>
-        <b-col cols="6">
-          <label> City </label>
-          <b-form-input
-          class="input"
-          id="city-input"
-          v-model="user.address.city"
-          type="text"
-          placeholder="Enter your city name"
-          required
-          ></b-form-input>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="6">
-          <label> ZIP </label>
-          <b-form-input
-          class="input"
-          id="zip-input"
-          v-model="user.address.zip"
-          type="number"
-          placeholder="75234"
-          min="0"
-          required
-          ></b-form-input>
-        </b-col>
-        <b-col cols="6">
-          <label> Country </label>
-          <b-form-select id="country-input" class="input" v-model="user.address.country" :options="countries" requred></b-form-select>
-        </b-col>
-      </b-row>
-      <b-row align-h="center">
-        <b-col cols="12 text-center">
-          <button class="mt-4 btn btn-primary" :disabled="passwordStrength === 'Weak'" @click="emitData()"><slot>Save</slot></button>
-        </b-col>
-      </b-row>
+    <b-row>
+      <b-col cols="6">
+        <label> First name </label>
+        <b-form-input class="input" id="firstName-input" v-model="user.name.firstName" type="text"
+          placeholder="Enter your first name"></b-form-input>
+      </b-col>
+      <b-col cols="6">
+        <label> Last name </label>
+        <b-form-input class="input" id="lastName-input" v-model="user.name.lastName" type="text"
+          placeholder="Enter your last name"></b-form-input>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols="12">
+        <label> Date of birth </label>
+        <b-form-input class="input" id="birthDate-input" v-model="user.dateOfBirth" type="date"
+          placeholder="Enter your birth date" required :min="getMinDateOfBirth()"
+          :max="getMaxDateOfBirth()"></b-form-input>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols="12">
+        <label> Email </label>
+        <b-form-input class="input" id="email-input" v-model="user.userEmail" type="email" placeholder="bob@gmail.com"
+          required></b-form-input>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols="12">
+        <label> Password </label>
+        <b-form-input class="input" id="password-input" v-model="user.password" type="password"
+          placeholder="Enter your password" required></b-form-input>
+        <p v-if="passwordStrength === 'Weak'">Password must be at least 8 characters long and contain at least one number.
+        </p>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols="6">
+        <label> Street </label>
+        <b-form-input class="input" id="street-input" v-model="user.address.street" type="text"
+          placeholder="Enter your street name" required></b-form-input>
+      </b-col>
+      <b-col cols="6">
+        <label> City </label>
+        <b-form-input class="input" id="city-input" v-model="user.address.city" type="text"
+          placeholder="Enter your city name" required></b-form-input>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols="6">
+        <label> ZIP </label>
+        <b-form-input class="input" id="zip-input" v-model="user.address.zip" type="number" placeholder="75234" min="0"
+          required></b-form-input>
+      </b-col>
+      <b-col cols="6">
+        <label> Country </label>
+        <b-form-select id="country-input" class="input" v-model="user.address.country" :options="countries"
+          requred></b-form-select>
+      </b-col>
+    </b-row>
+    <b-row align-h="center">
+      <b-col cols="12 text-center">
+        <button class="mt-4 btn btn-primary" :disabled="passwordStrength === 'Weak'" @click="emitData()">
+          <slot>Save</slot>
+        </button>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
 <style scoped>
-  .input{
-    background-color: #50604c21;
-    border: none;
-    border-radius: 0px;
-  }
-  .input:focus {
-    background-color: #50604c21;
-    color: #606C5D;
-  }
+.input {
+  background-color: #50604c21;
+  border: none;
+  border-radius: 0px;
+}
 
-  button{
-    border:1px solid #F7E6C4;
-  }
-  button:hover{
-    text-decoration: underline;
-    text-decoration-color: #606C5D;
-    background-color: #F7E6C4;
-    border:1px solid #606C5D !important;
-  }
-  button:disabled{
-    text-decoration: underline;
-    text-decoration-color: #606C5D;
-    background-color: #F7E6C4;
-    border:1px solid #606C5D !important;
-    color: #606C5D;
-  }
+.input:focus {
+  background-color: #50604c21;
+  color: #606C5D;
+}
+
+button {
+  border: 1px solid #F7E6C4;
+}
+
+button:hover {
+  text-decoration: underline;
+  text-decoration-color: #606C5D;
+  background-color: #F7E6C4;
+  border: 1px solid #606C5D !important;
+}
+
+button:disabled {
+  text-decoration: underline;
+  text-decoration-color: #606C5D;
+  background-color: #F7E6C4;
+  border: 1px solid #606C5D !important;
+  color: #606C5D;
+}
 </style>

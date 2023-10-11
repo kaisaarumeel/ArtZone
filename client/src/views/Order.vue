@@ -10,7 +10,6 @@ export default {
     return {
       isReceived: false,
       isShipped: false,
-      starWidth: 0,
       reviewErrorMessage: '',
       addReviewError: false,
       usersRating: 0,
@@ -72,10 +71,7 @@ export default {
     },
     async updateStar(stars) {
       if (this.disallowReview) return
-      const starShare = 80 / 5
-      this.starWidth = starShare * stars
       this.usersRating = stars
-      // this.postReview()
     },
     async fetchListings() {
       try {
@@ -186,7 +182,7 @@ export default {
           if (this.order.hash === this.reviews[i].orderHash) {
             this.disallowReview = true
             this.reviewDescription = this.reviews[i].description
-            this.starWidth = this.reviews[i].rating * (80 / 5)
+            this.usersRating = this.reviews[i].rating
           } else {
             console.log(this.order.hash)
             console.log(this.reviews[i].orderHash)
@@ -271,17 +267,12 @@ export default {
             <textarea :disabled="disallowReview" v-model="reviewDescription"></textarea>
             <div class="star-rating">
               <span :class="usersRating>=index? 'fa fa-star checked' : 'fa fa-star' " v-for="(index) in 5" :key="index" @click="updateStar(index)"></span>
-
               </div>
               <p class="red" v-if="addReviewError">{{reviewErrorMessage}}</p>
+              <button @click="postReview()" class="btn mt-2 w-100 reviewBtn btn-primary">Submit Review</button>
             </span>
         </div>
 
-          <b-row cols="1">
-            <b-col class="pb-5 text-center">
-
-            </b-col>
-          </b-row>
         </div>
       </b-col>
     </b-row>
@@ -289,6 +280,9 @@ export default {
 </template>
 
 <style scoped>
+.reviewBtn {
+
+}
 textarea {
   max-height: 80px;
     background-color: #50604c21;

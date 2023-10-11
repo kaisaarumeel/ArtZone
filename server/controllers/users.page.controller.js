@@ -1,9 +1,6 @@
 // wiki.js - Wiki route module.
-const UserSchema = require("../models/user"); //this is the schema class. Use this class to make 
-const { randomUUID } = require("crypto");
 const express = require("express");
 const router = express.Router({ mergeParams: true });
-const session = require("../middleware/session");
 const { generatePage } = require("../helper/user.page.helper");
 router.get('/page/:page', async (req, res) => {
   if (!req.auth.isAdmin) return res.sendStatus(403);
@@ -15,9 +12,14 @@ router.get('/page/:page', async (req, res) => {
     const skip = (page - 1) * perPage;
 
     // Find all users
-    let result=await generatePage(skip,perPage)
-    let users=result.users;
-    let sanitized_users=result.sanitized_users;
+    let result;
+    try {
+      result = await generatePage(skip, perPage)
+    } catch (err) {
+      return res.status(404).json({ "message": "No users in system" });
+    }
+    let users = result.users;
+    let sanitized_users = result.sanitized_users;
 
     const totalPages = Math.ceil(sanitized_users.length / perPage);
     const hasNextPage = page < totalPages;

@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const User = require('../models/user.js');
 const { getAllReviewsFromSystem } = require('../helper/allReviews.helper.js');
-const Review = require('../models/reviews.js').model
 
 // GET /reviews - Gets all reviews from all users
 router.get('/', async (req, res) => {

@@ -1,16 +1,19 @@
 // wiki.js - Wiki route module.
 const UserSchema = require("../models/user"); //this is the schema class. Use this class to make 
-const { randomUUID } = require("crypto");
 const express = require("express");
 const router = express.Router({ mergeParams: true });
-const session = require("../middleware/session");
 const { getUserByEmail } = require("../helper/general.helper");
 
 router.get("/", async (req, res) => {
     try {
         const id = req.params.id;
         try {
-            const user = await getUserByEmail(id,res)
+            let user;
+            try {
+                user = await getUserByEmail(id, res)
+            } catch (err) {
+                return res.sendStatus(404)
+            }
             if (!req.auth.auth) return res.sendStatus(403);
             if (req.auth.auth && req.auth.authEmail != id && !req.auth.isAdmin) return res.sendStatus(403);
             let sanitized_user = user;
@@ -54,8 +57,12 @@ router.put("/", async (req, res) => {
         try {
             if (!req.auth.auth) res.sendStatus(403);
             if (req.auth.auth && req.auth.authEmail != email && !req.auth.isAdmin) res.sendStatus(403);
-            let oldUser = await getUserByEmail(email,res)
-
+            let oldUser;
+            try {
+                oldUser = await getUserByEmail(email, res)
+            } catch (err) {
+                return res.sendStatus(404)
+            }
             const new_user = new UserSchema({
                 name: req.body.name,
                 dateOfBirth: req.body.dateOfBirth,

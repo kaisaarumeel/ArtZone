@@ -2,7 +2,7 @@ const UserSchema = require("../models/user"); //this is the schema class. Use th
 
 async function generatePage(skip,perPage) {
     let users = await UserSchema.find();
-    if (!users) return res.status(200).json({ "message": "no users are in the system." });
+    if (!users) throw new Error("No users in system")
 
     let sanitized_users = []
     for (let i = 0; i < users.length; i++) {

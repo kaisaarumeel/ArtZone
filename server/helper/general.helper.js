@@ -6,8 +6,7 @@ const paypal = require('@paypal/checkout-server-sdk');
 async function getUserByEmail(email,res){
     const user = await UserModel.findOne({ userEmail: email });
     if (!user) {
-        res.status(404).json({ "message": "User was not found." });
-        return;
+        throw new Error("User was not found");
     }
     return user;
 }
@@ -15,8 +14,7 @@ async function getUserByEmail(email,res){
 async function validateEmail(email,res){
     //we use regx here to confirm that the email is of the right format.
     if (!email.match(/.*@.*/)) {
-        res.status(400).json({ "message": "Invalid email provided" });
-        return;
+        throw new Error("Invalid email")
     }
     return email;
 }

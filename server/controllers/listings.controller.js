@@ -1,7 +1,6 @@
 let express = require("express");
 //We use merge params to preserve req.params from the parent router.
 const router = express.Router({ mergeParams: true });
-const { Mongoose, default: mongoose } = require("mongoose");
 
 const Listings = require("../models/listings.js");
 const UserSchema = require("../models/user.js");
@@ -58,9 +57,9 @@ router.get("/", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user  = await getUserByEmail(userEmail,res)
+            user = await getUserByEmail(userEmail, res)
         } catch (error) {
-            return res.status(500).send(err);;
+            return res.status(404).send(err);
         }
 
         const listings = user.listings;
@@ -80,9 +79,9 @@ router.get("/:id", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user  = await getUserByEmail(userEmail,res)
+            user = await getUserByEmail(userEmail, res)
         } catch (error) {
-            return res.status(500).send(err);;
+            return res.status(404).send(err);;
         }
 
         const listingID = req.params.id;
@@ -111,9 +110,12 @@ router.delete("/:id", async function (req, res) {
     try {
         const listingID = req.params.id;
         const userEmail = req.params.email;
-
-        const user = await getUserByEmail(userEmail,res)
-
+        let user;
+        try {
+            user = await getUserByEmail(userEmail, res)
+        } catch (err) {
+            return res.sendStatus(404);
+        }
 
         let listing = user.listings.find(listing => listing.id == req.params.id);
         if (!listing) {
@@ -146,8 +148,12 @@ router.delete("/", async function (req, res) {
 
     try {
         const userEmail = req.params.email;
-        const user = await getUserByEmail(userEmail,res)
-
+        let user;
+        try {
+            user = await getUserByEmail(userEmail, res)
+        } catch (err) {
+            return res.sendStatus(404);
+        }
         for (let i = 0; i < user.listings.length; i++) {
             if (user.listings[i].sold !== true) {
                 user.listings.splice(i, 1)
@@ -170,18 +176,18 @@ router.put("/:id", async function (req, res) {
         const listingID = req.params.id;
         try {
             let put_data = {
-                "listings.$.name":req.body.name,
-                "listings.$.author":req.body.author,
-                "listings.$.price":req.body.price,
-                "listings.$.picture":req.body.picture,
-                "listings.$.description":req.body.description,
+                "listings.$.name": req.body.name,
+                "listings.$.author": req.body.author,
+                "listings.$.price": req.body.price,
+                "listings.$.picture": req.body.picture,
+                "listings.$.description": req.body.description,
             }
             for (let key in put_data) {
                 if (put_data[key] === undefined) {
                     return res.sendStatus(400);
                 }
             }
-    
+
             let result = await UserSchema.findOneAndUpdate(
                 {
                     userEmail: userEmail,
