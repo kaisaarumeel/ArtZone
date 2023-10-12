@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <h1 class="header pb-5 text-center">
+    <h1 class="header pb-5 pt-5 text-center">
       <span class="bold-text">Discover</span> and <span class="bold-text">sell</span> <br> your <span class="bold-text">artwork</span>.
     </h1>
     <ArtCarouselVue></ArtCarouselVue>
