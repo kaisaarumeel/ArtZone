@@ -110,11 +110,12 @@ export default {
         <div class="paid">
           <p class="py-3"><span class="pay">Your order</span> <strong class="pal">is confirmed!</strong></p>
         </div>
+        <router-link to="/profile">
         <div class="paid-orders p-3">
-          <router-link to="/profile"><strong>My orders</strong></router-link>
+          <strong>My orders</strong>
         </div>
+      </router-link>
       </div>
-
     </div>
   </div>
 </template>
