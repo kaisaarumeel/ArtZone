@@ -5,7 +5,7 @@ body {
     background-color: #F7E6C4;
     background-image: url(bg.png);
     background-repeat: repeat;
-    background-size: contain;
+    background-size: cover;
     background-blend-mode: multiply;
     color: #606C5D;
 }

@@ -23,7 +23,7 @@ export default {
   methods: {
     async generatePaymentIntent() {
       const userData = localStorage.getItem('userData')
-      if (userData === null) window.location.replace('/login')
+      if (userData === null) return window.location.replace('/login')
       const parsedData = JSON.parse(userData)
       if (parseInt(Date.now() / 1000) > parsedData.expiry) {
         this.$router.push('login')
