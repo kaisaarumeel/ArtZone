@@ -66,10 +66,11 @@ export default {
       try {
         const response = await Api.get(`/listings/page/${this.currentPage}`, {
           params: {
-            sortBy: this.sort
+            sortBy: this.sort,
+            showSold: false
           }
         })
-        this.listings = response.data.listings.filter(listing => !listing.sold)
+        this.listings = response.data.listings
         this.totalPages = response.data.totalPages
       } catch (error) {
         console.error(error)

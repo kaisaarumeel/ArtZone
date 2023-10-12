@@ -11,7 +11,11 @@ router.get('/', async (req, res) => {
 
     // Find all users
     const users = await User.find();
-    const allListings = users.flatMap((user) => { return user.listings }); //Takes all listings in the entire system
+    const showSoldQueryParams = req.query.showSold;
+    let allListings = users.flatMap((user) => user.listings);
+    if(showSoldQueryParams === 'false') {
+      allListings = allListings.filter((listing) => !listing.sold); //Takes all listings in the entire system
+    } 
     const sortQueryParam = String(req.query.sortBy);
 
     if (sortQueryParam === "ascending") {
