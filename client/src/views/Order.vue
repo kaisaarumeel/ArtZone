@@ -27,6 +27,7 @@ export default {
       successMsg: '',
       failureMsg: '',
       reviews: null,
+      isSubmitted: false,
       rating: 0,
       orderUpdateText: '',
       isSeller: true,
@@ -50,6 +51,10 @@ export default {
 
           }
         })
+        setTimeout(() => {
+        // Set the isSubmitted to true to update the button label
+          this.isSubmitted = true
+        }, 1000) // 2-second delay
       } catch (err) {
         switch (err.response.status) {
           case 400:
@@ -269,7 +274,7 @@ export default {
               <span :class="usersRating>=index? 'fa fa-star checked' : 'fa fa-star' " v-for="(index) in 5" :key="index" @click="updateStar(index)"></span>
               </div>
               <p class="red" v-if="addReviewError">{{reviewErrorMessage}}</p>
-              <button @click="postReview()" class="btn mt-2 w-100 reviewBtn btn-primary">Submit Review</button>
+              <button v-if="!disallowReview" @click="postReview()" class="btn mt-2 w-100 reviewBtn btn-primary">{{ isSubmitted ? "Submitted" : "Submit Review" }}</button>
             </span>
         </div>
 
