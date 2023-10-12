@@ -5,7 +5,7 @@ body {
     background-color: #F7E6C4;
     background-image: url(bg.png);
     background-repeat: repeat;
-    background-size: contain;
+    background-size: cover;
     background-blend-mode: multiply;
     color: #606C5D;
 }
@@ -50,7 +50,7 @@ body {
     opacity: 1;
 }
 
-.btn-primary {
+.btn-primary,.btn-secondary {
     background-color: #606C5D;
     border-radius: 0px;
     border-width: 1px;
@@ -61,7 +61,9 @@ body {
 
 }
 
-.btn-primary:hover {
+
+
+.btn-primary:hover,.btn-secondary {
     border: 1px solid #606C5D;
     background-color: transparent;
     color: #606C5D;

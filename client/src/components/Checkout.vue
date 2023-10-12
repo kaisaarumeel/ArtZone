@@ -23,7 +23,7 @@ export default {
   methods: {
     async generatePaymentIntent() {
       const userData = localStorage.getItem('userData')
-      if (userData === null) window.location.replace('/login')
+      if (userData === null) return window.location.replace('/login')
       const parsedData = JSON.parse(userData)
       if (parseInt(Date.now() / 1000) > parsedData.expiry) {
         this.$router.push('login')
@@ -110,11 +110,12 @@ export default {
         <div class="paid">
           <p class="py-3"><span class="pay">Your order</span> <strong class="pal">is confirmed!</strong></p>
         </div>
+        <router-link to="/profile">
         <div class="paid-orders p-3">
-          <router-link to="/profile"><strong>My orders</strong></router-link>
+          <strong>My orders</strong>
         </div>
+      </router-link>
       </div>
-
     </div>
   </div>
 </template>

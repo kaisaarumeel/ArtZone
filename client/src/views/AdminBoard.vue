@@ -110,9 +110,15 @@ export default {
         if (!this.usersFetched) {
           let page = 1
           let hasNextPage = true
+          const userData = JSON.parse(localStorage.getItem('userData'))
 
           while (hasNextPage) {
-            const response = await Api.get(`/users/page/${page}`)
+            const response = await Api.get(`/users/page/${page}`, {
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Auth-Token': userData.sessionKey
+              }
+            })
             this.users.push(...response.data.users)
             hasNextPage = response.data.hasNextPage
 
@@ -133,7 +139,8 @@ export default {
           while (hasNextPage) {
             const response = await Api.get(`/listings/page/${page}`, {
               params: {
-                sortBy: this.sort
+                sortBy: this.sort,
+                showSold: true
               }
             })
             console.log(response.data)
@@ -157,9 +164,15 @@ export default {
       }
     },
     async fetchReviews() {
+      const userData = JSON.parse(localStorage.getItem('userData'))
       try {
         if (!this.reviewsFetched) {
-          const response = await Api.get('/reviews')
+          const response = await Api.get('/reviews', {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Auth-Token': userData.sessionKey
+            }
+          })
           if (Array.isArray(response.data.reviews) && response.data.reviews.length > 0) {
             for (const key in response.data.reviews) {
               response.data.reviews[key].deleteListing = ''

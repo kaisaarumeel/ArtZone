@@ -27,6 +27,7 @@ export default {
       successMsg: '',
       failureMsg: '',
       reviews: null,
+      isSubmitted: false,
       rating: 0,
       orderUpdateText: '',
       isSeller: true,
@@ -50,6 +51,10 @@ export default {
 
           }
         })
+        setTimeout(() => {
+        // Set the isSubmitted to true to update the button label
+          this.isSubmitted = true
+        }, 1000) // 2-second delay
       } catch (err) {
         switch (err.response.status) {
           case 400:
@@ -124,15 +129,7 @@ export default {
       }
     },
     async updateOrder() {
-      // const oldOrder = structuredClone(this.order)
       try {
-        // this.order.isReceived = this.isReceived
-        // this.order.isShipped = this.isShipped
-        // eslint-disable-next-line eqeqeq
-        // if (oldOrder == this.order) {
-        // eslint-disable-next-line no-useless-return
-        // return
-        // }
         const userData = JSON.parse(localStorage.getItem('userData'))
         const url = `/users/${userData.userEmail}/orders/${this.order._id}`
         let payload
@@ -154,7 +151,7 @@ export default {
           }
         })
         if (response.status === 200) {
-          if (this.isShipped === true) this.isReceived = true
+          if (this.isShipped === true && !this.isSeller) this.isReceived = true
           this.successMsg = 'Changes saved successfully'
           if (this.isShipped && this.isReceived) return this.$router.push('/profile')
           await this.getOrder()
@@ -167,9 +164,10 @@ export default {
           } else {
             this.failureMsg = 'You need to wait for your order to be shipped'
           }
-          // this.order = structuredClone(oldOrder)
+          setTimeout(() => {
+            this.failureMsg = ''
+          }, 3000)
         }
-        console.log(err)
       }
     },
     async getSellerReviews() {
@@ -193,7 +191,8 @@ export default {
       }
     },
     showReceivedModal() {
-      if (this.isShipped === false) return this.updateOrder()
+      if (this.isSeller) return this.updateOrder()
+      if (!this.isSeller && this.isShipped === false) return this.updateOrder()
       this.$refs.receivedModal.show()
     }
   },
@@ -209,19 +208,18 @@ export default {
     await this.fetchListings()
     await this.getOrder()
     await this.getSellerReviews()
-    console.log(this.isShipped)
   }
 
 }
 </script>
 
 <template>
-  <div>
+  <div class="single-order">
     <b-modal id="modal-1" modal-class="reviews w-100 p-5" hide-backdrop>
     <Reviews :reviews="reviews" :seller="order.seller"></Reviews>
     </b-modal>
-    <b-modal @ok="updateOrder()" ok-only ref="receivedModal" title="Information!">
-      <p>Note that when you mark an order as received, it will be deleted from the database as you ensure us that you have received it</p>
+    <b-modal @ok="updateOrder()" ref="receivedModal" title="Warning!">
+      <p>When you mark an order as received, it will be deleted from your order page! Would you like to proceed?</p>
     </b-modal>
     <b-row class="pl-5">
       <b-col cols="12">
@@ -256,7 +254,9 @@ export default {
           <p class="text-left">
               <a v-if="!isShipped || !isReceived" class="updateDelivery" @click="showReceivedModal()"> Mark as {{ orderUpdateText }}
               </a>
+
           </p>
+          <p class="red" v-if="failureMsg.length>0">{{ failureMsg }}</p>
 
         <div v-if="!this.isSeller" >
           <p class="text-left mb-0">
@@ -269,7 +269,7 @@ export default {
               <span :class="usersRating>=index? 'fa fa-star checked' : 'fa fa-star' " v-for="(index) in 5" :key="index" @click="updateStar(index)"></span>
               </div>
               <p class="red" v-if="addReviewError">{{reviewErrorMessage}}</p>
-              <button @click="postReview()" class="btn mt-2 w-100 reviewBtn btn-primary">Submit Review</button>
+              <button v-if="!disallowReview" @click="postReview()" class="btn mt-2 w-100 reviewBtn btn-primary">{{ isSubmitted ? "Submitted" : "Submit Review" }}</button>
             </span>
         </div>
 
@@ -280,9 +280,7 @@ export default {
 </template>
 
 <style scoped>
-.reviewBtn {
 
-}
 textarea {
   max-height: 80px;
     background-color: #50604c21;
@@ -308,6 +306,7 @@ textarea {
   color:#3c433a;
   cursor: pointer;
 }
+
 img {
   width: 80%;
   height: auto;
@@ -324,15 +323,6 @@ p {
 .starRatingGrey {
   filter: grayscale(1);
 
-}
-.starRatingGrey:hover,.starRating:hover{
-  cursor: pointer;
-}
-
-.starRating {
-  position: absolute;
-  margin-left: -80px;
-  overflow: hidden;
 }
 
 .price {
