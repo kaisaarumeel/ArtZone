@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
         try {
             let user;
             try {
-                user = (await getUserByEmail(id, res)).toObject()
+                user = (await getUserByEmail(id)).toObject()
             } catch (err) {
                 console.log(err)
                 return res.sendStatus(404)
@@ -42,7 +42,7 @@ router.patch("/", async (req, res) => {
             if(data.userEmail!==undefined && data.userEmail!==req.params.email) {
                 let user;
                 try {
-                    user = await getUserByEmail(req.params.email, res)
+                    user = await getUserByEmail(req.params.email)
                 } catch (err) {
                     console.log(err)
                     return res.sendStatus(404);
@@ -60,7 +60,7 @@ router.patch("/", async (req, res) => {
                         user.orders[i].buyer=data.userEmail;
                         //Propagate changes at sellers order as well
                         try {
-                            let seller = await getUserByEmail(user.orders[i].seller, res)
+                            let seller = await getUserByEmail(user.orders[i].seller)
                             for(let x=0;x<seller.orders.length;x++) {
                                 if(seller.orders[x].buyer===req.params.email) {
                                     user.orders[x].buyer=data.userEmail;
@@ -78,7 +78,7 @@ router.patch("/", async (req, res) => {
                         user.orders[i].seller=data.userEmail;
                         //Propagate changes at buyers order as well
                         try {
-                            let buyer = await getUserByEmail(user.orders[i].buyer, res)
+                            let buyer = await getUserByEmail(user.orders[i].buyer)
                             for(let x=0;x<buyer.orders.length;x++) {
                                 if(buyer.orders[x].seller===req.params.email) {
                                     buyer.orders[x].seller=data.userEmail;
@@ -121,7 +121,7 @@ router.put("/", async (req, res) => {
             if (req.auth.auth && req.auth.authEmail != email && !req.auth.isAdmin) res.sendStatus(403);
             let oldUser;
             try {
-                oldUser = await getUserByEmail(email, res)
+                oldUser = await getUserByEmail(email)
             } catch (err) {
                 return res.sendStatus(404)
             }

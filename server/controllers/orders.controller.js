@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
         //Finding user (buyer)
         let buyer;
         try {
-            buyer = await getUserByEmail(req.params.email, res)
+            buyer = await getUserByEmail(req.params.email)
         } catch (err) {
             return res.sendStatus(404);
         }
@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
         if (sellerEmail === buyer.userEmail) return res.status(400).json({ "message": "You cannot buy your own art." })
         let seller;
         try {
-            seller = await getUserByEmail(req.body.seller, res)
+            seller = await getUserByEmail(req.body.seller)
         } catch (err) {
             return res.sendStatus(404);
         }
@@ -86,7 +86,7 @@ router.get("/", async (req, res) => {
     try {
         let user;
         try {
-            user = await getUserByEmail(req.params.email, res)
+            user = await getUserByEmail(req.params.email)
         } catch (err) {
             return res.sendStatus(404);
         }
@@ -137,7 +137,7 @@ router.patch("/:id", async (req, res) => {
     try {
         let user;
         try {
-            user = await getUserByEmail(req.params.email, res)
+            user = await getUserByEmail(req.params.email)
         } catch (err) {
             console.log(err)
             return res.sendStatus(404);
@@ -170,7 +170,7 @@ router.get("/:id", async (req, res) => {
     try {
         let user;
         try {
-            user = await getUserByEmail(req.params.email, res)
+            user = await getUserByEmail(req.params.email)
         } catch (err) {
             return res.sendStatus(404);
         }
@@ -193,7 +193,7 @@ router.get("/:id/seller", async (req, res) => {
     try {
         let user;
         try {
-            user = await getUserByEmail(req.params.email, res)
+            user = await getUserByEmail(req.params.email)
         } catch (err) {
             return res.sendStatus(404)
         }

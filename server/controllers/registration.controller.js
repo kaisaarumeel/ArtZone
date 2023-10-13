@@ -17,7 +17,7 @@ router.post("/users/login", async (req, res) => {
 
         let result;
         try {
-            result = await getUserByEmail(email, res)
+            result = await getUserByEmail(email)
         } catch (err) {
             return res.sendStatus(404)
         }
