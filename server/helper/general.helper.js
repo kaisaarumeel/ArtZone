@@ -1,7 +1,4 @@
-const OrderModel = require("../models/orders.js");
 const UserModel = require("../models/user.js");
-const { createHash, randomUUID } = require('crypto');
-const paypal = require('@paypal/checkout-server-sdk');
 
 async function getUserByEmail(email){
     const user = await UserModel.findOne({ userEmail: email });
@@ -18,7 +15,6 @@ async function validateEmail(email){
     }
     return email;
 }
-
 
 module.exports = {
     getUserByEmail, validateEmail
