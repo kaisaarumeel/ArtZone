@@ -50,7 +50,6 @@ router.patch("/", async (req, res) => {
 
                 for(let i=0;i<user.listings.length;i++) {
                     if(user.listings[i].creator===req.params.email) {
-                        console.log("changed creator")
                         user.listings[i].creator=data.userEmail;
                     }
                 }
@@ -124,7 +123,64 @@ router.put("/", async (req, res) => {
                 oldUser = await getUserByEmail(email)
             } catch (err) {
                 return res.sendStatus(404)
+            
             }
+
+            if(req.body.userEmail!==undefined && req.body.userEmail!==req.params.email) {
+                let user;
+                try {
+                    user = await getUserByEmail(req.params.email)
+                } catch (err) {
+                    console.log(err)
+                    return res.sendStatus(404);
+                }
+
+                for(let i=0;i<user.listings.length;i++) {
+                    if(user.listings[i].creator===req.params.email) {
+                        user.listings[i].creator=req.body.userEmail;
+                    }
+                }
+
+                for(let i=0;i<user.orders.length;i++) {
+                    if(user.orders[i].buyer===req.params.email) {
+                        user.orders[i].buyer=req.body.userEmail;
+                        //Propagate changes at sellers order as well
+                        try {
+                            let seller = await getUserByEmail(user.orders[i].seller)
+                            for(let x=0;x<seller.orders.length;x++) {
+                                if(seller.orders[x].buyer===req.params.email) {
+                                    user.orders[x].buyer=req.body.userEmail;
+
+                                }
+                            }
+
+                            seller.save()
+                        } catch (err) {
+                            console.log(err)
+                            return res.sendStatus(404);
+                        }
+                    }
+                    if(user.orders[i].seller===req.params.email) {
+                        user.orders[i].seller=req.body.userEmail;
+                        //Propagate changes at buyers order as well
+                        try {
+                            let buyer = await getUserByEmail(user.orders[i].buyer)
+                            for(let x=0;x<buyer.orders.length;x++) {
+                                if(buyer.orders[x].seller===req.params.email) {
+                                    buyer.orders[x].seller=req.body.userEmail;
+                                }
+                            }
+
+                            buyer.save()
+                        } catch (err) {
+                            console.log(err)
+                            return res.sendStatus(404);
+                        }
+                    }
+                }
+                user.save()
+            }
+
             const new_user = new UserSchema({
                 name: req.body.name,
                 dateOfBirth: req.body.dateOfBirth,
