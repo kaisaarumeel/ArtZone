@@ -41,7 +41,9 @@ export default {
       const self = this
 
       const buttons = paypal.Buttons({
-
+        style: {
+          layout: 'horizontal'
+        },
         // Call your server to set up the transaction
         createOrder: function (data, actions) {
           return Api.post('checkout', payload, { headers }).then(function (res) {

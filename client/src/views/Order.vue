@@ -181,9 +181,6 @@ export default {
             this.disallowReview = true
             this.reviewDescription = this.reviews[i].description
             this.usersRating = this.reviews[i].rating
-          } else {
-            console.log(this.order.hash)
-            console.log(this.reviews[i].orderHash)
           }
         }
       } catch (err) {
@@ -214,36 +211,30 @@ export default {
 </script>
 
 <template>
-  <div class="single-order">
-    <b-modal id="modal-1" modal-class="reviews w-100 p-5" hide-backdrop>
+<div class="single-order p-5">
+
+  <b-modal id="modal-1" modal-class="reviews w-100 p-5" hide-backdrop>
     <Reviews :reviews="reviews" :seller="order.seller"></Reviews>
     </b-modal>
-    <b-modal @ok="updateOrder()" ref="receivedModal" title="Warning!">
-      <p>When you mark an order as received, it will be deleted from your order page! Would you like to proceed?</p>
-    </b-modal>
-    <b-row class="pl-5">
-      <b-col cols="12">
-      </b-col>
-      <b-col cols="12">
-      </b-col>
-    </b-row>
-    <b-row class="align-items-center pb-3 pl-5 pr-5">
-      <b-col class="text-center" cols="12" md="8">
+<b-row cols="2">
+  <b-col sm="12" md="12" lg="8" cols="12" >
+    <div class="text-center">
+    <img class="border artwork w-100" :src="listing.picture">
+    </div>
+  </b-col>
+  <b-col sm="12" md="12" lg="4" cols="12">
+    <div class="border p-3 mt-2">
+    <h1 class="font-weight-bold text-left">{{listing.name}}</h1>
+    <p class="text-left">{{listing.author}} <br>Sold by <span class="seller font-weight-bold" v-b-modal.modal-1>{{order.seller }} ⭐{{rating}}</span></p>
+    <p class="text-left mb-0"><strong>Description</strong></p>
+    <p class="text-left">{{ listing.description }}</p>
 
-        <img class="pl-5 pr-5 text-center" :src="listing.picture">
-      </b-col>
-      <b-col cols="12" md="4" class="p-5 mt-2">
-        <div class="border p-3">
-            <h1 class="font-weight-bold"> {{listing.name}} </h1>
-            <p class=""> By {{listing.author}} <br>Sold by <span class="seller font-weight-bold" >{{order.seller}} ⭐{{rating}}</span></p>
-          <p class="text-left mb-0"><strong>Description</strong></p>
-          <p class="text-left">{{ listing.description }}</p>
+      <b-row cols="1">
+        <b-col class="listing-price text-left m-2"><span><span class="price font-weight-bold">SEK: {{ listing.price }}</span> <sup>+ free shipping</sup></span></b-col>
+      </b-row>
+      <p class="text-left mb-0"><strong>Status</strong></p>
 
-          <p class="text-left mb-0"><strong>Price</strong></p>
-          <p class="text-left"><span><span class="">SEK {{ listing.price }}</span> <sup>+
-                  free shipping</sup></span></p>
-          <p class="text-left mb-0"><strong>Status</strong></p>
-          <p class="text-left">
+      <p class="text-left">
             <span v-if="isShipped && isReceived"> Shipped and received </span>
               <span v-if="isShipped && !isReceived"> Shipped </span>
               <span v-if="!isShipped"> Not Shipped yet </span>
@@ -257,8 +248,7 @@ export default {
 
           </p>
           <p class="red" v-if="failureMsg.length>0">{{ failureMsg }}</p>
-
-        <div v-if="!this.isSeller" >
+          <div v-if="!this.isSeller" >
           <p class="text-left mb-0">
             <strong v-if="!disallowReview">Add Review</strong>
             <strong v-else>Review</strong>
@@ -272,11 +262,12 @@ export default {
               <button v-if="!disallowReview" @click="postReview()" class="btn mt-2 w-100 reviewBtn btn-primary">{{ isSubmitted ? "Submitted" : "Submit Review" }}</button>
             </span>
         </div>
+    </div>
 
-        </div>
-      </b-col>
-    </b-row>
-  </div>
+  </b-col>
+</b-row>
+</div>
+
 </template>
 
 <style scoped>
@@ -307,10 +298,10 @@ textarea {
   cursor: pointer;
 }
 
-img {
-  width: 80%;
-  height: auto;
-}
+img{
+    max-width: fit-content;
+    max-height: 80vh;
+  }
 
 h1 {
   font-size: 21px;

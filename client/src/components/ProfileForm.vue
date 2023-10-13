@@ -2,7 +2,8 @@
 import { Api } from '../Api'
 export default {
   props: {
-    isLoggedIn: Boolean(false)
+    isLoggedIn: Boolean(false),
+    usedForRegister: Boolean(false)
   },
   computed: {
     passwordStrength: function () {

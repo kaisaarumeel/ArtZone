@@ -5,6 +5,7 @@ const router = express.Router({ mergeParams: true });
 const { getUserByEmail } = require("../helper/general.helper");
 
 router.get("/", async (req, res) => {
+    console.log("banana")
     try {
         const id = req.params.id;
         try {
@@ -20,13 +21,13 @@ router.get("/", async (req, res) => {
             delete sanitized_user["session"];
             delete sanitized_user["password"];
             delete sanitized_user["_id"]
-            res.json(sanitized_user);
+            return res.sendStatus(400);
         } catch (err) {
-            res.sendStatus(400);
+            return res.sendStatus(400);
         }
     } catch (err) {
         console.log(err)
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
 })
 
@@ -39,15 +40,15 @@ router.patch("/", async (req, res) => {
             delete req.body["session"];
             const data = req.body;
             let user = await UserSchema.collection.findOneAndUpdate({ userEmail: email }, { $set: data }, { new: true });
-            res.sendStatus(200);
+            return res.sendStatus(200);
             if (!user) res.sendStatus(404);
         } catch (err) {
             console.log(err)
-            res.sendStatus(400);
+            return res.sendStatus(400);
         }
     } catch (err) {
         console.log(err)
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
 })
 
@@ -86,11 +87,11 @@ router.put("/", async (req, res) => {
             if (!user) res.sendStatus(404);
         } catch (err) {
             console.log(err)
-            res.sendStatus(400);
+            return res.sendStatus(400);
         }
     } catch (err) {
         console.log(err)
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
 })
 router.delete("/", async (req, res) => {
@@ -98,14 +99,14 @@ router.delete("/", async (req, res) => {
         try {
             if (!req.auth.isAdmin) res.sendStatus(403);
             await UserSchema.collection.deleteOne({ userEmail: req.params.email })
-            res.sendStatus(200);
+            return res.sendStatus(200);
         } catch (err) {
             console.log(err)
-            res.sendStatus(400);
+            return res.sendStatus(400);
         }
     } catch (err) {
         console.log(err)
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
 })
 

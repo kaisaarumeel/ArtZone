@@ -44,7 +44,11 @@ export default {
         const totallyDifferent = user.totallyDifferent
         delete user.totallyDifferent
         this.updatedUserData = structuredClone(user)
-        this.updatedUserData.password = sha256(this.updatedUserData.password).toString(CryptoJS.enc.Hex)
+        if (this.updatedUserData.password.length > 0) {
+          this.updatedUserData.password = sha256(this.updatedUserData.password).toString(CryptoJS.enc.Hex)
+        } else {
+          delete this.updatedUserData.password
+        }
         console.log(this.updatedUserData)
         const userData = JSON.parse(localStorage.getItem('userData'))
         if (userData.expiry < parseInt(Date.now() / 1000)) { localStorage.removeItem('userData'); return this.$router.push('/login') }

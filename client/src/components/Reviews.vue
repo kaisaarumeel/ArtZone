@@ -11,15 +11,12 @@ export default {
         avg += this.reviews[i].rating
       }
       return (avg / this.reviews.length)
-    },
-    starWidth: function () {
-      return ((this.avg / 5) * 80)
     }
   }
 }
 </script>
 <template>
-  <div class="reviews">
+  <div class="reviews p-2">
     <div class="profile-wrapper mb-1">
       <h2>Seller profile</h2>
       <p class="underline">{{ seller }}</p>
@@ -28,9 +25,10 @@ export default {
       <b-row cols="2">
         <b-col class="text-center">
           <span>Average rating: </span>
+          <div class="star-rating">
+              <span :class="avg>=index? 'fa fa-star checked' : 'fa fa-star' " v-for="(index) in 5" :key="index"></span>
+              </div>
 
-          <span class="starRatingGrey">⭐⭐⭐⭐⭐</span><span :style="'width:' + this.starWidth + 'px'"
-            class="starRating">⭐⭐⭐⭐⭐</span>
         </b-col>
         <b-col class="text-center">
           <p class="font-weight-light">Total ratings: <span class="font-weight-bold">{{ reviews.length }}</span></p>
@@ -53,10 +51,8 @@ export default {
   filter: grayscale(1);
 }
 
-.starRating {
-  position: absolute;
-  margin-left: -80px;
-  overflow: hidden;
+.checked {
+  color:orange;
 }
 
 .reviews {
