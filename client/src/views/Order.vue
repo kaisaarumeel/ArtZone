@@ -211,7 +211,7 @@ export default {
 </script>
 
 <template>
-<div class="single-order p-5">
+<div class="single-order p-4 mt-3 mt-md-0 p-md-5">
 
   <b-modal id="modal-1" modal-class="reviews w-100 p-5" hide-backdrop>
     <Reviews :reviews="reviews" :seller="order.seller"></Reviews>

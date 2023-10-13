@@ -274,8 +274,8 @@ export default {
                 <p class="error" v-if="!success"> {{updateError}} </p>
             </b-col>
             <b-col class="mt-2" cols="12" md="6">
-                <h4> Listings </h4>
-                <button primary @click="deleteAllListings()" class="btn btn-primary float-left mb-2">Delete Listings</button>
+                <h4>My Listings </h4>
+                <button primary @click="deleteAllListings()" class="btn btn-primary float-left mb-2">Delete all listings</button>
                 <label class="float-left pl-2">
                   {{deleteMessage}}
                 </label>
@@ -289,7 +289,7 @@ export default {
                         </template>
                     </b-table>
                 </div>
-                <h4> Orders </h4>
+                <h4>My Orders </h4>
                 <div class="w-100 orders mt-2">
                     <b-table @row-clicked="onRowClicked" class="profile-page-listings table-header-colour" :items="orders" :fields="orderFields">
                         <template #cell(listing)="data">
