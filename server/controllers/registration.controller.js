@@ -37,7 +37,7 @@ router.post("/users/register", async (req, res) => {
     try {
         await validateEmail(req.body.userEmail, res)
     } catch (err) {
-        res.status(400).json({ "message": "Invalid email provided" });
+        return res.status(400).json({ "message": "Invalid email provided" });
     }
     if (req.body.address.country.length > 2) return res.status(400).json({ message: "Invalid country code" })
     const user = new UserSchema({
