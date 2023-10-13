@@ -1,8 +1,6 @@
 const UserSchema = require("../models/user"); //this is the schema class. Use this class to make 
-const { randomUUID } = require("crypto");
 const express = require("express");
 const router = express.Router();
-const session = require("../middleware/session");
 const { getUserByEmail, validateEmail } = require("../helper/general.helper");
 const { generateSessionKey, saveNewUser } = require("../helper/registration.helper");
 
