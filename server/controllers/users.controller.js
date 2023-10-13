@@ -5,14 +5,14 @@ const router = express.Router({ mergeParams: true });
 const { getUserByEmail } = require("../helper/general.helper");
 
 router.get("/", async (req, res) => {
-    console.log("banana")
     try {
-        const id = req.params.id;
+        const id = req.params.email;
         try {
             let user;
             try {
                 user = await getUserByEmail(id, res)
             } catch (err) {
+                console.log(err)
                 return res.sendStatus(404)
             }
             if (!req.auth.auth) return res.sendStatus(403);
@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
             delete sanitized_user["session"];
             delete sanitized_user["password"];
             delete sanitized_user["_id"]
-            return res.sendStatus(400);
+            return res.json(sanitized_user);
         } catch (err) {
             return res.sendStatus(400);
         }
