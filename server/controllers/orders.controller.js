@@ -139,9 +139,10 @@ router.patch("/:id", async (req, res) => {
         try {
             user = await getUserByEmail(req.params.email, res)
         } catch (err) {
+            console.log(err)
             return res.sendStatus(404);
         }
-        let order = user.orders.find(order => order._id == req.params.id);
+        let order = user.orders.find(order => order.id === req.params.id);
         if (!order) {
             res.status(404).json({ "message": "Order was not found." });
             return;

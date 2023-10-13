@@ -86,7 +86,7 @@ router.get("/:id", async function (req, res) {
         const listingID = req.params.id;
 
         // Get the listing with the given name
-        const foundListing = user.listings.find(listing => listing._id.toString() === listingID);
+        const foundListing = user.listings.find(listing => listing.id === listingID);
         console.log(foundListing)
         if (!foundListing) {
             return res.status(404).json({ message: 'Listing not found' });
@@ -116,7 +116,7 @@ router.delete("/:id", async function (req, res) {
             return res.sendStatus(404);
         }
 
-        let listing = user.listings.find(listing => listing._id.toString() == req.params.id);
+        let listing = user.listings.find(listing => listing.id == req.params.id);
         if (!listing) {
             res.status(404).json({ "message": "Seller Listing was not found." });
             return;
@@ -240,7 +240,7 @@ router.patch("/:id", async function (req, res) {
 
                 },
                 {
-                    runValidators: false,
+                    runValidators: true,
                 }
 
             );

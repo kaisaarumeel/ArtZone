@@ -49,6 +49,7 @@ async function markOrderAsShipped(order,req,res,key,user){
     } else {
 
         const buyer = await UserModel.findOne({ userEmail: req.body.buyer });
+        console.log(buyer)
         if (!buyer) {
             return 404;
         }
@@ -60,7 +61,7 @@ async function markOrderAsShipped(order,req,res,key,user){
             return 400;
         }
 
-        let buyerOrder = buyer.orders.find(buyerOder => buyerOder.hash === order.hash);
+        let buyerOrder = buyer.orders.find(buyerOrder => buyerOrder.hash === order.hash);
         if (!buyerOrder) {
             return 404;
         }

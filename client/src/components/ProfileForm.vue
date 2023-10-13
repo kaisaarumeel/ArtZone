@@ -425,7 +425,7 @@ export default {
     </b-row>
     <b-row align-h="center">
       <b-col cols="12 text-center">
-        <button class="mt-4 btn btn-primary" :disabled="passwordStrength === 'Weak' && usedForRegister===true" @click="emitData()">
+        <button class="mt-4 btn btn-primary" :disabled="(passwordStrength === 'Weak' && usedForRegister===true) || (passwordStrength === 'Weak' && user.password.length>0)" @click="emitData()">
           <slot>Save</slot>
         </button>
       </b-col>
