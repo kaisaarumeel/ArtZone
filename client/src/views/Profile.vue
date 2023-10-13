@@ -263,7 +263,7 @@ export default {
                     Admin page
                 </b-button>
           </b-col>
-        <b-row class="mb-5 ml-5 mr-5">
+        <b-row class="mb-5 ml-2 ml-md-5 mr-2 mr-md-5">
             <b-col cols="12">
                 <h4 class="fontThickness profileHeader"> My Profile </h4>
             </b-col>
