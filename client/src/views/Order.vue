@@ -216,6 +216,9 @@ export default {
   <b-modal id="modal-1" modal-class="reviews w-100 p-5" hide-backdrop>
     <Reviews :reviews="reviews" :seller="order.seller"></Reviews>
     </b-modal>
+    <b-modal @ok="updateOrder()" ref="receivedModal" title="Warning!">
+      <p>When you mark an order as received, it will be deleted from your order page! Would you like to proceed?</p>
+    </b-modal>
 <b-row cols="2">
   <b-col sm="12" md="12" lg="8" cols="12" >
     <div class="text-center">

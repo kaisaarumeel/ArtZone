@@ -49,7 +49,7 @@ export default {
         } else {
           delete this.updatedUserData.password
         }
-        console.log(this.updatedUserData)
+
         const userData = JSON.parse(localStorage.getItem('userData'))
         if (userData.expiry < parseInt(Date.now() / 1000)) { localStorage.removeItem('userData'); return this.$router.push('/login') }
         const url = `/users/${userData.userEmail}`
@@ -72,6 +72,11 @@ export default {
           this.changes = 'Your changes have been saved.'
           this.changeSuccess = true
           this.success = true
+          if (this.updatedUserData.userEmail !== undefined && this.updatedUserData.userEmail !== userData.userEmail) {
+            localStorage.removeItem('userData')
+            localStorage.removeItem('singleListing')
+            window.location.replace('/')
+          }
           setTimeout(() => {
             this.changeSuccess = false
             this.success = false

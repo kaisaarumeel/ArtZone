@@ -47,6 +47,14 @@ router.patch("/", async (req, res) => {
                     console.log(err)
                     return res.sendStatus(404);
                 }
+
+                for(let i=0;i<user.listings.length;i++) {
+                    if(user.listings[i].creator===req.params.email) {
+                        console.log("changed creator")
+                        user.listings[i].creator=data.userEmail;
+                    }
+                }
+
                 for(let i=0;i<user.orders.length;i++) {
                     if(user.orders[i].buyer===req.params.email) {
                         user.orders[i].buyer=data.userEmail;
@@ -86,6 +94,8 @@ router.patch("/", async (req, res) => {
                 }
                 user.save()
             }
+
+
 
             let user = await UserSchema.collection.findOneAndUpdate({ userEmail: email }, { $set: data }, { new: true });
             if (!user) return res.sendStatus(404);
