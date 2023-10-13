@@ -39,7 +39,7 @@ router.patch("/", async (req, res) => {
             if (req.auth.auth && req.auth.authEmail != email && !req.auth.isAdmin) return res.sendStatus(403);
             delete req.body["session"];
             const data = req.body;
-            if(data.userEmail!==undefined) {
+            if(data.userEmail!==undefined && data.userEmail!==req.params.email) {
                 let user;
                 try {
                     user = await getUserByEmail(req.params.email, res)
