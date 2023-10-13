@@ -89,10 +89,7 @@ export default {
     },
     async logOut() {
       localStorage.removeItem('userData')
-      location.reload()
-      if (this.currentRoute !== '/') {
-        return this.$router.push('/')
-      }
+      window.location.replace('/')
     }
   }
 }

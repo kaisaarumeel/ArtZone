@@ -57,7 +57,7 @@ router.get("/", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await getUserByEmail(userEmail, res)
+            user = await getUserByEmail(userEmail)
         } catch (error) {
             return res.status(404).send(err);
         }
@@ -79,16 +79,14 @@ router.get("/:id", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await getUserByEmail(userEmail, res)
+            user = await getUserByEmail(userEmail)
         } catch (error) {
             return res.status(404).send(err);;
         }
-
         const listingID = req.params.id;
 
         // Get the listing with the given name
         const foundListing = user.listings.find(listing => listing.id === listingID);
-
         if (!foundListing) {
             return res.status(404).json({ message: 'Listing not found' });
         }
@@ -112,7 +110,7 @@ router.delete("/:id", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await getUserByEmail(userEmail, res)
+            user = await getUserByEmail(userEmail)
         } catch (err) {
             return res.sendStatus(404);
         }
@@ -150,7 +148,7 @@ router.delete("/", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await getUserByEmail(userEmail, res)
+            user = await getUserByEmail(userEmail)
         } catch (err) {
             return res.sendStatus(404);
         }
@@ -241,7 +239,7 @@ router.patch("/:id", async function (req, res) {
 
                 },
                 {
-                    runValidators: false,
+                    runValidators: true,
                 }
 
             );

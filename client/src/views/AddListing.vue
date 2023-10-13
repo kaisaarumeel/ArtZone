@@ -105,7 +105,7 @@ export default {
     if (userData === null) window.location.replace('/login')
     const parsedData = JSON.parse(userData)
     if (parseInt(Date.now() / 1000) > parsedData.expiry) {
-      this.$router.push('login')
+      window.location.replace('/login')
     }
   },
   methods: {
@@ -152,7 +152,7 @@ export default {
             state.showUnauthorized = true
             setTimeout(() => {
               state.showUnauthorized = false
-              this.$router.push('login')
+              window.location.replace('/login')
             }, 1500)
           })
       }

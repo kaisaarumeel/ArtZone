@@ -30,7 +30,7 @@ router.post("/", async function (req, res) {
 
         let result;
         try {
-            result = await getUserByEmail(userEmail, res);
+            result = await getUserByEmail(userEmail);
         } catch (err) {
             return res.sendStatus(404)
         }
@@ -59,7 +59,7 @@ router.get("/", async function (req, res) {
         const userEmail = req.params.email;
         let user;
         try {
-            user = await getUserByEmail(userEmail, res)
+            user = await getUserByEmail(userEmail)
         } catch (error) {
             return res.status(404).send(err);
         }
@@ -82,7 +82,7 @@ router.get("/:id", async function (req, res) {
         let user;
         try {
             try {
-                user = await getUserByEmail(userEmail, res)
+                user = await getUserByEmail(userEmail)
             } catch (err) {
                 return res.sendStatus(404)
             }

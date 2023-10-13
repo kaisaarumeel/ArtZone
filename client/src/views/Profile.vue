@@ -44,8 +44,12 @@ export default {
         const totallyDifferent = user.totallyDifferent
         delete user.totallyDifferent
         this.updatedUserData = structuredClone(user)
-        this.updatedUserData.password = sha256(this.updatedUserData.password).toString(CryptoJS.enc.Hex)
-        console.log(this.updatedUserData)
+        if (this.updatedUserData.password.length > 0) {
+          this.updatedUserData.password = sha256(this.updatedUserData.password).toString(CryptoJS.enc.Hex)
+        } else {
+          delete this.updatedUserData.password
+        }
+
         const userData = JSON.parse(localStorage.getItem('userData'))
         if (userData.expiry < parseInt(Date.now() / 1000)) { localStorage.removeItem('userData'); return this.$router.push('/login') }
         const url = `/users/${userData.userEmail}`
@@ -68,6 +72,11 @@ export default {
           this.changes = 'Your changes have been saved.'
           this.changeSuccess = true
           this.success = true
+          if (this.updatedUserData.userEmail !== undefined && this.updatedUserData.userEmail !== userData.userEmail) {
+            localStorage.removeItem('userData')
+            localStorage.removeItem('singleListing')
+            window.location.replace('/')
+          }
           setTimeout(() => {
             this.changeSuccess = false
             this.success = false
@@ -254,7 +263,7 @@ export default {
                     Admin page
                 </b-button>
           </b-col>
-        <b-row class="mb-5 ml-5 mr-5">
+        <b-row class="mb-5 ml-2 ml-md-5 mr-2 mr-md-5">
             <b-col cols="12">
                 <h4 class="fontThickness profileHeader"> My Profile </h4>
             </b-col>
@@ -265,8 +274,8 @@ export default {
                 <p class="error" v-if="!success"> {{updateError}} </p>
             </b-col>
             <b-col class="mt-2" cols="12" md="6">
-                <h4> Listings </h4>
-                <button primary @click="deleteAllListings()" class="btn btn-primary float-left mb-2">Delete Listings</button>
+                <h4>My Listings </h4>
+                <button primary @click="deleteAllListings()" class="btn btn-primary float-left mb-2">Delete all listings</button>
                 <label class="float-left pl-2">
                   {{deleteMessage}}
                 </label>
@@ -280,7 +289,7 @@ export default {
                         </template>
                     </b-table>
                 </div>
-                <h4> Orders </h4>
+                <h4>My Orders </h4>
                 <div class="w-100 orders mt-2">
                     <b-table @row-clicked="onRowClicked" class="profile-page-listings table-header-colour" :items="orders" :fields="orderFields">
                         <template #cell(listing)="data">

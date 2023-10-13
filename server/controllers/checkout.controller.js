@@ -18,8 +18,8 @@ router.post("/", async (req, res) => {
   try {
     let buyer, user;
     try {
-      buyer = await getUserByEmail(req.body.buyer, res);
-      user = await getUserByEmail(req.body.email, res);
+      buyer = await getUserByEmail(req.body.buyer);
+      user = await getUserByEmail(req.body.email);
     } catch (err) {
       return res.sendStatus(404);
     }
