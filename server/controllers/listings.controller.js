@@ -87,7 +87,6 @@ router.get("/:id", async function (req, res) {
 
         // Get the listing with the given name
         const foundListing = user.listings.find(listing => listing.id === listingID);
-        console.log(foundListing)
         if (!foundListing) {
             return res.status(404).json({ message: 'Listing not found' });
         }
