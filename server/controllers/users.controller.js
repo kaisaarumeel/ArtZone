@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
         try {
             let user;
             try {
-                user = await getUserByEmail(id, res)
+                user = (await getUserByEmail(id, res)).toObject()
             } catch (err) {
                 console.log(err)
                 return res.sendStatus(404)
@@ -40,8 +40,9 @@ router.patch("/", async (req, res) => {
             delete req.body["session"];
             const data = req.body;
             let user = await UserSchema.collection.findOneAndUpdate({ userEmail: email }, { $set: data }, { new: true });
+            if (!user) return res.sendStatus(404);
+
             return res.sendStatus(200);
-            if (!user) res.sendStatus(404);
         } catch (err) {
             console.log(err)
             return res.sendStatus(400);

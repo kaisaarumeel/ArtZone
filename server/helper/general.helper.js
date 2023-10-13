@@ -8,7 +8,7 @@ async function getUserByEmail(email,res){
     if (!user) {
         throw new Error("User was not found");
     }
-    return user.toObject();
+    return user
 }
 
 async function validateEmail(email,res){

@@ -83,12 +83,11 @@ router.get("/:id", async function (req, res) {
         } catch (error) {
             return res.status(404).send(err);;
         }
-
         const listingID = req.params.id;
 
         // Get the listing with the given name
-        const foundListing = user.listings.find(listing => listing.id === listingID);
-
+        const foundListing = user.listings.find(listing => listing._id.toString() === listingID);
+        console.log(foundListing)
         if (!foundListing) {
             return res.status(404).json({ message: 'Listing not found' });
         }
@@ -117,7 +116,7 @@ router.delete("/:id", async function (req, res) {
             return res.sendStatus(404);
         }
 
-        let listing = user.listings.find(listing => listing.id == req.params.id);
+        let listing = user.listings.find(listing => listing._id.toString() == req.params.id);
         if (!listing) {
             res.status(404).json({ "message": "Seller Listing was not found." });
             return;
