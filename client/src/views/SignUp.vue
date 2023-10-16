@@ -75,16 +75,10 @@ export default {
         </h4>
       </b-col>
     </b-row>
-    <b-row>
-      <b-col class="pl-5 pr-3" md="6">
-        <ProfileForm :isLoggedIn="false" :usedForRegister="true" v-on:form-data="createUser($event)">Create Account</ProfileForm>
-      </b-col>
+    <b-row class="m-3">
       <b-col md="6">
-        <img class="pl-2 pr-5 text-center" src="../../public/SignupImage.png"
-        alt="Sign up images">
-      </b-col>
-       <b-col cols="12" md="6">
-          <p class="text-center error" v-if="!success">
+        <ProfileForm :isLoggedIn="false" :usedForRegister="true" v-on:form-data="createUser($event)">Create Account</ProfileForm>
+      <p class="text-center error" v-if="!success">
             Error registering user. Please make sure that you have given valid credentials.
           </p>
           <p class="text-center">
@@ -93,7 +87,12 @@ export default {
               <router-link to="/user/login">Sign in</router-link>
             </span>
           </p>
-        </b-col>
+      </b-col>
+      <b-col md="6">
+        <img class="text-center" src="../../public/SignupImage.png"
+        alt="Sign up images">
+      </b-col>
+
     </b-row>
   </div>
 </template>

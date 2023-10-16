@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "node getenv.js && vue-cli-service build",
+    "build": "node build-with-env.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

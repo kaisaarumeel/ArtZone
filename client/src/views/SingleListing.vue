@@ -52,27 +52,6 @@ export default {
       if (paymentIntent == null) return
       this.success = true
       this.$refs.paymentModalTrigger.click()
-      // User has completed order
-
-      /*
-      const payload = {
-        seller: 'bobylon@gmail.com',
-        listing: '65099d75307bfd3b8c80920b',
-        payment_intent: paymentIntent
-      }
-      const response = await fetch('http://localhost:3000/api/v1/checkout/', {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify(payload)
-      })
-      return await response.json() */
     },
     async getData() {
       const unparsedListing = localStorage.getItem('singleListing')

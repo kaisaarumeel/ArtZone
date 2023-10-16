@@ -258,8 +258,8 @@ export default {
 
 <template>
     <div>
-          <b-col cols="12" class="pt-3 text-right">
-                <b-button v-if="isAdmin" @click="goToAdminPage()" class="mr-5 pl-2 pr-2 btn-primary btn">
+          <b-col cols="12" class="ml-5 mb-2  text-left admin-btn-col">
+                <b-button v-if="isAdmin" @click="goToAdminPage()" class="btn-primary btn">
                     Admin page
                 </b-button>
           </b-col>
@@ -320,6 +320,11 @@ export default {
   @media screen and (max-width: 768px) {
     .profileHeader {
         text-align: center;
+    }
+    .admin-btn-col {
+      text-align: center !important;
+      margin-left: unset !important;
+
     }
   }
 </style>
