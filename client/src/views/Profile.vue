@@ -201,10 +201,7 @@ export default {
     async deleteListing(id, sold) {
       try {
         const userData = JSON.parse(localStorage.getItem('userData'))
-        if (sold === true) {
-          this.deleteMessage = 'There is an order on your listing. You cannot delete it. Your listing will be deleted when it is received by the buyer.'
-          return
-        }
+
         const response = await Api.delete('/users/' + userData.userEmail + '/listings/' + id, {
           headers: {
             'Content-Type': 'application/json',
@@ -215,6 +212,9 @@ export default {
           await this.getListings().then(result => { this.deleteMessage = 'Listing deleted successfully.' })
         }
       } catch (err) {
+        if (err.response.status === 403) {
+          this.deleteMessage = 'There is an order on your listing. You cannot delete it. Your listing will be deleted when it is received by the buyer.'
+        }
         console.log(err)
       }
     },
