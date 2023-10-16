@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "01dc0833-1f40-4086-96d5-090fc8711a50",
+		"_postman_id": "058b006e-e147-4cb7-8f5e-44d9de185fc0",
 		"name": "Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "28264405",
-		"_collection_link": "https://dark-flare-212796.postman.co/workspace/Web-Development~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-01dc0833-1f40-4086-96d5-090fc8711a50?action=share&source=collection_link&creator=28264405"
+		"_collection_link": "https://dark-flare-212796.postman.co/workspace/Web-Development~0e66dd01-fb56-49e1-bb38-4c2c54fe3f60/collection/28264405-058b006e-e147-4cb7-8f5e-44d9de185fc0?action=share&source=collection_link&creator=28264405"
 	},
 	"item": [
 		{
@@ -207,8 +207,8 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 200\", function () {",
-											"   pm.response.to.have.status(200);",
+											"pm.test(\"Status code is 204\", function () {",
+											"   pm.response.to.have.status(204);",
 											"});",
 											"",
 											"",
