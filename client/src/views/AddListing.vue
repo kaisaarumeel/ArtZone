@@ -61,7 +61,7 @@
         <div class="btn-container">
             <b-button v-on:click="createListing()" type="submit" variant="primary">Add listing</b-button>
             <p v-if="success">Listing created!</p>
-            <p v-if="showError">Please fill in the required fields.</p>
+            <p v-if="showError">Invalid or missing values.</p>
             <p v-if="showUnauthorized">Session expired, redirecting...</p>
         </div>
 
@@ -148,10 +148,9 @@ export default {
             }, 3000)
           })
           .catch(() => {
-            state.showUnauthorized = true
+            state.showError = true
             setTimeout(() => {
-              state.showUnauthorized = false
-              window.location.replace('/login')
+              state.showError = false
             }, 1500)
           })
       }
