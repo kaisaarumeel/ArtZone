@@ -37,7 +37,7 @@ export default {
       }
       const self = this
 
-      const buttons = paypal.Buttons({
+      paypal.Buttons({
         style: {
           layout: 'horizontal'
         },
