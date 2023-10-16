@@ -43,7 +43,7 @@ export default {
 </script>
 
 <template>
-    <div class="pl-5 pb-5">
+    <div class="p-5">
         <b-row>
             <b-col cols="12" md="6">
                 <h4 class="text-center">
