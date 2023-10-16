@@ -10,7 +10,6 @@ async function generatePage(skip,perPage) {
       delete sanitized_user["listings"];
       delete sanitized_user["password"];
       delete sanitized_user["session"];
-      console.log(sanitized_user)
       sanitized_users.push(sanitized_user)
     }
 

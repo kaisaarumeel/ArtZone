@@ -243,7 +243,6 @@ router.patch("/:id", async function (req, res) {
                 }
 
             );
-            console.log(result)
             if (!result) {
                 return res.status(404).json({ message: 'Listing not found' });
             }
