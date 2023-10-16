@@ -139,7 +139,6 @@ export default {
         Api.post('users/' + userData.userEmail + '/listings', payload, { headers })
           .then(response => {
             // Handle the successful response, e.g., show a success message or redirect
-            console.log(response.data)
             state.success = true
             for (const key in state.listing) {
               state.listing[key].value = null

@@ -61,7 +61,6 @@ export default {
         }
         localStorage.setItem('singleListing', JSON.stringify(listing))
         this.$router.push('listing')
-        console.log(this.listing)
       }
     },
     getUserDataFromLocalStorage() {

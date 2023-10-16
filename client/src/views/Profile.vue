@@ -123,7 +123,6 @@ export default {
             if (response.length === 0) {
               hasNextPage = false; return
             } else {
-              console.log(response)
               this.allListings.push(...response.data.listings)
               hasNextPage = response.data.hasNextPage
 
@@ -136,7 +135,6 @@ export default {
       }
     },
     async onRowClicked(item) {
-      console.log(item)
       const link = JSON.stringify(item.link)
       this.$router.push({ name: 'singleOrder', params: { link } })
     },
@@ -167,9 +165,7 @@ export default {
 
           await this.fetchListings()
           for (const key in this.orders) {
-            console.log(this.orders[key])
             for (const id in this.allListings) {
-              console.log(this.allListings[id])
               if (this.orders[key].listing === this.allListings[id]._id) {
                 this.orders[key].listing = `<img class="table-listing-picture" src="${this.allListings[id].picture}">`
               }
@@ -196,7 +192,6 @@ export default {
         if (response.status === 200) {
           this.user = response.data
           const user = response.data
-          console.log(response.data)
           this.isAdmin = user.isAdmin
         }
       } catch (err) {

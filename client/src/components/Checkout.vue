@@ -88,7 +88,6 @@ export default {
         }
 
       }).render('#paypal-button-container')
-      console.log(buttons)
     },
     pay() {
       this.$refs.paymentRef.submit()

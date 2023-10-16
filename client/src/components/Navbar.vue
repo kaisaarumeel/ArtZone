@@ -74,8 +74,6 @@ export default {
     navigateToAboutUs() {
       const aboutUsSection = document.getElementById('aboutUsSection')
       localStorage.setItem('sessionKey', '')
-      console.log(this.userData)
-
       if (aboutUsSection) {
         aboutUsSection.scrollIntoView({ behavior: 'smooth' })
       } else {
