@@ -58,7 +58,7 @@ export default new Router({
       component: Profile
     },
     {
-      path: '/order/:link',
+      path: '/order/',
       name: 'singleOrder',
       component: Order,
       props: true

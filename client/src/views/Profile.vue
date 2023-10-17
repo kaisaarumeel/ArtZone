@@ -136,7 +136,7 @@ export default {
     },
     async onRowClicked(item) {
       const link = JSON.stringify(item.link)
-      this.$router.push({ name: 'singleOrder', params: { link } })
+      this.$router.push({ name: 'singleOrder', query: { link } })
     },
     async getOrders() {
       try {

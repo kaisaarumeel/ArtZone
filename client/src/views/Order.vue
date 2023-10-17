@@ -5,7 +5,6 @@ export default {
   components: {
     Reviews
   },
-  props: ['link'],
   data() {
     return {
       isReceived: false,
@@ -104,7 +103,7 @@ export default {
     async getOrder() {
       try {
         const userData = JSON.parse(localStorage.getItem('userData'))
-        const linkObject = JSON.parse(this.link)
+        const linkObject = JSON.parse(this.$route.query.link)
         const order = await Api.get(linkObject.href, {
           headers: {
             'Content-Type': 'application/json',
