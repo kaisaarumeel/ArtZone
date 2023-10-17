@@ -1,6 +1,6 @@
 const UserModel = require("../models/user.js");
 
-async function getUserByEmail(email){
+async function getUserByEmail(email) {
     const user = await UserModel.findOne({ userEmail: email });
     if (!user) {
         throw new Error("User was not found");
@@ -8,7 +8,7 @@ async function getUserByEmail(email){
     return user
 }
 
-async function validateEmail(email){
+async function validateEmail(email) {
     //we use regx here to confirm that the email is of the right format.
     if (!email.match(/.*@.*/)) {
         throw new Error("Invalid email")

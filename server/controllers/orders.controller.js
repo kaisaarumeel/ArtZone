@@ -149,7 +149,6 @@ router.patch("/:id", async (req, res) => {
         }
         for (let key in req.body) {
             if (order.seller === user.userEmail && key === 'isShipped') { //If user is attempting to ship an order
-
                 let status = await markOrderAsShipped(order, req, res, key, user)
                 return res.sendStatus(status)
 

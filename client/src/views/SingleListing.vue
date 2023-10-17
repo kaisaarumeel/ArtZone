@@ -3,22 +3,6 @@ import Reviews from '../components/Reviews.vue'
 import Checkout from '../components/Checkout.vue'
 import { Api } from '../Api.js'
 
-async function beautifyLongNumber(num) {
-  let result = ''
-  const array = num.toString().split('')
-  let counter = 0
-  for (let i = 0; i < array.length; i++) {
-    result += array[i]
-    if (counter === 2 && i + 1 < array.length) {
-      result += ','
-      counter = 0
-    } else {
-      counter++
-    }
-  }
-  return result
-}
-
 export default {
   mounted() {
     this.checkParams()
@@ -65,7 +49,7 @@ export default {
       this.seller = parsedListing.creator
       this.sellerRating = reviews.data.length
       this.description = parsedListing.description
-      this.price = await beautifyLongNumber(parsedListing.price)
+      this.price = (parsedListing.price)
       this.sellerReviewsName = this.seller + '  ⭐' + this.sellerRating
       this.id = parsedListing._id
       this.ready = true

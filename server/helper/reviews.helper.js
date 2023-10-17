@@ -1,4 +1,4 @@
-async function validateReview(res,result,order) {
+async function validateReview(res, result, order) {
     let invalid = false;
     for (let i = 0; i < result.orders.length; i++) {
         if (result.orders[i].hash === order) {

@@ -120,8 +120,8 @@ router.delete("/:id", async function (req, res) {
             res.status(404).json({ "message": "Seller Listing was not found." });
             return;
         }
-        let listingHasOrders = user.orders.find(order => order.listing == req.params.id);
-        if (listingHasOrders !== undefined) return res.status(403).json({ "message": "You cannot delete a listing that has been ordered." });
+
+        if (listing.sold === true) return res.status(403).json({ "message": "You cannot delete a listing that has been ordered." });
 
         try {
             const result = await UserSchema.findOneAndUpdate({ userEmail: userEmail }, { $pull: { listings: { _id: listingID } } });
