@@ -84,7 +84,7 @@ export default {
           <p class="text-center">
             <span>Already have an account? </span>
             <span class="signInLink">
-              <router-link to="/user/login">Sign in</router-link>
+              <router-link to="/login">Sign in</router-link>
             </span>
           </p>
       </b-col>
