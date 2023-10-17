@@ -19,7 +19,6 @@ const userSchema = new mongoose.Schema({
     },
     dateOfBirth: { type: Date, required: true, immutable: true },
     password: { type: String, required: true },
-    verificationStatus: { type: Boolean, default: false },
     userEmail: { type: String, required: true, unique: true, sparse: true },
     isAdmin: { type: Boolean, default: false, required: true },
     listings: [ { type: Listings.schema } ],

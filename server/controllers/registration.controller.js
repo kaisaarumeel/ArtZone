@@ -45,7 +45,6 @@ router.post("/users/register", async (req, res) => {
         dateOfBirth: req.body.dateOfBirth,
         password: req.body.password,
         address: req.body.address,
-        verificationStatus: false,
         userEmail: req.body.userEmail,
         isAdmin: req.body.isAdmin,
         listings: [],

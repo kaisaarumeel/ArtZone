@@ -76,7 +76,6 @@ async function markOrderAsShipped(order,req,res,key,user){
 async function markOrderAsReceived(order,req,res,key,user) {
 
     if (order.isShipped === true) {
-
         const seller = await UserModel.findOne({ userEmail: req.body.seller });
         if (!seller) {
             return 404;
@@ -99,13 +98,11 @@ async function markOrderAsReceived(order,req,res,key,user) {
             return 404;
         }
         sellerOrder[key] = req.body[key]
-
         seller.listings = seller.listings.filter(listing => listing._id !== sellerListing._id);
         seller.orders = seller.orders.filter(order => order._id !== sellerOrder._id);
         user.orders = user.orders.filter(userOrder => userOrder._id !== order._id);
         await seller.save();
         await user.save();
-
         return 200;
 
     } else {

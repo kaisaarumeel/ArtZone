@@ -7,7 +7,6 @@ const UserSchema = require("../models/user.js");
 const { getUserByEmail } = require("../helper/general.helper.js");
 const { validateReview } = require("../helper/reviews.helper.js");
 
-
 //POST /users/:email/reviews/ - Adds review to user profile
 router.post("/", async function (req, res) {
 

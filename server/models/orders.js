@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const { randomUUID } = require("crypto");
 
 const orderSchema = new mongoose.Schema({ 
-    seller: { type: String, required: true, immutable: false }, 
-    buyer: { type: String, required: true, immutable: false }, 
+    seller: { type: String, required: true }, 
+    buyer: { type: String, required: true}, 
     hash: { type: String, required: true, immutable:true }, 
     listing: { type: String, required: true, immutable: true},
     isReceived: { type: Boolean, default: false, required:true },
