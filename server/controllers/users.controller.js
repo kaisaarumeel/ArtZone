@@ -123,7 +123,6 @@ router.put("/", async (req, res) => {
             if (req.auth.auth && req.auth.authEmail != email && !req.auth.isAdmin) res.sendStatus(403);
             let user;
 
-            if (req.body.userEmail !== undefined && req.body.userEmail !== req.params.email) {
                 try {
                     user = await getUserByEmail(req.params.email)
                 } catch (err) {
@@ -173,7 +172,7 @@ router.put("/", async (req, res) => {
                     }
                 }
                 await user.save()
-            }
+        
 
             const new_user = new UserSchema({
                 name: req.body.name,
