@@ -123,7 +123,6 @@ export default {
             if (response.length === 0) {
               hasNextPage = false; return
             } else {
-              console.log(response)
               this.allListings.push(...response.data.listings)
               hasNextPage = response.data.hasNextPage
 
@@ -136,7 +135,6 @@ export default {
       }
     },
     async onRowClicked(item) {
-      console.log(item)
       const link = JSON.stringify(item.link)
       this.$router.push({ name: 'singleOrder', params: { link } })
     },
@@ -167,9 +165,7 @@ export default {
 
           await this.fetchListings()
           for (const key in this.orders) {
-            console.log(this.orders[key])
             for (const id in this.allListings) {
-              console.log(this.allListings[id])
               if (this.orders[key].listing === this.allListings[id]._id) {
                 this.orders[key].listing = `<img class="table-listing-picture" src="${this.allListings[id].picture}">`
               }
@@ -196,7 +192,6 @@ export default {
         if (response.status === 200) {
           this.user = response.data
           const user = response.data
-          console.log(response.data)
           this.isAdmin = user.isAdmin
         }
       } catch (err) {
@@ -206,10 +201,7 @@ export default {
     async deleteListing(id, sold) {
       try {
         const userData = JSON.parse(localStorage.getItem('userData'))
-        if (sold === true) {
-          this.deleteMessage = 'There is an order on your listing. You cannot delete it. Your listing will be deleted when it is received by the buyer.'
-          return
-        }
+
         const response = await Api.delete('/users/' + userData.userEmail + '/listings/' + id, {
           headers: {
             'Content-Type': 'application/json',
@@ -220,6 +212,9 @@ export default {
           await this.getListings().then(result => { this.deleteMessage = 'Listing deleted successfully.' })
         }
       } catch (err) {
+        if (err.response.status === 403) {
+          this.deleteMessage = 'There is an order on your listing. You cannot delete it. Your listing will be deleted when it is received by the buyer.'
+        }
         console.log(err)
       }
     },

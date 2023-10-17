@@ -183,8 +183,8 @@ router.get("/:id", async (req, res) => {
         return res.status(200).json(order);
 
     } catch (err) {
-        return res.sendStatus(404);
         console.log(err);
+        return res.sendStatus(404);
     }
 
 });

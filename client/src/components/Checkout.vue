@@ -37,7 +37,7 @@ export default {
       }
       const self = this
 
-      const buttons = paypal.Buttons({
+      paypal.Buttons({
         style: {
           layout: 'horizontal'
         },
@@ -88,7 +88,6 @@ export default {
         }
 
       }).render('#paypal-button-container')
-      console.log(buttons)
     },
     pay() {
       this.$refs.paymentRef.submit()

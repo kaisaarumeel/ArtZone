@@ -32,13 +32,8 @@ export default {
         const headers = {
           'X-Auth-Token': userData.sessionKey
         }
-        const response = await Api.delete(`/users/${this.userEmail}`, { headers })
-        if (response.status === 200) {
-          console.log(`User with email "${this.userEmail}" has been banned.`)
-          this.isBanned = true
-        } else {
-          console.error(`Failed to ban user with email "${this.userEmail}".`)
-        }
+        await Api.delete(`/users/${this.userEmail}`, { headers })
+        this.isBanned = true
       } catch (error) {
         console.error(error)
       }

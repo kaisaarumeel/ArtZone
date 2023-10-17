@@ -53,14 +53,12 @@ export default {
     async fetchRandomListings() {
       try {
         const response = await Api.get('/random-listings')
-        console.log(response)
         this.listings = response.data
       } catch (error) {
         console.log(error)
       }
     },
     buyNowClick(index) {
-      console.log(index)
       if (this.userLoggedIn) {
         const listing = this.listings[index]
         localStorage.setItem('singleListing', JSON.stringify(listing))

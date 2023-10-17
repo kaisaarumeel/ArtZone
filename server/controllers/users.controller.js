@@ -215,8 +215,44 @@ router.delete("/", async (req, res) => {
     try {
         try {
             if (!req.auth.isAdmin) res.sendStatus(403);
+            console.log(req.params.email)
+                let user;
+                try {
+                    user = await getUserByEmail(req.params.email)
+                } catch (err) {
+                    console.log(err)
+                    return res.sendStatus(404);
+                }
+                for(let i=0;i<user.orders.length;i++) {
+                    if(user.orders[i].buyer===req.params.email) {
+                        user.orders[i].buyer=req.body.userEmail;
+                        //Propagate changes at sellers order as well
+                        try {
+                            let seller = await getUserByEmail(user.orders[i].seller)
+                            let ordersNotWithBuyer = seller.orders.filter(order => order.buyer !== req.params.email);
+                            seller.orders=ordersNotWithBuyer;
+                            seller.save()
+                        } catch (err) {
+                            console.log(err)
+                            return res.sendStatus(404);
+                        }
+                    }
+                    if(user.orders[i].seller===req.params.email) {
+                        user.orders[i].seller=req.body.userEmail;
+                        //Propagate changes at buyers order as well
+                        try {
+                            let buyer = await getUserByEmail(user.orders[i].buyer)
+                            let ordersNotWithSeller = buyer.orders.filter(order => order.seller !== req.params.email);
+                            buyer.orders=ordersNotWithSeller;
+                            buyer.save()
+                        } catch (err) {
+                            console.log(err)
+                            return res.sendStatus(404);
+                        }
+                    }
+                }
             await UserSchema.collection.deleteOne({ userEmail: req.params.email })
-            return res.sendStatus(200);
+            return res.sendStatus(204)
         } catch (err) {
             console.log(err)
             return res.sendStatus(400);

@@ -98,7 +98,6 @@ export default {
         if (response.status === 200) {
           this.user = response.data
           const user = response.data
-          console.log(response.data)
           this.isAdmin = user.isAdmin
         }
       } catch (err) {
@@ -143,7 +142,6 @@ export default {
                 showSold: true
               }
             })
-            console.log(response.data)
             if (Array.isArray(response.data.listings) && response.data.listings.length > 0) {
               for (const key in response.data.listings) {
                 const image = `<img class="table-listing-picture" src="${response.data.listings[key].picture}">`
@@ -151,7 +149,6 @@ export default {
                 response.data.listings[key].deleteListing = ''
               }
               this.listings.push(...response.data.listings)
-              console.log(this.listings)
             }
             hasNextPage = response.data.hasNextPage
 
