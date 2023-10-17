@@ -41,7 +41,7 @@ router.patch("/", async (req, res) => {
             if (req.auth.auth && req.auth.authEmail != email && !req.auth.isAdmin) return res.sendStatus(403);
             delete req.body["session"];
             const data = req.body;
-            if(data.userEmail!==undefined && data.userEmail!==req.params.email) {
+            if (data.userEmail !== undefined && data.userEmail !== req.params.email) {
                 let user;
                 try {
                     user = await getUserByEmail(req.params.email)
@@ -50,40 +50,40 @@ router.patch("/", async (req, res) => {
                     return res.sendStatus(404);
                 }
 
-                for(let i=0;i<user.listings.length;i++) {
-                    if(user.listings[i].creator===req.params.email) {
-                        user.listings[i].creator=data.userEmail;
+                for (let i = 0; i < user.listings.length; i++) {
+                    if (user.listings[i].creator === req.params.email) {
+                        user.listings[i].creator = data.userEmail;
                     }
                 }
 
-                for(let i=0;i<user.orders.length;i++) {
-                    if(user.orders[i].buyer===req.params.email) {
-                        user.orders[i].buyer=data.userEmail;
+                for (let i = 0; i < user.orders.length; i++) {
+                    if (user.orders[i].buyer === req.params.email) {
+                        user.orders[i].buyer = data.userEmail;
                         console.log(user.orders[i])
                         //Propagate changes at sellers order as well
                         try {
                             let seller = await getUserByEmail(user.orders[i].seller)
-                            for(let x=0;x<seller.orders.length;x++) {
-                                if(seller.orders[x].buyer===req.params.email) {
-                                    seller.orders[x].buyer=data.userEmail;
+                            for (let x = 0; x < seller.orders.length; x++) {
+                                if (seller.orders[x].buyer === req.params.email) {
+                                    seller.orders[x].buyer = data.userEmail;
 
                                 }
                             }
-                            
+
                             await seller.save()
                         } catch (err) {
                             console.log(err)
                             return res.sendStatus(404);
                         }
                     }
-                    if(user.orders[i].seller===req.params.email) {
-                        user.orders[i].seller=data.userEmail;
+                    if (user.orders[i].seller === req.params.email) {
+                        user.orders[i].seller = data.userEmail;
                         //Propagate changes at buyers order as well
                         try {
                             let buyer = await getUserByEmail(user.orders[i].buyer)
-                            for(let x=0;x<buyer.orders.length;x++) {
-                                if(buyer.orders[x].seller===req.params.email) {
-                                    buyer.orders[x].seller=data.userEmail;
+                            for (let x = 0; x < buyer.orders.length; x++) {
+                                if (buyer.orders[x].seller === req.params.email) {
+                                    buyer.orders[x].seller = data.userEmail;
                                 }
                             }
 
@@ -103,7 +103,7 @@ router.patch("/", async (req, res) => {
             if (!result) return res.sendStatus(404);
 
             //Check if user is trying to change their email
-            
+
             return res.sendStatus(200);
         } catch (err) {
             console.log(err)
@@ -126,10 +126,10 @@ router.put("/", async (req, res) => {
                 oldUser = await getUserByEmail(email)
             } catch (err) {
                 return res.sendStatus(404)
-            
+
             }
 
-            if(req.body.userEmail!==undefined && req.body.userEmail!==req.params.email) {
+            if (req.body.userEmail !== undefined && req.body.userEmail !== req.params.email) {
                 let user;
                 try {
                     user = await getUserByEmail(req.params.email)
@@ -138,21 +138,21 @@ router.put("/", async (req, res) => {
                     return res.sendStatus(404);
                 }
 
-                for(let i=0;i<user.listings.length;i++) {
-                    if(user.listings[i].creator===req.params.email) {
-                        user.listings[i].creator=req.body.userEmail;
+                for (let i = 0; i < user.listings.length; i++) {
+                    if (user.listings[i].creator === req.params.email) {
+                        user.listings[i].creator = req.body.userEmail;
                     }
                 }
 
-                for(let i=0;i<user.orders.length;i++) {
-                    if(user.orders[i].buyer===req.params.email) { 
-                        user.orders[i].buyer=req.body.userEmail; 
+                for (let i = 0; i < user.orders.length; i++) {
+                    if (user.orders[i].buyer === req.params.email) {
+                        user.orders[i].buyer = req.body.userEmail;
                         //Propagate changes at sellers order as well
                         try {
-                            let seller = await getUserByEmail(user.orders[i].seller) 
-                            for(let x=0;x<seller.orders.length;x++) {
-                                if(seller.orders[x].buyer===req.params.email) {
-                                    seller.orders[x].buyer=req.body.userEmail;
+                            let seller = await getUserByEmail(user.orders[i].seller)
+                            for (let x = 0; x < seller.orders.length; x++) {
+                                if (seller.orders[x].buyer === req.params.email) {
+                                    seller.orders[x].buyer = req.body.userEmail;
                                 }
                             }
 
@@ -161,14 +161,14 @@ router.put("/", async (req, res) => {
                             console.log(err)
                             return res.sendStatus(404);
                         }
-                    } else if(user.orders[i].seller===req.params.email) {
-                        user.orders[i].seller=req.body.userEmail;
+                    } else if (user.orders[i].seller === req.params.email) {
+                        user.orders[i].seller = req.body.userEmail;
                         //Propagate changes at buyers order as well
                         try {
                             let buyer = await getUserByEmail(user.orders[i].buyer)
-                            for(let x=0;x<buyer.orders.length;x++) {
-                                if(buyer.orders[x].seller===req.params.email) {
-                                    buyer.orders[x].seller=req.body.userEmail;
+                            for (let x = 0; x < buyer.orders.length; x++) {
+                                if (buyer.orders[x].seller === req.params.email) {
+                                    buyer.orders[x].seller = req.body.userEmail;
                                 }
                             }
 
@@ -216,48 +216,48 @@ router.delete("/", async (req, res) => {
         try {
             if (!req.auth.isAdmin) res.sendStatus(403);
             console.log(req.params.email)
-                let user;
-                try {
-                    user = await getUserByEmail(req.params.email)
-                } catch (err) {
-                    console.log(err)
-                    return res.sendStatus(404);
-                }
-                for(let i=0;i<user.orders.length;i++) {
-                    if(user.orders[i].buyer===req.params.email) {
-                        //Propagate changes at sellers order as well
-                        try {
-                            let seller = await getUserByEmail(user.orders[i].seller) //bob@gmail.com
-                            let ordersNotWithBuyer = seller.orders.filter(order => order.buyer !== req.params.email); //seller: bob@gmail.com buyer:bobsfriend@gmail.com
+            let user;
+            try {
+                user = await getUserByEmail(req.params.email)
+            } catch (err) {
+                console.log(err)
+                return res.sendStatus(404);
+            }
+            for (let i = 0; i < user.orders.length; i++) {
+                if (user.orders[i].buyer === req.params.email) {
+                    //Propagate changes at sellers order as well
+                    try {
+                        let seller = await getUserByEmail(user.orders[i].seller) //bob@gmail.com
+                        let ordersNotWithBuyer = seller.orders.filter(order => order.buyer !== req.params.email); //seller: bob@gmail.com buyer:bobsfriend@gmail.com
 
-                            let ordersWithBuyer = seller.orders.filter(order => order.buyer === req.params.email);
-                            for(let x=0;x<ordersWithBuyer.length;x++) {
-                                let listingId=ordersWithBuyer[x].listing;
-                                for(let y=0;y<seller.listings.length;y++) {
-                                    if(listingId===seller.listings[y].id) {
-                                        seller.listings[y].sold=false;
-                                    }
+                        let ordersWithBuyer = seller.orders.filter(order => order.buyer === req.params.email);
+                        for (let x = 0; x < ordersWithBuyer.length; x++) {
+                            let listingId = ordersWithBuyer[x].listing;
+                            for (let y = 0; y < seller.listings.length; y++) {
+                                if (listingId === seller.listings[y].id) {
+                                    seller.listings[y].sold = false;
                                 }
-                            } 
-                            seller.orders=ordersNotWithBuyer; 
-                            await seller.save()
-                        } catch (err) {
-                            console.log(err)
-                            return res.sendStatus(404);
+                            }
                         }
-                    } else if(user.orders[i].seller===req.params.email) {
-                        //Propagate changes at buyers order as well
-                        try {
-                            let buyer = await getUserByEmail(user.orders[i].buyer)
-                            let ordersNotWithSeller = buyer.orders.filter(order => order.seller !== req.params.email);
-                            buyer.orders=ordersNotWithSeller;
-                            await buyer.save()
-                        } catch (err) {
-                            console.log(err)
-                            return res.sendStatus(404);
-                        }
+                        seller.orders = ordersNotWithBuyer;
+                        await seller.save()
+                    } catch (err) {
+                        console.log(err)
+                        return res.sendStatus(404);
+                    }
+                } else if (user.orders[i].seller === req.params.email) {
+                    //Propagate changes at buyers order as well
+                    try {
+                        let buyer = await getUserByEmail(user.orders[i].buyer)
+                        let ordersNotWithSeller = buyer.orders.filter(order => order.seller !== req.params.email);
+                        buyer.orders = ordersNotWithSeller;
+                        await buyer.save()
+                    } catch (err) {
+                        console.log(err)
+                        return res.sendStatus(404);
                     }
                 }
+            }
 
             await UserSchema.collection.deleteOne({ userEmail: req.params.email })
             return res.sendStatus(204)

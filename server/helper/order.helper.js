@@ -6,7 +6,7 @@ const paypal = require('@paypal/checkout-server-sdk');
 
 
 
-async function findSellerListing(req,res,seller){
+async function findSellerListing(req, res, seller) {
     let sellerListing = seller.listings.find(listing => listing.id === req.body.listing);
     if (!sellerListing) {
         throw new Error("Listing does not exist")
@@ -16,7 +16,7 @@ async function findSellerListing(req,res,seller){
 
 
 
-async function capturePayment(req,response,client){
+async function capturePayment(req, response, client) {
     if (!req.body.simulate) {
         request = new paypal.orders.OrdersCaptureRequest(req.body.paypalOrderId);
         request.requestBody({});
@@ -25,7 +25,7 @@ async function capturePayment(req,response,client){
     return response
 }
 
-async function addOrder(user,req,hash,paypalOrderId){
+async function addOrder(user, req, hash, paypalOrderId) {
     user.orders.push(new OrderModel.model({
         seller: req.body.seller,
         buyer: req.params.email,
@@ -36,14 +36,14 @@ async function addOrder(user,req,hash,paypalOrderId){
         paypalOrderId: paypalOrderId
     }));
 }
-async function makeHash(req){
+async function makeHash(req) {
 
     let msg = Date.now().toString() + req.body.seller + req.params.email + req.body.listing + randomUUID();
     let hash = await createHash('sha256').update(msg).digest('hex');
     return hash;
 }
 
-async function markOrderAsShipped(order,req,res,key,user){
+async function markOrderAsShipped(order, req, res, key, user) {
     if (order.isReceived === true) {
         return 403;
     } else {
@@ -73,7 +73,7 @@ async function markOrderAsShipped(order,req,res,key,user){
     }
 }
 
-async function markOrderAsReceived(order,req,res,key,user) {
+async function markOrderAsReceived(order, req, res, key, user) {
 
     if (order.isShipped === true) {
         const seller = await UserModel.findOne({ userEmail: req.body.seller });
@@ -110,4 +110,4 @@ async function markOrderAsReceived(order,req,res,key,user) {
     }
 }
 
-module.exports={findSellerListing, markOrderAsReceived,markOrderAsShipped, capturePayment,makeHash,addOrder}
+module.exports = { findSellerListing, markOrderAsReceived, markOrderAsShipped, capturePayment, makeHash, addOrder }
