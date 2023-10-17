@@ -90,10 +90,6 @@ router.get("/", async (req, res) => {
         } catch (err) {
             return res.sendStatus(404);
         }
-        if (!user.orders || user.orders.length == 0) {
-            res.status(404).json({ "message": "You have no orders on your orders list" });
-            return;
-        }
 
         //HATEOAS
         const links = new Array();

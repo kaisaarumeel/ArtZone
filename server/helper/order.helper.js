@@ -59,7 +59,6 @@ async function markOrderAsShipped(order, req, res, key, user) {
         } catch (err) {
             return 400;
         }
-
         let buyerOrder = buyer.orders.find(buyerOrder => buyerOrder.hash === order.hash);
         if (!buyerOrder) {
             return 404;

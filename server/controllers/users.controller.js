@@ -121,16 +121,8 @@ router.put("/", async (req, res) => {
         try {
             if (!req.auth.auth) res.sendStatus(403);
             if (req.auth.auth && req.auth.authEmail != email && !req.auth.isAdmin) res.sendStatus(403);
-            let oldUser;
-            try {
-                oldUser = await getUserByEmail(email)
-            } catch (err) {
-                return res.sendStatus(404)
+            let user;
 
-            }
-
-            if (req.body.userEmail !== undefined && req.body.userEmail !== req.params.email) {
-                let user;
                 try {
                     user = await getUserByEmail(req.params.email)
                 } catch (err) {
@@ -180,7 +172,7 @@ router.put("/", async (req, res) => {
                     }
                 }
                 await user.save()
-            }
+        
 
             const new_user = new UserSchema({
                 name: req.body.name,
@@ -189,8 +181,9 @@ router.put("/", async (req, res) => {
                 address: req.body.address,
                 userEmail: req.body.userEmail,
                 isAdmin: req.body.isAdmin,
-                listings: oldUser.listings,
-                orders: oldUser.orders
+                orders:user.orders,
+                listings:user.listings,
+                reviews:user.reviews
             }, { _id: false });
 
             const error = await new_user.validate()
@@ -199,9 +192,10 @@ router.put("/", async (req, res) => {
                 res.sendStatus(400);
                 return;
             }
-            let user = await UserSchema.collection.findOneAndUpdate({ userEmail: email }, { $set: new_user });
-            res.sendStatus(200);
-            if (!user) res.sendStatus(404);
+            let response = await UserSchema.collection.findOneAndUpdate({ userEmail: email }, { $set: new_user });
+            if (!response) return res.sendStatus(404);
+
+            return res.sendStatus(200);
         } catch (err) {
             console.log(err)
             return res.sendStatus(400);
