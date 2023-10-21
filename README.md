@@ -10,7 +10,7 @@ npm run dev
 cd client && npm install
 npm run serve
 ```
-## System Definition (MS0)
+## System Definition
 
 ### Purpose
 
@@ -33,6 +33,6 @@ Our system allows users, investors and art enthusiasts to buy and sell artwork o
 
 ![ER Diagram](./images/ERdiagram.png)
 
-## Teaser (MS3)
+## Teaser
 
 ![Teaser](./images/teaser.png)
