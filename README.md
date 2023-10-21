@@ -1,14 +1,15 @@
 ## Getting started
 
 # Setup backend
+```
 cd server && npm install
 npm run dev
-
+```
 # Setup frontend
+```
 cd client && npm install
 npm run serve
 ```
-
 ## System Definition (MS0)
 
 ### Purpose
